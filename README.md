@@ -1,2 +1,2 @@
-# FinalProject
+# Medical_Image
 

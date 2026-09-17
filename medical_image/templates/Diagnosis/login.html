@@ -1,0 +1,1088 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+    <title>X-HViT | Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="{% static 'css/shared.css' %}"/>
+    <style>
+        /* ============================================
+           AUTH PAGE STYLES
+           ============================================ */
+        .auth-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 100px 24px 60px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 440px;
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: var(--r-lg);
+            padding: 40px 36px;
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .auth-logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .auth-logo a {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .auth-logo .logo-icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, var(--teal), var(--blue));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--bg);
+        }
+
+        .auth-logo .logo-text {
+            font-family: var(--font-head);
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--text);
+            letter-spacing: -0.5px;
+        }
+
+        .auth-logo .logo-text span {
+            color: var(--teal);
+        }
+
+        .auth-title {
+            font-family: var(--font-head);
+            font-size: 28px;
+            font-weight: 800;
+            text-align: center;
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+        }
+
+        .auth-subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 28px;
+            line-height: 1.6;
+        }
+
+        .auth-subtitle a {
+            color: var(--teal);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .auth-subtitle a:hover {
+            text-decoration: underline;
+        }
+
+        /* Messages */
+        .messages {
+            margin-bottom: 20px;
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: var(--r-sm);
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-success {
+            background: rgba(0, 229, 176, 0.08);
+            border: 1px solid rgba(0, 229, 176, 0.15);
+            color: var(--teal);
+        }
+
+        .alert-error {
+            background: rgba(255, 85, 117, 0.08);
+            border: 1px solid rgba(255, 85, 117, 0.15);
+            color: var(--red);
+        }
+
+        .alert-warning {
+            background: rgba(255, 201, 71, 0.08);
+            border: 1px solid rgba(255, 201, 71, 0.15);
+            color: var(--yellow);
+        }
+
+        .alert-info {
+            background: rgba(58, 155, 255, 0.08);
+            border: 1px solid rgba(58, 155, 255, 0.15);
+            color: var(--blue);
+        }
+
+        .alert .alert-icon {
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        /* Form */
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .form-group label .required {
+            color: var(--red);
+            margin-left: 2px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper .input-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-dim);
+            font-size: 16px;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 12px 16px 12px 44px;
+            background: var(--bg3);
+            border: 2px solid var(--border);
+            border-radius: var(--r-sm);
+            color: var(--text);
+            font-family: var(--font-body);
+            font-size: 14px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .input-wrapper input:focus {
+            border-color: rgba(0, 229, 176, 0.4);
+            box-shadow: 0 0 0 4px rgba(0, 229, 176, 0.06);
+        }
+
+        .input-wrapper input::placeholder {
+            color: var(--text-dim);
+        }
+
+        .input-wrapper input.input-error {
+            border-color: var(--red);
+        }
+
+        .input-wrapper .toggle-password {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-dim);
+            cursor: pointer;
+            font-size: 16px;
+            padding: 4px;
+            transition: color 0.3s ease;
+        }
+
+        .input-wrapper .toggle-password:hover {
+            color: var(--text);
+        }
+
+        .form-error {
+            font-size: 12px;
+            color: var(--red);
+            margin-top: 4px;
+            display: none;
+        }
+
+        .form-error.visible {
+            display: block;
+        }
+
+        /* Form Options */
+        .form-options {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 4px;
+        }
+
+        .form-options .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+
+        .form-options .remember-me input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--teal);
+            cursor: pointer;
+        }
+
+        .form-options .forgot-link {
+            font-size: 13px;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-family: var(--font-body);
+        }
+
+        .form-options .forgot-link:hover {
+            color: var(--teal);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: var(--r-sm);
+            font-family: var(--font-body);
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--teal), var(--teal-dim));
+            color: var(--bg);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(0, 229, 176, 0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        .btn-ghost:hover {
+            background: var(--bg3);
+            border-color: rgba(255, 255, 255, 0.18);
+        }
+
+        .btn .spinner {
+            display: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-top-color: var(--bg);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .btn.loading .spinner {
+            display: inline-block;
+        }
+
+        .btn.loading .btn-text {
+            display: none;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Divider */
+        .auth-divider {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin: 8px 0;
+        }
+
+        .auth-divider::before,
+        .auth-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .auth-divider span {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            white-space: nowrap;
+        }
+
+        /* Social Login */
+        .social-login {
+            display: flex;
+            gap: 12px;
+        }
+
+        .social-login .btn-social {
+            flex: 1;
+            padding: 10px;
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: var(--r-sm);
+            color: var(--text-muted);
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .social-login .btn-social:hover {
+            border-color: rgba(0, 229, 176, 0.2);
+            background: var(--bg2);
+            transform: translateY(-2px);
+        }
+
+        .social-login .btn-social .social-label {
+            font-size: 12px;
+            font-weight: 500;
+            font-family: var(--font-body);
+        }
+
+        .social-login .btn-social.google:hover {
+            border-color: #ea4335;
+            color: #ea4335;
+        }
+
+        .social-login .btn-social.github:hover {
+            border-color: #6e7681;
+            color: #6e7681;
+        }
+
+        /* Footer */
+        .auth-footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .auth-footer a {
+            color: var(--teal);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* ============================================
+           FORGOT PASSWORD MODAL STYLES
+           ============================================ */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .modal-container {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: var(--r-lg);
+            padding: 36px 32px;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.4);
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: var(--text-dim);
+            font-size: 24px;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            padding: 4px;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            color: var(--text);
+        }
+
+        .modal-title {
+            font-family: var(--font-head);
+            font-size: 24px;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .modal-subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .modal-form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .modal-form .form-group {
+            gap: 6px;
+        }
+
+        .modal-form .form-group label {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .modal-form .form-group label .required {
+            color: var(--red);
+            margin-left: 2px;
+        }
+
+        .modal-form .input-wrapper input {
+            padding: 12px 16px 12px 44px;
+        }
+
+        .modal-success {
+            display: none;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .modal-success .success-icon {
+            font-size: 56px;
+            display: block;
+            margin-bottom: 16px;
+        }
+
+        .modal-success .success-title {
+            font-family: var(--font-head);
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--teal);
+            margin-bottom: 8px;
+        }
+
+        .modal-success .success-message {
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .modal-actions .btn {
+            flex: 1;
+        }
+
+        .modal-actions .btn-secondary {
+            background: var(--bg3);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .modal-actions .btn-secondary:hover {
+            background: var(--bg);
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .auth-container {
+                padding: 28px 20px;
+            }
+
+            .auth-title {
+                font-size: 24px;
+            }
+
+            .form-options {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+
+            .social-login {
+                flex-direction: column;
+            }
+
+            .auth-logo .logo-text {
+                font-size: 18px;
+            }
+
+            .modal-container {
+                padding: 24px 20px;
+                margin: 16px;
+            }
+
+            .modal-title {
+                font-size: 20px;
+            }
+
+            .modal-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-bg"></div>
+
+    <div class="auth-page">
+        <div class="auth-container">
+
+            <!-- Logo -->
+            <div class="auth-logo">
+                <a href="{% url 'Diagnosis:index' %}">
+                    <div class="logo-icon">X</div>
+                    <div class="logo-text"><span>X-HViT</span> Medical</div>
+                </a>
+            </div>
+
+            <!-- Title -->
+            <h1 class="auth-title">Welcome Back</h1>
+            <p class="auth-subtitle">
+                Sign in to continue your diagnostic journey with X-HViT.
+                <br>
+                New here? <a href="{% url 'Diagnosis:register' %}">Create an account</a>
+            </p>
+
+            <!-- Messages -->
+            {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    <span class="alert-icon">
+                        {% if message.tags == 'success' %}✅
+                        {% elif message.tags == 'error' %}❌
+                        {% elif message.tags == 'warning' %}⚠️
+                        {% else %}ℹ️{% endif %}
+                    </span>
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Form -->
+            <form class="auth-form" method="post" id="loginForm" novalidate>
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label for="username">Username <span class="required">*</span></label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">👤</span>
+                        <input type="text" id="username" name="username" placeholder="Enter your username" required autofocus>
+                    </div>
+                    <div class="form-error" id="usernameError">Please enter your username</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password <span class="required">*</span></label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">🔒</span>
+                        <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                        <button type="button" class="toggle-password" onclick="togglePassword()" aria-label="Toggle password visibility">
+                            👁️
+                        </button>
+                    </div>
+                    <div class="form-error" id="passwordError">Please enter your password</div>
+                </div>
+
+                <div class="form-options">
+                    <label class="remember-me">
+                        <input type="checkbox" name="remember" id="remember">
+                        Remember me
+                    </label>
+                    <button type="button" class="forgot-link" onclick="openForgotPasswordModal()">Forgot password?</button>
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="loginBtn">
+                    <span class="btn-text">Sign In</span>
+                    <span class="spinner"></span>
+                </button>
+            </form>
+
+            <!-- Divider -->
+            <div class="auth-divider">
+                <span>or continue with</span>
+            </div>
+
+            <!-- Social Login -->
+            <div class="social-login">
+                <a href="#" class="btn-social google">
+                    <span>G</span>
+                    <span class="social-label">Google</span>
+                </a>
+                <a href="#" class="btn-social github">
+                    <span>🐙</span>
+                    <span class="social-label">GitHub</span>
+                </a>
+            </div>
+
+            <!-- Footer -->
+            <div class="auth-footer">
+                Don't have an account? <a href="{% url 'Diagnosis:register' %}">Sign up now</a>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ============================================
+         FORGOT PASSWORD MODAL
+         ============================================ -->
+    <div class="modal-overlay" id="forgotPasswordModal" onclick="closeForgotPasswordModal(event)">
+        <div class="modal-container" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="closeForgotPasswordModal()" aria-label="Close">✕</button>
+
+            <!-- Step 1: Request Reset -->
+            <div id="forgotStep1">
+                <h2 class="modal-title">Reset Password</h2>
+                <p class="modal-subtitle">
+                    Enter your email address and we'll send you a link to reset your password.
+                </p>
+
+                <form class="modal-form" id="forgotForm" onsubmit="handleForgotPassword(event)">
+                    <div class="form-group">
+                        <label for="resetEmail">Email Address <span class="required">*</span></label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">📧</span>
+                            <input type="email" id="resetEmail" placeholder="Enter your registered email" required>
+                        </div>
+                        <div class="form-error" id="emailError">Please enter a valid email address</div>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeForgotPasswordModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="resetBtn">
+                            <span class="btn-text">Send Reset Link</span>
+                            <span class="spinner"></span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Step 2: Success Message -->
+            <div class="modal-success" id="forgotStep2">
+                <span class="success-icon">✅</span>
+                <div class="success-title">Check Your Email</div>
+                <div class="success-message">
+                    We've sent a password reset link to <strong id="resetEmailDisplay"></strong>.
+                    Please check your inbox and follow the instructions to reset your password.
+                </div>
+                <div class="modal-actions" style="margin-top: 20px;">
+                    <button class="btn btn-primary" onclick="closeForgotPasswordModal()">Return to Login</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // PASSWORD TOGGLE
+        // ============================================
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleBtn = document.querySelector('.toggle-password');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleBtn.textContent = '🙈';
+            } else {
+                passwordInput.type = 'password';
+                toggleBtn.textContent = '👁️';
+            }
+        }
+
+        // ============================================
+        // FORGOT PASSWORD MODAL
+        // ============================================
+        function openForgotPasswordModal() {
+            const modal = document.getElementById('forgotPasswordModal');
+            const step1 = document.getElementById('forgotStep1');
+            const step2 = document.getElementById('forgotStep2');
+            
+            // Reset to step 1
+            step1.style.display = 'block';
+            step2.style.display = 'none';
+            
+            // Clear email input
+            document.getElementById('resetEmail').value = '';
+            document.getElementById('emailError').classList.remove('visible');
+            
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            // Focus on email input after animation
+            setTimeout(() => {
+                document.getElementById('resetEmail').focus();
+            }, 300);
+        }
+
+        function closeForgotPasswordModal(event) {
+            if (event && event.target && !event.target.closest('.modal-container')) {
+                return;
+            }
+            const modal = document.getElementById('forgotPasswordModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeForgotPasswordModal();
+            }
+        });
+
+        // ============================================
+        // HANDLE FORGOT PASSWORD
+        // ============================================
+        async function handleForgotPassword(event) {
+            event.preventDefault();
+            
+            const emailInput = document.getElementById('resetEmail');
+            const email = emailInput.value.trim();
+            const emailError = document.getElementById('emailError');
+            const resetBtn = document.getElementById('resetBtn');
+            
+            // Validate email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!email || !emailRegex.test(email)) {
+                emailError.classList.add('visible');
+                emailInput.classList.add('input-error');
+                return;
+            }
+            
+            emailError.classList.remove('visible');
+            emailInput.classList.remove('input-error');
+            
+            // Show loading state
+            resetBtn.classList.add('loading');
+            resetBtn.disabled = true;
+            
+            try {
+                // Send password reset request to server
+                const response = await fetch('/api/password-reset/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCsrfToken()
+                    },
+                    body: JSON.stringify({
+                        email: email
+                    })
+                });
+                
+                const data = await response.json();
+                
+                // Hide loading state
+                resetBtn.classList.remove('loading');
+                resetBtn.disabled = false;
+                
+                if (data.status === 'success') {
+                    // Show success step
+                    document.getElementById('forgotStep1').style.display = 'none';
+                    document.getElementById('forgotStep2').style.display = 'block';
+                    document.getElementById('resetEmailDisplay').textContent = email;
+                    
+                    // Show toast notification
+                    showToast('Password reset link sent!', 'Check your email for the reset link.', 'success');
+                } else {
+                    // Show error
+                    showToast('Error', data.message || 'Failed to send reset link. Please try again.', 'error');
+                }
+            } catch (error) {
+                console.error('Password reset error:', error);
+                resetBtn.classList.remove('loading');
+                resetBtn.disabled = false;
+                showToast('Error', 'Failed to connect to server. Please try again.', 'error');
+            }
+        }
+
+        // ============================================
+        // CSRF TOKEN HELPER
+        // ============================================
+        function getCsrfToken() {
+            const token = document.querySelector('[name=csrfmiddlewaretoken]');
+            return token ? token.value : '';
+        }
+
+        // ============================================
+        // TOAST NOTIFICATION
+        // ============================================
+        function showToast(title, message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            if (!container) {
+                // Create toast container if it doesn't exist
+                const newContainer = document.createElement('div');
+                newContainer.id = 'toastContainer';
+                newContainer.style.cssText = `
+                    position: fixed;
+                    bottom: 24px;
+                    right: 24px;
+                    z-index: 9999;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 10px;
+                    max-width: 380px;
+                `;
+                document.body.appendChild(newContainer);
+            }
+            
+            const toastContainer = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            const icons = {
+                success: '✅',
+                error: '❌',
+                warning: '⚠️',
+                info: 'ℹ️'
+            };
+            
+            const colors = {
+                success: 'var(--teal)',
+                error: 'var(--red)',
+                warning: 'var(--yellow)',
+                info: 'var(--blue)'
+            };
+
+            toast.style.cssText = `
+                padding: 12px 16px;
+                border-radius: 8px;
+                background: var(--bg2);
+                border: 1px solid var(--border);
+                border-left: 4px solid ${colors[type] || colors.info};
+                box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+                transform: translateX(120%);
+                transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                font-size: 13px;
+                color: var(--text);
+            `;
+            
+            toast.innerHTML = `
+                <span style="font-size:18px;">${icons[type] || icons.info}</span>
+                <div>
+                    <div style="font-weight:600;font-size:13px;">${title}</div>
+                    <div style="color:var(--text-muted);font-size:12px;">${message}</div>
+                </div>
+                <button onclick="this.parentElement.remove()" style="background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:16px;margin-left:auto;">✕</button>
+            `;
+            
+            toastContainer.appendChild(toast);
+            
+            requestAnimationFrame(() => {
+                toast.style.transform = 'translateX(0)';
+            });
+            
+            setTimeout(() => {
+                toast.style.transform = 'translateX(120%)';
+                setTimeout(() => toast.remove(), 400);
+            }, 5000);
+        }
+
+        // ============================================
+        // FORM VALIDATION
+        // ============================================
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            const username = document.getElementById('username');
+            const password = document.getElementById('password');
+            const usernameError = document.getElementById('usernameError');
+            const passwordError = document.getElementById('passwordError');
+            const loginBtn = document.getElementById('loginBtn');
+            let isValid = true;
+
+            // Reset errors
+            username.classList.remove('input-error');
+            password.classList.remove('input-error');
+            usernameError.classList.remove('visible');
+            passwordError.classList.remove('visible');
+
+            // Validate username
+            if (!username.value.trim()) {
+                username.classList.add('input-error');
+                usernameError.classList.add('visible');
+                isValid = false;
+            }
+
+            // Validate password
+            if (!password.value.trim()) {
+                password.classList.add('input-error');
+                passwordError.classList.add('visible');
+                isValid = false;
+            }
+
+            if (!isValid) {
+                e.preventDefault();
+                return false;
+            }
+
+            // Show loading state
+            loginBtn.classList.add('loading');
+            loginBtn.disabled = true;
+        });
+
+        // ============================================
+        // KEYBOARD SHORTCUTS
+        // ============================================
+        document.addEventListener('keydown', function(e) {
+            // Press Escape to clear fields
+            if (e.key === 'Escape' && !document.getElementById('forgotPasswordModal').classList.contains('active')) {
+                document.getElementById('username').value = '';
+                document.getElementById('password').value = '';
+                document.getElementById('username').focus();
+            }
+        });
+
+        // ============================================
+        // REAL-TIME VALIDATION FOR EMAIL
+        // ============================================
+        document.getElementById('resetEmail').addEventListener('input', function() {
+            const email = this.value.trim();
+            const emailError = document.getElementById('emailError');
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            
+            if (email && !emailRegex.test(email)) {
+                emailError.classList.add('visible');
+                this.classList.add('input-error');
+            } else {
+                emailError.classList.remove('visible');
+                this.classList.remove('input-error');
+            }
+        });
+
+        // ============================================
+        // AUTO-FOCUS ON PAGE LOAD
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            const username = document.getElementById('username');
+            if (username) {
+                username.focus();
+            }
+            
+            console.log('Login page loaded');
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,820 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+    <title>X-HViT | Imaging Modalities</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="{% static 'css/shared.css' %}"/>
+    <style>
+        /* ============================================
+           MODALITIES PAGE STYLES
+           ============================================ */
+        .modalities-page {
+            padding: 120px 0 80px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--teal);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 4px 16px;
+            background: rgba(0, 229, 176, 0.06);
+            border: 1px solid rgba(0, 229, 176, 0.1);
+            border-radius: 100px;
+            margin-bottom: 12px;
+        }
+
+        .section-tag .pulse-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--teal);
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(0.7); }
+        }
+
+        .page-title {
+            font-family: var(--font-head);
+            font-size: clamp(36px, 4vw, 48px);
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            margin-bottom: 12px;
+        }
+
+        .page-title .gradient-text {
+            background: linear-gradient(135deg, var(--teal), var(--blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-desc {
+            font-size: 16px;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 48px;
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: var(--r-lg);
+            padding: 24px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 8px;
+        }
+
+        .stat-number {
+            font-family: var(--font-head);
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--teal);
+            letter-spacing: -1px;
+        }
+
+        .stat-label {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 4px;
+        }
+
+        /* Modality Grid */
+        .modality-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+
+        .modality-card {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: var(--r-lg);
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .modality-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(0, 229, 176, 0.2);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .modality-card.featured {
+            border-color: rgba(0, 229, 176, 0.3);
+            box-shadow: 0 0 40px rgba(0, 229, 176, 0.05);
+        }
+
+        .modality-card.featured:hover {
+            border-color: rgba(0, 229, 176, 0.5);
+            box-shadow: 0 12px 50px rgba(0, 229, 176, 0.1);
+        }
+
+        .modality-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            font-family: var(--font-mono);
+            font-size: 8px;
+            color: var(--teal);
+            background: rgba(0, 229, 176, 0.08);
+            padding: 2px 12px;
+            border-radius: 100px;
+            border: 1px solid rgba(0, 229, 176, 0.1);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            z-index: 2;
+        }
+
+        .modality-card .modality-icon {
+            height: 160px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(0, 229, 176, 0.04), rgba(58, 155, 255, 0.04));
+            border-bottom: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modality-card .modality-icon .icon-bg {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            opacity: 0.05;
+            filter: blur(40px);
+        }
+
+        .modality-card .modality-icon .icon-bg.green {
+            background: var(--teal);
+        }
+        .modality-card .modality-icon .icon-bg.blue {
+            background: var(--blue);
+        }
+        .modality-card .modality-icon .icon-bg.violet {
+            background: var(--violet);
+        }
+        .modality-card .modality-icon .icon-bg.yellow {
+            background: var(--yellow);
+        }
+
+        /* Modality Image Styles */
+        .modality-card .modality-icon .modality-image {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            border-radius: 12px;
+            position: relative;
+            z-index: 1;
+            transition: transform 0.3s ease;
+        }
+
+        .modality-card:hover .modality-icon .modality-image {
+            transform: scale(1.1);
+        }
+
+        .modality-card .modality-icon .modality-emoji {
+            font-size: 56px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .modality-content {
+            padding: 24px;
+        }
+
+        .modality-name {
+            font-family: var(--font-head);
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 4px;
+        }
+
+        .modality-sub {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--teal);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .modality-desc {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.7;
+            margin-bottom: 16px;
+        }
+
+        .modality-tags {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .modality-tag {
+            font-family: var(--font-mono);
+            font-size: 9px;
+            color: var(--text-muted);
+            padding: 3px 10px;
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            background: var(--bg3);
+            transition: all 0.3s ease;
+        }
+
+        .modality-tag:hover {
+            border-color: rgba(0, 229, 176, 0.2);
+            color: var(--text);
+        }
+
+        .modality-tag .tag-icon {
+            margin-right: 4px;
+        }
+
+        .modality-accuracy {
+            margin-top: 14px;
+            padding: 12px 16px;
+            background: var(--bg3);
+            border-radius: var(--r-sm);
+            border: 1px solid var(--border);
+        }
+
+        .accuracy-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .accuracy-label {
+            font-family: var(--font-mono);
+            font-size: 9px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            min-width: 80px;
+        }
+
+        .accuracy-track {
+            flex: 1;
+            height: 4px;
+            background: var(--bg2);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .accuracy-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 1.2s ease;
+            width: 0%;
+        }
+
+        .accuracy-fill.green { background: var(--teal); }
+        .accuracy-fill.blue { background: var(--blue); }
+        .accuracy-fill.violet { background: var(--violet); }
+        .accuracy-fill.yellow { background: var(--yellow); }
+
+        .accuracy-pct {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text);
+            min-width: 45px;
+            text-align: right;
+        }
+
+        /* Modality Specific Features */
+        .modality-features {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        .modality-feature {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .modality-feature .check {
+            color: var(--teal);
+            font-weight: 700;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            margin-top: 60px;
+            padding: 48px;
+            background: linear-gradient(135deg, rgba(0, 229, 176, 0.06), rgba(0, 229, 176, 0.01));
+            border: 1px solid rgba(0, 229, 176, 0.15);
+            border-radius: var(--r-lg);
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-family: var(--font-head);
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 12px;
+        }
+
+        .cta-section p {
+            font-size: 15px;
+            color: var(--text-muted);
+            max-width: 500px;
+            margin: 0 auto 24px;
+            line-height: 1.7;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 24px;
+            border-radius: var(--r-sm);
+            font-family: var(--font-body);
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--teal), var(--teal-dim));
+            color: var(--bg);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(0, 229, 176, 0.3);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        .btn-ghost:hover {
+            background: var(--bg3);
+            border-color: rgba(255, 255, 255, 0.18);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid rgba(0, 229, 176, 0.2);
+            color: var(--teal);
+        }
+
+        .btn-outline:hover {
+            background: rgba(0, 229, 176, 0.06);
+            border-color: rgba(0, 229, 176, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .modality-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .modalities-page {
+                padding: 100px 0 60px;
+            }
+
+            .stats-bar {
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+                padding: 16px;
+            }
+
+            .modality-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .modality-card .modality-icon {
+                height: 120px;
+            }
+
+            .modality-card .modality-icon .modality-image {
+                width: 60px;
+                height: 60px;
+            }
+
+            .modality-card .modality-icon .modality-emoji {
+                font-size: 40px;
+            }
+
+            .cta-section {
+                padding: 32px 20px;
+            }
+
+            .cta-section h2 {
+                font-size: 22px;
+            }
+
+            .modality-features {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-bar {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+                padding: 12px;
+            }
+
+            .stat-number {
+                font-size: 20px;
+            }
+
+            .stat-label {
+                font-size: 8px;
+            }
+
+            .page-title {
+                font-size: 28px;
+            }
+
+            .cta-buttons .btn {
+                flex: 1;
+                justify-content: center;
+            }
+
+            .modality-card .modality-icon .modality-image {
+                width: 50px;
+                height: 50px;
+            }
+        }
+
+        /* Animation for stats */
+        .stat-number {
+            animation: countUp 1.2s ease forwards;
+        }
+
+        @keyframes countUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Reveal Animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+        .reveal-delay-3 { transition-delay: 0.3s; }
+        .reveal-delay-4 { transition-delay: 0.4s; }
+
+        .accuracy-fill {
+            animation: fillBar 1.2s ease forwards;
+        }
+
+        @keyframes fillBar {
+            from { width: 0%; }
+            to { width: attr(data-width); }
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-bg"></div>
+
+    <!-- Navigation -->
+    {% include 'includes/nav.html' %}
+
+    <!-- Modalities Page -->
+    <div class="modalities-page">
+        <div class="container">
+
+            <!-- Page Header -->
+            <div class="page-header reveal">
+                <div class="section-tag">
+                    <span class="pulse-dot"></span>
+                    Imaging Modalities
+                </div>
+                <h1 class="page-title">Supported <span class="gradient-text">Modalities</span></h1>
+                <p class="page-desc">X-HViT supports multiple imaging modalities, each with specialized AI models trained for accurate diagnosis.</p>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="stats-bar reveal reveal-delay-1">
+                <div class="stat-item">
+                    <div class="stat-number">4</div>
+                    <div class="stat-label">Imaging Modalities</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">7</div>
+                    <div class="stat-label">AI Models</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">28K+</div>
+                    <div class="stat-label">Training Images</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">95%+</div>
+                    <div class="stat-label">Avg. Accuracy</div>
+                </div>
+            </div>
+
+            <!-- Modality Grid -->
+            <div class="modality-grid">
+
+                <!-- MRI -->
+                <div class="modality-card featured reveal reveal-delay-1">
+                    <span class="modality-badge">⭐ Most Used</span>
+                    <div class="modality-icon">
+                        <div class="icon-bg blue"></div>
+                        <img src="{% static 'diagnosis/brain.png' %}" alt="MRI" class="modality-image" onerror="this.style.display='none';this.parentElement.querySelector('.modality-emoji').style.display='block';">
+                        <span class="modality-emoji" style="display:none;">🧠</span>
+                    </div>
+                    <div class="modality-content">
+                        <div class="modality-name">MRI</div>
+                        <div class="modality-sub">Magnetic Resonance Imaging</div>
+                        <p class="modality-desc">
+                            High-resolution brain imaging for tumor detection, stroke assessment, and neurological disorders.
+                        </p>
+                        <div class="modality-tags">
+                            <span class="modality-tag"><span class="tag-icon">🔬</span> Brain</span>
+                            <span class="modality-tag"><span class="tag-icon">🧪</span> Tumor</span>
+                            <span class="modality-tag"><span class="tag-icon">⚡</span> High Detail</span>
+                        </div>
+                        <div class="modality-features">
+                            <div class="modality-feature"><span class="check">✓</span> Brain Tumor</div>
+                            <div class="modality-feature"><span class="check">✓</span> Glioma</div>
+                            <div class="modality-feature"><span class="check">✓</span> Meningioma</div>
+                            <div class="modality-feature"><span class="check">✓</span> Pituitary</div>
+                        </div>
+                        <div class="modality-accuracy">
+                            <div class="accuracy-bar">
+                                <span class="accuracy-label">Accuracy</span>
+                                <div class="accuracy-track">
+                                    <div class="accuracy-fill blue" style="width: 96.2%;"></div>
+                                </div>
+                                <span class="accuracy-pct">96.2%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CT Scan -->
+                <div class="modality-card reveal reveal-delay-2">
+                    <div class="modality-icon">
+                        <div class="icon-bg green"></div>
+                        <img src="{% static 'diagnosis/lungs.png' %}" alt="CT Scan" class="modality-image" onerror="this.style.display='none';this.parentElement.querySelector('.modality-emoji').style.display='block';">
+                        <span class="modality-emoji" style="display:none;">🫁</span>
+                    </div>
+                    <div class="modality-content">
+                        <div class="modality-name">CT Scan</div>
+                        <div class="modality-sub">Computed Tomography</div>
+                        <p class="modality-desc">
+                            Cross-sectional imaging for chest, abdomen, and bone fracture detection with fast acquisition.
+                        </p>
+                        <div class="modality-tags">
+                            <span class="modality-tag"><span class="tag-icon">🫁</span> Chest</span>
+                            <span class="modality-tag"><span class="tag-icon">🦴</span> Bones</span>
+                            <span class="modality-tag"><span class="tag-icon">⚡</span> Fast</span>
+                        </div>
+                        <div class="modality-features">
+                            <div class="modality-feature"><span class="check">✓</span> Pneumonia</div>
+                            <div class="modality-feature"><span class="check">✓</span> Tuberculosis</div>
+                            <div class="modality-feature"><span class="check">✓</span> Fractures</div>
+                            <div class="modality-feature"><span class="check">✓</span> Lung Nodules</div>
+                        </div>
+                        <div class="modality-accuracy">
+                            <div class="accuracy-bar">
+                                <span class="accuracy-label">Accuracy</span>
+                                <div class="accuracy-track">
+                                    <div class="accuracy-fill green" style="width: 94.8%;"></div>
+                                </div>
+                                <span class="accuracy-pct">94.8%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- X-ray -->
+                <div class="modality-card reveal reveal-delay-3">
+                    <div class="modality-icon">
+                        <div class="icon-bg violet"></div>
+                        <img src="{% static 'diagnosis/x-ray.png' %}" alt="X-ray" class="modality-image" onerror="this.style.display='none';this.parentElement.querySelector('.modality-emoji').style.display='block';">
+                        <span class="modality-emoji" style="display:none;">🩻</span>
+                    </div>
+                    <div class="modality-content">
+                        <div class="modality-name">X-ray</div>
+                        <div class="modality-sub">Radiography</div>
+                        <p class="modality-desc">
+                            Traditional 2D imaging for bone fractures, chest conditions, and dental examinations with wide availability.
+                        </p>
+                        <div class="modality-tags">
+                            <span class="modality-tag"><span class="tag-icon">🦴</span> Bones</span>
+                            <span class="modality-tag"><span class="tag-icon">🫁</span> Chest</span>
+                            <span class="modality-tag"><span class="tag-icon">🦷</span> Dental</span>
+                        </div>
+                        <div class="modality-features">
+                            <div class="modality-feature"><span class="check">✓</span> Bone Fractures</div>
+                            <div class="modality-feature"><span class="check">✓</span> Pneumonia</div>
+                            <div class="modality-feature"><span class="check">✓</span> TB Detection</div>
+                            <div class="modality-feature"><span class="check">✓</span> Joint Disorders</div>
+                        </div>
+                        <div class="modality-accuracy">
+                            <div class="accuracy-bar">
+                                <span class="accuracy-label">Accuracy</span>
+                                <div class="accuracy-track">
+                                    <div class="accuracy-fill violet" style="width: 93.5%;"></div>
+                                </div>
+                                <span class="accuracy-pct">93.5%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Microscopic -->
+                <div class="modality-card reveal reveal-delay-4">
+                    <div class="modality-icon">
+                        <div class="icon-bg yellow"></div>
+                        <img src="{% static 'diagnosis/microscopic.png' %}" alt="Microscopic" class="modality-image" onerror="this.style.display='none';this.parentElement.querySelector('.modality-emoji').style.display='block';">
+                        <span class="modality-emoji" style="display:none;">🔬</span>
+                    </div>
+                    <div class="modality-content">
+                        <div class="modality-name">Microscopic</div>
+                        <div class="modality-sub">Histopathology / Cytology</div>
+                        <p class="modality-desc">
+                            High-magnification imaging for cellular analysis, cancer detection, and tissue pathology assessment.
+                        </p>
+                        <div class="modality-tags">
+                            <span class="modality-tag"><span class="tag-icon">🧬</span> Cells</span>
+                            <span class="modality-tag"><span class="tag-icon">🔬</span> Pathology</span>
+                            <span class="modality-tag"><span class="tag-icon">🦠</span> Micro</span>
+                        </div>
+                        <div class="modality-features">
+                            <div class="modality-feature"><span class="check">✓</span> Skin Cancer</div>
+                            <div class="modality-feature"><span class="check">✓</span> Diabetic Retinopathy</div>
+                            <div class="modality-feature"><span class="check">✓</span> Cell Classification</div>
+                            <div class="modality-feature"><span class="check">✓</span> Lesion Analysis</div>
+                        </div>
+                        <div class="modality-accuracy">
+                            <div class="accuracy-bar">
+                                <span class="accuracy-label">Accuracy</span>
+                                <div class="accuracy-track">
+                                    <div class="accuracy-fill yellow" style="width: 95.7%;"></div>
+                                </div>
+                                <span class="accuracy-pct">95.7%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- CTA Section -->
+            <div class="cta-section reveal">
+                <h2>Ready to <span class="gradient-text">Diagnose</span>?</h2>
+                <p>Choose your imaging modality and start your first AI-assisted diagnosis with X-HViT.</p>
+                <div class="cta-buttons">
+                    <a href="{% url 'Diagnosis:diagnose' %}" class="btn btn-primary">
+                        Start Diagnosis
+                    </a>
+                    <a href="{% url 'Diagnosis:pricing' %}" class="btn btn-outline">
+                        View Pricing
+                    </a>
+                    <a href="{% url 'Diagnosis:documentation' %}" class="btn btn-ghost">
+                         Documentation
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Footer -->
+    {% include 'includes/footer.html' %}
+
+    <script src="{% static 'js/shared.js' %}"></script>
+
+    <script>
+        // ============================================
+        // REVEAL ANIMATIONS
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            const reveals = document.querySelectorAll('.reveal');
+
+            const revealObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            });
+
+            reveals.forEach(el => revealObserver.observe(el));
+
+            // Animate stat numbers
+            const statNumbers = document.querySelectorAll('.stat-number');
+            statNumbers.forEach((el, index) => {
+                el.style.animationDelay = `${index * 0.15}s`;
+            });
+
+            // Animate accuracy bars
+            const accuracyFills = document.querySelectorAll('.accuracy-fill');
+            accuracyFills.forEach(fill => {
+                const width = fill.style.width;
+                fill.style.width = '0%';
+                setTimeout(() => {
+                    fill.style.width = width;
+                }, 400);
+            });
+
+            // Handle image loading errors - show emoji fallback
+            document.querySelectorAll('.modality-image').forEach(img => {
+                img.addEventListener('error', function() {
+                    this.style.display = 'none';
+                    const parent = this.parentElement;
+                    const emoji = parent.querySelector('.modality-emoji');
+                    if (emoji) {
+                        emoji.style.display = 'block';
+                    }
+                });
+            });
+        });
+
+        console.log('Modalities page loaded');
+    </script>
+
+</body>
+</html>

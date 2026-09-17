@@ -1,0 +1,931 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>X-HViT | About Us</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="{% static 'css/shared.css' %}">
+<style>
+/* ============================================
+   ABOUT PAGE STYLES
+   ============================================ */
+.about-page {
+    padding: 100px 0 80px;
+    position: relative;
+    z-index: 1;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+/* Section Tags */
+.section-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--teal);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 16px;
+    background: rgba(0, 229, 176, 0.06);
+    border: 1px solid rgba(0, 229, 176, 0.1);
+    border-radius: 100px;
+    margin-bottom: 12px;
+}
+
+.section-tag .pulse-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--teal);
+    animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.3; transform: scale(0.7); }
+}
+
+.section-title {
+    font-family: var(--font-head);
+    font-size: clamp(32px, 4vw, 42px);
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    margin-bottom: 8px;
+}
+
+.section-title .teal {
+    color: var(--teal);
+}
+
+.section-desc {
+    font-size: 15px;
+    color: var(--text-muted);
+    max-width: 560px;
+    line-height: 1.7;
+}
+
+/* Hero */
+.about-hero {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 56px 48px;
+    margin-bottom: 56px;
+    position: relative;
+    overflow: hidden;
+}
+
+.about-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 30% 50%, rgba(0, 229, 176, 0.06) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 50%, rgba(58, 155, 255, 0.04) 0%, transparent 60%);
+}
+
+.about-hero > * {
+    position: relative;
+    z-index: 1;
+}
+
+.about-hero h1 {
+    font-family: var(--font-head);
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 800;
+    letter-spacing: -2px;
+    margin-bottom: 16px;
+}
+
+.about-hero h1 .gradient-text {
+    background: linear-gradient(135deg, var(--teal), var(--blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.about-hero p {
+    font-size: 16px;
+    color: var(--text-muted);
+    max-width: 600px;
+    line-height: 1.8;
+}
+
+.about-hero .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--teal);
+    padding: 4px 16px;
+    background: rgba(0, 229, 176, 0.06);
+    border: 1px solid rgba(0, 229, 176, 0.1);
+    border-radius: 100px;
+    margin-bottom: 16px;
+}
+
+/* Mission Grid */
+.mission-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 56px;
+}
+
+.mission-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 32px 28px;
+    transition: all 0.3s;
+}
+
+.mission-card:hover {
+    border-color: var(--teal);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.06);
+}
+
+.mission-card .mc-icon {
+    font-size: 36px;
+    display: block;
+    margin-bottom: 12px;
+}
+
+.mission-card h3 {
+    font-family: var(--font-head);
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    margin-bottom: 8px;
+}
+
+.mission-card p {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.7;
+}
+
+/* Tech Stack - Using Images */
+.tech-stack {
+    margin-bottom: 56px;
+}
+
+.tech-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-top: 24px;
+}
+
+.tech-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 24px 16px;
+    text-align: center;
+    transition: all 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.tech-item:hover {
+    border-color: var(--teal);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+.tech-item .tech-logo {
+    width: 64px;
+    height: 64px;
+    border-radius: 12px;
+    background: var(--bg3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+}
+
+.tech-item .tech-logo img {
+    width: 80%;
+    height: 80%;
+    object-fit: contain;
+}
+
+.tech-item .tech-name {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--text);
+    margin-bottom: 2px;
+}
+
+.tech-item .tech-desc {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+}
+
+/* Values Section */
+.values-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 56px;
+}
+
+.value-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 24px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    transition: all 0.3s;
+}
+
+.value-card:hover {
+    border-color: var(--teal);
+    transform: translateX(4px);
+}
+
+.value-card .v-icon {
+    font-size: 28px;
+    flex-shrink: 0;
+}
+
+.value-card h4 {
+    font-family: var(--font-head);
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.value-card p {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+/* Team Section */
+.team-section {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 48px;
+    margin-bottom: 56px;
+    text-align: center;
+}
+
+.team-section .section-tag {
+    justify-content: center;
+}
+
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    margin-top: 32px;
+}
+
+.team-member {
+    text-align: center;
+}
+
+.team-member .tm-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin: 0 auto 10px;
+    border: 3px solid var(--border);
+    overflow: hidden;
+    transition: all 0.3s;
+}
+
+.team-member .tm-avatar:hover {
+    border-color: var(--teal);
+    transform: scale(1.05);
+}
+
+.team-member .tm-avatar .fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    font-family: var(--font-head);
+    font-size: 24px;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--teal), var(--blue));
+    color: var(--bg);
+}
+
+.team-member .tm-name {
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--text);
+}
+
+.team-member .tm-role {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+}
+
+.team-member .tm-social {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 6px;
+}
+
+.team-member .tm-social a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.team-member .tm-social a:hover {
+    border-color: var(--teal);
+    background: rgba(0, 229, 176, 0.06);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 229, 176, 0.15);
+}
+
+.team-member .tm-social a img {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+.team-member .tm-social a:hover img {
+    transform: scale(1.1);
+}
+
+.team-member .tm-social a .social-emoji {
+    font-size: 18px;
+    line-height: 1;
+}
+
+/* Features Section */
+.features-about {
+    margin-bottom: 56px;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+    margin-top: 24px;
+}
+
+.feature-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 24px;
+    text-align: center;
+    transition: all 0.3s;
+}
+
+.feature-card:hover {
+    border-color: var(--teal);
+    transform: translateY(-4px);
+}
+
+.feature-card .f-icon {
+    font-size: 36px;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.feature-card h4 {
+    font-family: var(--font-head);
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.feature-card p {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+/* CTA */
+.about-cta {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 48px;
+    text-align: center;
+}
+
+.about-cta h2 {
+    font-family: var(--font-head);
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: 12px;
+}
+
+.about-cta h2 .gradient-text {
+    background: linear-gradient(135deg, var(--teal), var(--blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.about-cta p {
+    font-size: 15px;
+    color: var(--text-muted);
+    max-width: 480px;
+    margin: 0 auto 24px;
+    line-height: 1.7;
+}
+
+.about-cta .btn-group {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 24px;
+    border-radius: var(--r-sm);
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--teal), var(--teal-dim));
+    color: var(--bg);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(0, 229, 176, 0.3);
+}
+
+.btn-ghost {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+}
+
+.btn-ghost:hover {
+    background: var(--bg3);
+    border-color: rgba(255, 255, 255, 0.18);
+    transform: translateY(-2px);
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1px solid rgba(0, 229, 176, 0.2);
+    color: var(--teal);
+}
+
+.btn-outline:hover {
+    background: rgba(0, 229, 176, 0.06);
+    border-color: rgba(0, 229, 176, 0.4);
+    transform: translateY(-2px);
+}
+
+.btn-lg {
+    padding: 14px 32px;
+    font-size: 15px;
+}
+
+/* Responsive */
+@media(max-width: 1024px) {
+    .mission-grid {
+        grid-template-columns: 1fr;
+    }
+    .values-grid {
+        grid-template-columns: 1fr;
+    }
+    .tech-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .team-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .features-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media(max-width: 768px) {
+    .about-hero {
+        padding: 32px 20px;
+    }
+    .team-section {
+        padding: 28px 20px;
+    }
+    .team-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    .tech-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    .features-grid {
+        grid-template-columns: 1fr;
+    }
+    .about-cta {
+        padding: 28px 20px;
+    }
+    .about-cta h2 {
+        font-size: 22px;
+    }
+}
+
+@media(max-width: 480px) {
+    .team-grid {
+        grid-template-columns: 1fr;
+    }
+    .tech-grid {
+        grid-template-columns: 1fr;
+    }
+    .values-grid {
+        grid-template-columns: 1fr;
+    }
+    .about-hero h1 {
+        font-size: 28px;
+    }
+    .section-title {
+        font-size: 26px;
+    }
+    .about-cta .btn-group .btn {
+        flex: 1;
+        justify-content: center;
+    }
+}
+
+/* Reveal Animations */
+.reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.6s ease;
+}
+
+.reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- Navigation -->
+{% include 'includes/nav.html' %}
+
+<div class="about-page">
+    <div class="container">
+        
+        <!-- Hero -->
+        <div class="about-hero reveal">
+            <div class="hero-badge">
+                <span class="pulse-dot"></span>
+                About X-HViT
+            </div>
+            <h1>Building <span class="gradient-text">Explainable AI</span> for Medical Imaging</h1>
+            <p>X-HViT is a hybrid deep learning platform that combines Convolutional Neural Networks (CNN) with Vision Transformers (ViT) to deliver accurate, interpretable, and trustworthy medical image diagnosis.</p>
+        </div>
+
+        <!-- Mission -->
+        <div class="reveal">
+            <div class="section-tag">
+                <span class="pulse-dot"></span>
+                Mission
+            </div>
+            <h2 class="section-title">Our <span class="teal">Mission</span></h2>
+            <p class="section-desc" style="margin-bottom:24px;">Democratizing AI-assisted medical diagnosis through transparent, interpretable, and clinically-deployable deep learning.</p>
+        </div>
+        <div class="mission-grid reveal">
+            <div class="mission-card">
+                <span class="mc-icon">🎯</span>
+                <h3>Accuracy with Trust</h3>
+                <p>We believe AI in healthcare must be both highly accurate and fully explainable. Every diagnosis comes with visual explanations that clinicians can verify and trust.</p>
+            </div>
+            <div class="mission-card">
+                <span class="mc-icon">🌍</span>
+                <h3>Global Accessibility</h3>
+                <p>Our optimized architecture works in resource-constrained environments, making advanced medical AI accessible to clinics and hospitals beyond major tech hubs.</p>
+            </div>
+            <div class="mission-card">
+                <span class="mc-icon">🔬</span>
+                <h3>Research-Driven</h3>
+                <p>Built on open-source tools and publicly available datasets, we commit to transparency and reproducibility to accelerate medical AI research globally.</p>
+            </div>
+            <div class="mission-card">
+                <span class="mc-icon">🤝</span>
+                <h3>Human-Centric AI</h3>
+                <p>AI assists, not replaces, medical professionals. Our tools are designed to augment clinical decision-making and reduce diagnostic errors.</p>
+            </div>
+        </div>
+
+        <!-- Technology Stack -->
+        <div class="tech-stack reveal">
+            <div class="section-tag">
+                <span class="pulse-dot"></span>
+                Tech Stack
+            </div>
+            <h2 class="section-title">Powered By <span class="teal">Modern AI</span></h2>
+            <p class="section-desc">Built with cutting-edge technologies for medical image analysis.</p>
+            <div class="tech-grid">
+                <div class="tech-item">
+                    <div class="tech-logo">
+                        <img src="{% static 'diagnosis/python.png' %}" alt="Python" onerror="this.style.display='none';this.parentElement.textContent='🐍'">
+                    </div>
+                    <div class="tech-name">Python 3.10</div>
+                    <div class="tech-desc">Core Language</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-logo">
+                        <img src="{% static 'diagnosis/pytorch.png' %}" alt="PyTorch" onerror="this.style.display='none';this.parentElement.textContent='🔥'">
+                    </div>
+                    <div class="tech-name">PyTorch</div>
+                    <div class="tech-desc">Deep Learning</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-logo">
+                        <img src="{% static 'diagnosis/django.png' %}" alt="Django" onerror="this.style.display='none';this.parentElement.textContent='🌐'">
+                    </div>
+                    <div class="tech-name">Django</div>
+                    <div class="tech-desc">Web Framework</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-logo">
+                        <img src="{% static 'diagnosis/opencv.png' %}" alt="OpenCV" onerror="this.style.display='none';this.parentElement.textContent='🖼️'">
+                    </div>
+                    <div class="tech-name">OpenCV</div>
+                    <div class="tech-desc">Image Processing</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-logo">
+                        <img src="{% static 'diagnosis/numpy.png' %}" alt="NumPy" onerror="this.style.display='none';this.parentElement.textContent='📊'">
+                    </div>
+                    <div class="tech-name">NumPy</div>
+                    <div class="tech-desc">Data Processing</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-logo">
+                        <img src="{% static 'diagnosis/matplotlib.png' %}" alt="Matplotlib" onerror="this.style.display='none';this.parentElement.textContent='📈'">
+                    </div>
+                    <div class="tech-name">Matplotlib</div>
+                    <div class="tech-desc">Visualization</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-logo">
+                        <img src="{% static 'diagnosis/reportlab-logo.png' %}" alt="ReportLab" onerror="this.style.display='none';this.parentElement.textContent='📄'">
+                    </div>
+                    <div class="tech-name">ReportLab</div>
+                    <div class="tech-desc">PDF Generation</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-logo">
+                        <img src="{% static 'diagnosis/gradcam-logo.png' %}" alt="Grad-CAM" onerror="this.style.display='none';this.parentElement.textContent='🧠'">
+                    </div>
+                    <div class="tech-name">Grad-CAM</div>
+                    <div class="tech-desc">Explainability</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Core Values -->
+        <div class="reveal">
+            <div class="section-tag">
+                <span class="pulse-dot"></span>
+                Values
+            </div>
+            <h2 class="section-title">Core <span class="teal">Principles</span></h2>
+        </div>
+        <div class="values-grid reveal">
+            <div class="value-card">
+                <span class="v-icon">🔍</span>
+                <div>
+                    <h4>Transparency First</h4>
+                    <p>Every prediction is accompanied by visual explanations, ensuring clinicians understand why the model made a specific diagnosis.</p>
+                </div>
+            </div>
+            <div class="value-card">
+                <span class="v-icon">⚡</span>
+                <div>
+                    <h4>Deployable Design</h4>
+                    <p>Optimized for resource-constrained environments, making advanced AI accessible without expensive GPU infrastructure.</p>
+                </div>
+            </div>
+            <div class="value-card">
+                <span class="v-icon">🌐</span>
+                <div>
+                    <h4>Multi-Modal Support</h4>
+                    <p>A unified framework for CT, MRI, X-ray, and microscopic imaging — eliminating the need for modality-specific models.</p>
+                </div>
+            </div>
+            <div class="value-card">
+                <span class="v-icon">📖</span>
+                <div>
+                    <h4>Open Research</h4>
+                    <p>Committed to reproducibility and transparency through open-source tools and publicly available datasets.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features -->
+        <div class="features-about reveal">
+            <div class="section-tag">
+                <span class="pulse-dot"></span>
+                Features
+            </div>
+            <h2 class="section-title">Why <span class="teal">X-HViT</span></h2>
+            <p class="section-desc">What makes our platform unique for medical image diagnosis.</p>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <span class="f-icon">🧬</span>
+                    <h4>Hybrid Architecture</h4>
+                    <p>CNN + Vision Transformer fusion for both local feature extraction and global context understanding.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="f-icon">🔬</span>
+                    <h4>Dual Explainability</h4>
+                    <p>Grad-CAM heatmaps and attention maps provide complete transparency into AI decision-making.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="f-icon">📡</span>
+                    <h4>Multi-Modal Imaging</h4>
+                    <p>Supports MRI, CT, X-ray, and Microscopic images in a unified framework.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="f-icon">⚡</span>
+                    <h4>Optimized Performance</h4>
+                    <p>Lightweight design for deployment in resource-constrained clinical environments.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="f-icon">📄</span>
+                    <h4>PDF Reports</h4>
+                    <p>Auto-generated diagnostic reports with heatmaps, confidence scores, and detailed findings.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="f-icon">🎯</span>
+                    <h4>95%+ Accuracy</h4>
+                    <p>Validated through rigorous 5-fold cross-validation across all supported modalities.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Team Section -->
+        <div class="team-section reveal">
+            <div class="section-tag">
+                <span class="pulse-dot"></span>
+                Team
+            </div>
+            <h2 style="font-family:var(--font-head);font-size:28px;font-weight:800;letter-spacing:-1px;margin-bottom:4px;">
+                Meet the <span class="teal">Team</span>
+            </h2>
+            <p style="font-size:14px;color:var(--text-muted);">Passionate about AI and medical imaging.</p>
+            <div class="team-grid">
+                <div class="team-member">
+                    <div class="tm-avatar"><div class="fallback">AS</div></div>
+                    <div class="tm-name">Aayush Sapkota</div>
+                    <div class="tm-role">Team Lead</div>
+                    <div class="tm-social">
+                        <a href="#" aria-label="LinkedIn">
+                            <img src="{% static 'diagnosis/linkedin.png' %}" alt="LinkedIn" onerror="this.style.display='none';this.parentElement.textContent='🔗'">
+                        </a>
+                        <a href="#" aria-label="GitHub">
+                            <img src="{% static 'diagnosis/github.png' %}" alt="GitHub" onerror="this.style.display='none';this.parentElement.textContent='🐙'">
+                        </a>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="tm-avatar"><div class="fallback">SL</div></div>
+                    <div class="tm-name">Sandip Lamsal</div>
+                    <div class="tm-role">Data Lead</div>
+                    <div class="tm-social">
+                        <a href="#" aria-label="LinkedIn">
+                            <img src="{% static 'diagnosis/linkedin.png' %}" alt="LinkedIn" onerror="this.style.display='none';this.parentElement.textContent='🔗'">
+                        </a>
+                        <a href="#" aria-label="GitHub">
+                            <img src="{% static 'diagnosis/github.png' %}" alt="GitHub" onerror="this.style.display='none';this.parentElement.textContent='🐙'">
+                        </a>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="tm-avatar"><div class="fallback">SJ</div></div>
+                    <div class="tm-name">Suraj Jha</div>
+                    <div class="tm-role">XAI Lead</div>
+                    <div class="tm-social">
+                        <a href="#" aria-label="LinkedIn">
+                            <img src="{% static 'diagnosis/linkedin.png' %}" alt="LinkedIn" onerror="this.style.display='none';this.parentElement.textContent='🔗'">
+                        </a>
+                        <a href="#" aria-label="GitHub">
+                            <img src="{% static 'diagnosis/github.png' %}" alt="GitHub" onerror="this.style.display='none';this.parentElement.textContent='🐙'">
+                        </a>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="tm-avatar"><div class="fallback">YG</div></div>
+                    <div class="tm-name">Yuresh Gurung</div>
+                    <div class="tm-role">Frontend Lead</div>
+                    <div class="tm-social">
+                        <a href="#" aria-label="LinkedIn">
+                            <img src="{% static 'diagnosis/linkedin.png' %}" alt="LinkedIn" onerror="this.style.display='none';this.parentElement.textContent='🔗'">
+                        </a>
+                        <a href="#" aria-label="GitHub">
+                            <img src="{% static 'diagnosis/github.png' %}" alt="GitHub" onerror="this.style.display='none';this.parentElement.textContent='🐙'">
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <a href="{% url 'Diagnosis:team' %}" class="btn btn-ghost" style="margin-top:24px;">View Full Team →</a>
+        </div>
+
+        <!-- CTA -->
+        <div class="about-cta reveal">
+            <h2>Ready to <span class="gradient-text">Diagnose</span>?</h2>
+            <p>Experience AI-powered medical image diagnosis with full explainability.</p>
+            <div class="btn-group">
+                <a href="{% url 'Diagnosis:diagnose' %}" class="btn btn-primary btn-lg">🧠 Try Demo</a>
+                <a href="{% url 'Diagnosis:documentation' %}" class="btn btn-ghost btn-lg">📚 View Docs</a>
+                <a href="{% url 'Diagnosis:contact' %}" class="btn btn-outline btn-lg">✉️ Contact</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Footer -->
+{% include 'includes/footer.html' %}
+
+<script src="{% static 'js/shared.js' %}"></script>
+
+<script>
+    // ============================================
+    // REVEAL ANIMATIONS
+    // ============================================
+    document.addEventListener('DOMContentLoaded', function() {
+        const reveals = document.querySelectorAll('.reveal');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        reveals.forEach(el => observer.observe(el));
+
+        // Handle image loading errors for social icons
+        document.querySelectorAll('.tm-social a img').forEach(img => {
+            img.addEventListener('error', function() {
+                this.style.display = 'none';
+                const parent = this.parentElement;
+                // Add emoji fallback
+                const emoji = document.createElement('span');
+                emoji.className = 'social-emoji';
+                if (this.alt === 'LinkedIn') {
+                    emoji.textContent = '🔗';
+                } else if (this.alt === 'GitHub') {
+                    emoji.textContent = '🐙';
+                }
+                parent.appendChild(emoji);
+            });
+        });
+        
+        console.log('About page loaded');
+    });
+</script>
+
+</body>
+</html>

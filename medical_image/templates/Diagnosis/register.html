@@ -1,0 +1,1177 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>X-HViT | Register</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400;500&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="{% static 'css/shared.css' %}">
+  <style>
+    /* ... keep all existing styles ... */
+    .auth-page {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .auth-left {
+      background: var(--bg2);
+      border-right: 1px solid var(--border);
+      padding: 60px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .auth-left::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 30% 50%, rgba(124, 106, 255, 0.08) 0%, transparent 70%);
+    }
+
+    .auth-left-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .auth-left h1 {
+      font-family: var(--font-head);
+      font-size: 42px;
+      font-weight: 800;
+      letter-spacing: -2.5px;
+      line-height: 1.05;
+      margin-bottom: 18px;
+    }
+
+    .auth-left h1 .teal {
+      color: var(--teal);
+    }
+
+    .auth-left p {
+      font-size: 15px;
+      color: var(--text-muted);
+      line-height: 1.75;
+      max-width: 380px;
+    }
+
+    .auth-grid-bg {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background-image: linear-gradient(rgba(0, 229, 176, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 229, 176, 0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+
+    .plan-box {
+      background: var(--bg3);
+      border: 1px solid rgba(0, 229, 176, 0.2);
+      border-radius: var(--r-md);
+      padding: 20px 22px;
+      margin-top: 32px;
+    }
+
+    .plan-box .pb-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--teal);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .plan-box h3 {
+      font-family: var(--font-head);
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.8px;
+      margin-bottom: 4px;
+    }
+
+    .plan-box p {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .plan-feats {
+      margin-top: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .pf {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .pf::before {
+      content: '✓';
+      color: var(--teal);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      flex-shrink: 0;
+    }
+
+    .auth-right {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 48px;
+      background: var(--bg);
+    }
+
+    .auth-form-box {
+      width: 100%;
+      max-width: 440px;
+    }
+
+    .auth-form-title {
+      font-family: var(--font-head);
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 5px;
+    }
+
+    .auth-form-sub {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 28px;
+    }
+
+    .social-btns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .social-btn {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: var(--r-sm);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .social-btn:hover {
+      border-color: rgba(255, 255, 255, 0.18);
+      background: var(--bg2);
+      transform: translateY(-1px);
+    }
+
+    .social-btn.google:hover {
+      border-color: rgba(234, 67, 53, 0.3);
+    }
+    .social-btn.github:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 18px 0;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .divider span {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-label {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      margin-bottom: 7px;
+    }
+
+    .form-label .required {
+      color: var(--red);
+      margin-left: 2px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .input-wrap {
+      position: relative;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 15px;
+      pointer-events: none;
+      opacity: 0.6;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 12px 16px 12px 42px;
+      border-radius: var(--r-sm);
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-input.no-icon {
+      padding-left: 16px;
+    }
+
+    .form-input:focus {
+      border-color: rgba(0, 229, 176, 0.45);
+      box-shadow: 0 0 0 3px rgba(0, 229, 176, 0.07);
+    }
+
+    .form-input::placeholder {
+      color: var(--text-dim);
+    }
+
+    /* Password Toggle Button */
+    .password-toggle {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      cursor: pointer;
+      font-size: 18px;
+      padding: 4px;
+      transition: all 0.2s;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+    }
+
+    .password-toggle:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .password-toggle:focus {
+      outline: none;
+    }
+
+    .form-select {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: var(--r-sm);
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 14px;
+      outline: none;
+      appearance: none;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    .form-select:focus {
+      border-color: rgba(0, 229, 176, 0.45);
+    }
+
+    .form-select option {
+      background: var(--bg2);
+    }
+
+    .form-hint {
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-top: 4px;
+      font-family: var(--font-mono);
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 16px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .checkbox-row input[type="checkbox"] {
+      margin-top: 3px;
+      accent-color: var(--teal);
+      cursor: pointer;
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    .checkbox-row a {
+      color: var(--teal);
+      text-decoration: none;
+    }
+
+    .checkbox-row a:hover {
+      text-decoration: underline;
+    }
+
+    .strength-bar {
+      height: 3px;
+      background: var(--bg3);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 5px;
+    }
+
+    .strength-fill {
+      height: 100%;
+      border-radius: 10px;
+      transition: width 0.4s, background 0.3s;
+    }
+
+    .strength-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      margin-top: 3px;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: var(--r-md);
+      background: var(--teal);
+      color: var(--bg);
+      border: none;
+      font-family: var(--font-head);
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .submit-btn:hover {
+      background: var(--teal-dim);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 28px rgba(0, 229, 176, 0.25);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .submit-btn.secondary {
+      background: var(--bg3);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .submit-btn.secondary:hover {
+      background: var(--bg2);
+      box-shadow: none;
+    }
+
+    .auth-footer {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .auth-footer a {
+      color: var(--teal);
+      text-decoration: none;
+    }
+
+    .auth-footer a:hover {
+      text-decoration: underline;
+    }
+
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(6, 13, 26, 0.3);
+      border-top-color: var(--bg);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    .error-msg {
+      font-size: 12px;
+      color: var(--red);
+      margin-bottom: 10px;
+      display: none;
+      background: rgba(255, 85, 117, 0.08);
+      padding: 10px 14px;
+      border-radius: var(--r-sm);
+      border: 1px solid rgba(255, 85, 117, 0.15);
+    }
+
+    .success-msg {
+      font-size: 12px;
+      color: var(--teal);
+      margin-bottom: 10px;
+      display: none;
+      background: rgba(0, 229, 176, 0.08);
+      padding: 10px 14px;
+      border-radius: var(--r-sm);
+      border: 1px solid rgba(0, 229, 176, 0.15);
+    }
+
+    .messages {
+      margin-bottom: 16px;
+    }
+    .alert {
+      padding: 10px 14px;
+      border-radius: var(--r-sm);
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+    .alert-success { background: rgba(0,229,176,0.08); border: 1px solid rgba(0,229,176,0.15); color: var(--teal); }
+    .alert-error { background: rgba(255,85,117,0.08); border: 1px solid rgba(255,85,117,0.15); color: var(--red); }
+    .alert-warning { background: rgba(255,201,71,0.08); border: 1px solid rgba(255,201,71,0.15); color: var(--yellow); }
+
+    /* ============================================
+       REVIEW STEP STYLES
+       ============================================ */
+    .review-step {
+      display: none;
+      animation: fadeInUp 0.4s ease;
+    }
+
+    .review-step.active {
+      display: block;
+    }
+
+    .form-step {
+      display: block;
+    }
+
+    .form-step.hidden {
+      display: none;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .review-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      padding: 20px 24px;
+      margin-bottom: 16px;
+    }
+
+    .review-card .review-title {
+      font-family: var(--font-head);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .review-card .review-title .review-icon {
+      font-size: 18px;
+    }
+
+    .review-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .review-item:last-child {
+      border-bottom: none;
+    }
+
+    .review-item .review-label {
+      font-size: 12px;
+      color: var(--text-dim);
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .review-item .review-value {
+      font-size: 14px;
+      color: var(--text);
+      font-weight: 500;
+      text-align: right;
+      max-width: 60%;
+      word-break: break-word;
+    }
+
+    .review-item .review-value.empty {
+      color: var(--text-dim);
+      font-style: italic;
+      font-weight: 400;
+    }
+
+    .review-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .review-badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 100px;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 600;
+      background: rgba(0, 229, 176, 0.08);
+      color: var(--teal);
+      border: 1px solid rgba(0, 229, 176, 0.1);
+    }
+
+    .step-indicator {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      justify-content: center;
+    }
+
+    .step-dot {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--text-dim);
+      font-family: var(--font-mono);
+    }
+
+    .step-dot .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--border);
+      transition: all 0.3s;
+    }
+
+    .step-dot.active .dot {
+      background: var(--teal);
+      box-shadow: 0 0 12px rgba(0, 229, 176, 0.3);
+    }
+
+    .step-dot.completed .dot {
+      background: var(--teal);
+      opacity: 0.5;
+    }
+
+    .step-line {
+      width: 30px;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .step-line.completed {
+      background: var(--teal);
+      opacity: 0.3;
+    }
+
+    /* Password visibility toggle in review */
+    .review-password-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .review-password-wrapper .review-value {
+      flex: 1;
+    }
+
+    .review-password-toggle {
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      cursor: pointer;
+      font-size: 16px;
+      padding: 4px 8px;
+      border-radius: var(--r-sm);
+      transition: all 0.2s;
+    }
+
+    .review-password-toggle:hover {
+      color: var(--teal);
+      background: rgba(0, 229, 176, 0.06);
+    }
+
+    @media(max-width:860px) {
+      .auth-page {
+        grid-template-columns: 1fr;
+      }
+      .auth-left {
+        display: none;
+      }
+      .auth-right {
+        padding: 100px 24px 60px;
+        align-items: flex-start;
+      }
+      .social-btns {
+        grid-template-columns: 1fr;
+      }
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+      .review-actions {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="grid-bg"></div>
+  <nav
+    style="position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:64px;background:rgba(6,13,26,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)">
+    <a href="/index" style="display:flex;align-items:center;gap:12px;text-decoration:none;">
+      <div class="logo-icon">X⚡</div>
+      <div class="logo-text"><span>X-HViT</span> Medical</div>
+    </a>
+    <div style="font-size:13px;color:var(--text-muted)">
+      Already have an account? <a href="/login" style="color:var(--teal);font-weight:500;text-decoration:none;">Sign in →</a>
+    </div>
+  </nav>
+
+  <div class="auth-page">
+    <div class="auth-left">
+      <div class="auth-grid-bg"></div>
+      <div class="auth-left-inner">
+        <h1>Start Your<br><span class="teal">Free</span><br>Account</h1>
+        <p>Join researchers and medical students using X-HViT for AI-assisted medical image diagnosis with full
+          explainability.</p>
+        <div class="plan-box">
+          <div class="pb-label">🎓 Research Plan — Free Forever</div>
+          <h3>Everything you need</h3>
+          <p>No credit card required. No expiry.</p>
+          <div class="plan-feats">
+            <div class="pf">10 AI diagnoses per month</div>
+            <div class="pf">CT, MRI, X-ray & Microscopic</div>
+            <div class="pf">Grad-CAM explainability heatmaps</div>
+            <div class="pf">PDF diagnostic report download</div>
+            <div class="pf">30-day diagnosis history</div>
+          </div>
+        </div>
+        <div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap;">
+          <span style="font-size:11px;color:var(--text-dim);font-family:var(--font-mono);">🔒 256-bit encrypted</span>
+          <span style="font-size:11px;color:var(--text-dim);font-family:var(--font-mono);">✅ GDPR compliant</span>
+          <span style="font-size:11px;color:var(--text-dim);font-family:var(--font-mono);">🏥 HIPAA ready</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="auth-right">
+      <div class="auth-form-box">
+        
+        <!-- Step Indicator -->
+        <div class="step-indicator">
+          <div class="step-dot active" id="step1Dot">
+            <span class="dot"></span>
+            <span>Details</span>
+          </div>
+          <div class="step-line" id="stepLine1"></div>
+          <div class="step-dot" id="step2Dot">
+            <span class="dot"></span>
+            <span>Review</span>
+          </div>
+        </div>
+
+        <div class="auth-form-title" id="formTitle">Create your account</div>
+        <div class="auth-form-sub" id="formSub">Free forever for academic research</div>
+
+        <!-- Django Messages -->
+        {% if messages %}
+        <div class="messages">
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- ===== FORM STEP ===== -->
+        <div class="form-step" id="formStep">
+          <!-- Social Buttons -->
+          <button class="social-btn google" onclick="alert('Google login coming soon!')">
+            <svg width="18" height="18" viewBox="0 0 48 48">
+              <path fill="#EA4335"
+                d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
+              <path fill="#4285F4"
+                d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
+              <path fill="#FBBC05"
+                d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z" />
+              <path fill="#34A853"
+                d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
+            </svg>
+            Continue with Google
+          </button>
+
+          <div class="social-btns">
+            <button class="social-btn github" onclick="alert('GitHub login coming soon!')">
+              <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+              </svg>
+              GitHub
+            </button>
+          </div>
+
+          <div class="divider"><span>or register with email</span></div>
+
+          <!-- Django Registration Form -->
+          <form id="registerForm" method="post" action="/register/">
+            {% csrf_token %}
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">First Name <span class="required">*</span></label>
+                <input class="form-input no-icon" type="text" name="first_name" id="regFirst" placeholder="John" value="{{ first_name|default:'' }}" required/>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Last Name <span class="required">*</span></label>
+                <input class="form-input no-icon" type="text" name="last_name" id="regLast" placeholder="Doe" value="{{ last_name|default:'' }}" required/>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Username <span class="required">*</span></label>
+              <div class="input-wrap">
+                <span class="input-icon">👤</span>
+                <input class="form-input" type="text" name="username" id="regUsername" placeholder="Choose a unique username" value="{{ username|default:'' }}" required/>
+              </div>
+              <div class="form-hint">This will be your login username</div>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Email Address <span class="required">*</span></label>
+              <div class="input-wrap">
+                <span class="input-icon">✉️</span>
+                <input class="form-input" type="email" name="email" id="regEmail" placeholder="your@email.com" value="{{ email|default:'' }}" required/>
+              </div>
+              <div class="form-hint">We'll send you a verification email</div>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Password <span class="required">*</span></label>
+              <div class="input-wrap">
+                <span class="input-icon">🔒</span>
+                <input class="form-input" type="password" name="password" id="regPass" placeholder="Create a strong password" required oninput="updateStrength(this.value)" />
+                <button type="button" class="password-toggle" id="passwordToggle" onclick="togglePasswordVisibility()" aria-label="Toggle password visibility">
+                  👁️
+                </button>
+              </div>
+              <div class="strength-bar">
+                <div class="strength-fill" id="strengthFill" style="width:0%;background:var(--red)"></div>
+              </div>
+              <div class="strength-label" id="strengthLabel" style="color:var(--text-dim)"></div>
+              <div class="form-hint">Minimum 8 characters with mixed case, number & special character</div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Role <span class="required">*</span></label>
+              <select class="form-select" name="role" id="regRole" required>
+                <option value="">Select your role…</option>
+                <option value="medical_student" {% if role == 'medical_student' %}selected{% endif %}>Medical Student</option>
+                <option value="resident" {% if role == 'resident' %}selected{% endif %}>Resident / Fellow</option>
+                <option value="radiologist" {% if role == 'radiologist' %}selected{% endif %}>Radiologist</option>
+                <option value="researcher" {% if role == 'researcher' %}selected{% endif %}>Researcher</option>
+                <option value="data_scientist" {% if role == 'data_scientist' %}selected{% endif %}>Data Scientist</option>
+                <option value="software_developer" {% if role == 'software_developer' %}selected{% endif %}>Software Developer</option>
+                <option value="educator" {% if role == 'educator' %}selected{% endif %}>Educator / Professor</option>
+                <option value="other" {% if role == 'other' %}selected{% endif %}>Other</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Institution Name</label>
+              <div class="input-wrap">
+                <span class="input-icon">🏛️</span>
+                <input class="form-input" type="text" name="institution" id="regInstitution" placeholder="e.g., Pokhara University" value="{{ institution|default:'' }}" />
+              </div>
+            </div>
+
+            <div class="checkbox-row">
+              <input type="checkbox" name="agree_terms" id="agreeTerms" required />
+              <label for="agreeTerms">I agree to the <a href="/terms">Terms of Service</a> and <a href="/privacy">Privacy Policy</a>. I understand X-HViT is for research use only.</label>
+            </div>
+
+            <button type="button" class="submit-btn" onclick="showReview()">
+              <span>Review Details →</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- ===== REVIEW STEP ===== -->
+        <div class="review-step" id="reviewStep">
+          <div class="review-card">
+            <div class="review-title">
+              <span class="review-icon">👤</span>
+              Personal Information
+            </div>
+            <div class="review-item">
+              <span class="review-label">First Name</span>
+              <span class="review-value" id="reviewFirstName">—</span>
+            </div>
+            <div class="review-item">
+              <span class="review-label">Last Name</span>
+              <span class="review-value" id="reviewLastName">—</span>
+            </div>
+            <div class="review-item">
+              <span class="review-label">Username</span>
+              <span class="review-value" id="reviewUsername">—</span>
+            </div>
+            <div class="review-item">
+              <span class="review-label">Email</span>
+              <span class="review-value" id="reviewEmail">—</span>
+            </div>
+            <div class="review-item">
+              <span class="review-label">Password</span>
+              <div class="review-password-wrapper">
+                <span class="review-value" id="reviewPassword">••••••••</span>
+                <button type="button" class="review-password-toggle" id="reviewPasswordToggle" onclick="toggleReviewPassword()" aria-label="Toggle password visibility">
+                  👁️
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="review-card">
+            <div class="review-title">
+              <span class="review-icon">🏫</span>
+              Professional Details
+            </div>
+            <div class="review-item">
+              <span class="review-label">Role</span>
+              <span class="review-value" id="reviewRole">—</span>
+            </div>
+            <div class="review-item">
+              <span class="review-label">Institution</span>
+              <span class="review-value" id="reviewInstitution">—</span>
+            </div>
+          </div>
+
+          <div class="review-card">
+            <div class="review-title">
+              <span class="review-icon">✅</span>
+              Terms Agreement
+            </div>
+            <div class="review-item">
+              <span class="review-label">Terms Accepted</span>
+              <span class="review-value" style="color:var(--teal);">✓ Yes</span>
+            </div>
+          </div>
+
+          <div class="review-actions">
+            <button type="button" class="submit-btn secondary" onclick="showForm()">
+              ← Edit Details
+            </button>
+            <button type="button" class="submit-btn" onclick="submitForm()">
+              <span>Confirm & Create Account</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="auth-footer">Already have an account? <a href="/login">Sign in →</a></div>
+        <div class="auth-footer" style="margin-top:4px"><a href="/index" style="color:var(--text-dim)">← Back to home</a></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="{% static 'js/auth.js' %}"></script>
+  <script>
+    // ============================================
+    // PASSWORD VISIBILITY TOGGLE (Form)
+    // ============================================
+    let passwordVisible = false;
+
+    function togglePasswordVisibility() {
+      const passInput = document.getElementById('regPass');
+      const toggleBtn = document.getElementById('passwordToggle');
+      
+      passwordVisible = !passwordVisible;
+      passInput.type = passwordVisible ? 'text' : 'password';
+      toggleBtn.textContent = passwordVisible ? '🙈' : '👁️';
+      toggleBtn.style.color = passwordVisible ? 'var(--teal)' : 'var(--text-dim)';
+    }
+
+    // ============================================
+    // PASSWORD VISIBILITY TOGGLE (Review)
+    // ============================================
+    let reviewPasswordVisible = false;
+    let storedPassword = '';
+
+    function toggleReviewPassword() {
+      const reviewPass = document.getElementById('reviewPassword');
+      const toggleBtn = document.getElementById('reviewPasswordToggle');
+      
+      reviewPasswordVisible = !reviewPasswordVisible;
+      
+      if (reviewPasswordVisible) {
+        reviewPass.textContent = storedPassword || '••••••••';
+        toggleBtn.textContent = '🙈';
+        toggleBtn.style.color = 'var(--teal)';
+      } else {
+        reviewPass.textContent = '•'.repeat(Math.min(storedPassword.length || 8, 12));
+        toggleBtn.textContent = '👁️';
+        toggleBtn.style.color = 'var(--text-dim)';
+      }
+    }
+
+    // ============================================
+    // PASSWORD STRENGTH
+    // ============================================
+    function updateStrength(pw) {
+      const fill = document.getElementById('strengthFill');
+      const lbl = document.getElementById('strengthLabel');
+      if (!pw) { fill.style.width = '0%'; lbl.textContent = ''; return; }
+      let score = 0;
+      if (pw.length >= 8) score++;
+      if (/[A-Z]/.test(pw)) score++;
+      if (/[0-9]/.test(pw)) score++;
+      if (/[^A-Za-z0-9]/.test(pw)) score++;
+      const levels = [
+        { w: '25%', bg: 'var(--red)', label: 'Weak' },
+        { w: '50%', bg: 'var(--red)', label: 'Fair' },
+        { w: '75%', bg: 'var(--yellow)', label: 'Good' },
+        { w: '100%', bg: 'var(--teal)', label: 'Strong' },
+      ];
+      const l = levels[score > 0 ? score - 1 : 0];
+      fill.style.width = l.w;
+      fill.style.background = l.bg;
+      lbl.textContent = l.label;
+      lbl.style.color = l.bg;
+    }
+
+    // ============================================
+    // STEP NAVIGATION
+    // ============================================
+    function showReview() {
+      // Get all form values
+      const firstName = document.getElementById('regFirst').value.trim();
+      const lastName = document.getElementById('regLast').value.trim();
+      const username = document.getElementById('regUsername').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      const password = document.getElementById('regPass').value;
+      const role = document.getElementById('regRole');
+      const institution = document.getElementById('regInstitution').value.trim();
+      const agreeTerms = document.getElementById('agreeTerms').checked;
+
+      // Validate required fields
+      if (!firstName || !lastName || !username || !email || !password || !role.value || !agreeTerms) {
+        let msg = 'Please fill in all required fields:\n';
+        if (!firstName) msg += '• First Name\n';
+        if (!lastName) msg += '• Last Name\n';
+        if (!username) msg += '• Username\n';
+        if (!email) msg += '• Email\n';
+        if (!password) msg += '• Password\n';
+        if (!role.value) msg += '• Role\n';
+        if (!agreeTerms) msg += '• Terms Agreement\n';
+        alert(msg);
+        return;
+      }
+
+      // Validate password strength
+      if (password.length < 8) {
+        alert('Password must be at least 8 characters long.');
+        return;
+      }
+
+      // Store password for review toggle
+      storedPassword = password;
+
+      // Update review fields
+      document.getElementById('reviewFirstName').textContent = firstName;
+      document.getElementById('reviewLastName').textContent = lastName;
+      document.getElementById('reviewUsername').textContent = username;
+      document.getElementById('reviewEmail').textContent = email;
+      document.getElementById('reviewPassword').textContent = '•'.repeat(Math.min(password.length, 12));
+      
+      // Reset review password visibility
+      reviewPasswordVisible = false;
+      document.getElementById('reviewPasswordToggle').textContent = '👁️';
+      document.getElementById('reviewPasswordToggle').style.color = 'var(--text-dim)';
+      
+      // Role display
+      const roleMap = {
+        'medical_student': 'Medical Student',
+        'resident': 'Resident / Fellow',
+        'radiologist': 'Radiologist',
+        'researcher': 'Researcher',
+        'data_scientist': 'Data Scientist',
+        'software_developer': 'Software Developer',
+        'educator': 'Educator / Professor',
+        'other': 'Other'
+      };
+      document.getElementById('reviewRole').textContent = roleMap[role.value] || role.value;
+      
+      // Institution
+      document.getElementById('reviewInstitution').textContent = institution || 'Not specified';
+
+      // Switch views
+      document.getElementById('formStep').classList.add('hidden');
+      document.getElementById('reviewStep').classList.add('active');
+      document.getElementById('formTitle').textContent = 'Review Your Details';
+      document.getElementById('formSub').textContent = 'Please verify your information before creating your account';
+
+      // Update step indicators
+      document.getElementById('step1Dot').classList.remove('active');
+      document.getElementById('step1Dot').classList.add('completed');
+      document.getElementById('step2Dot').classList.add('active');
+      document.getElementById('stepLine1').classList.add('completed');
+
+      // Scroll to top of form
+      document.querySelector('.auth-form-box').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function showForm() {
+      document.getElementById('formStep').classList.remove('hidden');
+      document.getElementById('reviewStep').classList.remove('active');
+      document.getElementById('formTitle').textContent = 'Create your account';
+      document.getElementById('formSub').textContent = 'Free forever for academic research';
+
+      // Update step indicators
+      document.getElementById('step1Dot').classList.add('active');
+      document.getElementById('step1Dot').classList.remove('completed');
+      document.getElementById('step2Dot').classList.remove('active');
+      document.getElementById('stepLine1').classList.remove('completed');
+
+      // Scroll to top of form
+      document.querySelector('.auth-form-box').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function submitForm() {
+      const btn = document.querySelector('.review-actions .submit-btn:last-child');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '<span class="spinner"></span> Creating...';
+      btn.disabled = true;
+
+      // Submit the form
+      document.getElementById('registerForm').submit();
+    }
+
+    // ============================================
+    // AUTO-FILL DEMO (Optional)
+    // ============================================
+    function fillDemo() {
+      document.getElementById('regFirst').value = 'Demo';
+      document.getElementById('regLast').value = 'User';
+      document.getElementById('regUsername').value = 'demouser';
+      document.getElementById('regEmail').value = 'demo@xhvit.com';
+      document.getElementById('regPass').value = 'Demo@1234';
+      document.getElementById('regRole').value = 'researcher';
+      document.getElementById('regInstitution').value = 'Pokhara University';
+      document.getElementById('agreeTerms').checked = true;
+      updateStrength('Demo@1234');
+      // Reset password toggle
+      passwordVisible = false;
+      document.getElementById('passwordToggle').textContent = '👁️';
+      document.getElementById('passwordToggle').style.color = 'var(--text-dim)';
+    }
+
+    // ============================================
+    // ENTER KEY SUPPORT
+    // ============================================
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        const reviewStep = document.getElementById('reviewStep');
+        if (reviewStep.classList.contains('active')) {
+          // If in review step, submit
+          submitForm();
+        } else {
+          // If in form step, show review
+          showReview();
+        }
+      }
+    });
+
+    // ============================================
+    // PASSWORD VISIBILITY TOGGLE FOR REVIEW
+    // ============================================
+    // Also update review password when toggle is clicked
+    document.addEventListener('DOMContentLoaded', function() {
+      // Add click handler for review password toggle
+      const reviewToggle = document.getElementById('reviewPasswordToggle');
+      if (reviewToggle) {
+        reviewToggle.addEventListener('click', function(e) {
+          e.stopPropagation();
+        });
+      }
+    });
+
+    console.log('🔐 X-HViT Registration with Review Step');
+    console.log('💡 Type fillDemo() to auto-fill demo credentials');
+    console.log('👁️ Click the eye icon to show/hide password');
+  </script>
+</body>
+
+</html>

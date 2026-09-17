@@ -1,0 +1,1119 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>X-HViT | Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="{% static 'css/shared.css' %}"/>
+<style>
+/* ============================================
+   DASHBOARD STYLES
+   ============================================ */
+.dash-layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    min-height: 100vh;
+    padding-top: 68px;
+}
+
+/* Sidebar */
+.sidebar {
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    padding: 24px 0;
+    position: sticky;
+    top: 68px;
+    height: calc(100vh - 68px);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar::-webkit-scrollbar {
+    width: 4px;
+}
+.sidebar::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 4px;
+}
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background: var(--teal);
+}
+
+.sb-section {
+    padding: 0 16px;
+    margin-bottom: 6px;
+}
+
+.sb-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 8px 12px 4px;
+}
+
+.sb-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: var(--r-sm);
+    color: var(--text-muted);
+    font-size: 13.5px;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    text-decoration: none;
+}
+
+.sb-link:hover {
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text);
+}
+
+.sb-link.active {
+    background: rgba(0, 229, 176, 0.08);
+    color: var(--teal);
+    border: 1px solid rgba(0, 229, 176, 0.15);
+}
+
+.sb-icon {
+    font-size: 16px;
+    flex-shrink: 0;
+    width: 20px;
+    text-align: center;
+}
+
+.sb-badge {
+    margin-left: auto;
+    background: var(--teal);
+    color: var(--bg);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    padding: 2px 7px;
+    border-radius: 100px;
+    font-weight: 700;
+}
+
+.sb-bottom {
+    margin-top: auto;
+    padding: 16px;
+    border-top: 1px solid var(--border);
+}
+
+.user-chip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: var(--r-sm);
+    background: var(--surface);
+    border: 1px solid var(--border);
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--teal), var(--blue));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-head);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--bg);
+    flex-shrink: 0;
+}
+
+.user-name {
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.user-role {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-muted);
+}
+
+.user-role .sub-badge {
+    background: rgba(0, 229, 176, 0.1);
+    color: var(--teal);
+    padding: 1px 8px;
+    border-radius: 100px;
+    font-size: 8px;
+    margin-left: 4px;
+}
+
+/* Main Content */
+.dash-main {
+    padding: 36px;
+    background: var(--bg);
+    min-height: calc(100vh - 68px);
+}
+
+.dash-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.dash-topbar h1 {
+    font-family: var(--font-head);
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -1px;
+}
+
+.dash-topbar p {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+.dash-actions {
+    display: flex;
+    gap: 10px;
+}
+
+/* KPI Grid */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+.kpi {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 22px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    transition: border-color 0.2s;
+}
+
+.kpi:hover {
+    border-color: rgba(0, 229, 176, 0.2);
+}
+
+.kpi-icon {
+    font-size: 26px;
+    flex-shrink: 0;
+}
+
+.kpi-lbl {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.kpi-val {
+    font-family: var(--font-head);
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -1.5px;
+}
+
+.kpi-delta {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    margin-top: 4px;
+}
+
+.delta-up {
+    color: var(--teal);
+}
+.delta-dn {
+    color: var(--red);
+}
+
+/* Content Grid */
+.dash-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.dash-grid2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+}
+
+.dash-box {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+}
+
+.db-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.db-title {
+    font-family: var(--font-head);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+}
+
+.db-body {
+    padding: 20px;
+}
+
+/* Recent Table */
+.rt {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.rt th {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 0 12px 10px;
+    text-align: left;
+    font-weight: 400;
+}
+
+.rt td {
+    padding: 11px 12px;
+    font-size: 13px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.rt tr:last-child td {
+    border-bottom: none;
+}
+
+.rt tr:hover td {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.rt-mod {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 100px;
+}
+
+.rt-conf {
+    font-family: var(--font-mono);
+    font-size: 12px;
+}
+
+/* Badge */
+.badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 100px;
+    font-size: 10px;
+    font-weight: 600;
+    font-family: var(--font-mono);
+}
+
+.badge-blue { background: rgba(58, 155, 255, 0.15); color: var(--blue); }
+.badge-teal { background: rgba(0, 229, 176, 0.15); color: var(--teal); }
+.badge-violet { background: rgba(124, 106, 255, 0.15); color: var(--violet); }
+.badge-yellow { background: rgba(255, 201, 71, 0.15); color: var(--yellow); }
+.badge-red { background: rgba(255, 85, 117, 0.15); color: var(--red); }
+
+/* Chart Bars */
+.chart-bar-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.cb {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.cb-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+}
+
+.cb-lbl {
+    color: var(--text-muted);
+}
+
+.cb-val {
+    font-family: var(--font-mono);
+    color: var(--text);
+}
+
+.cb-bar {
+    height: 6px;
+    background: var(--bg3);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.cb-fill {
+    height: 100%;
+    border-radius: 10px;
+}
+
+/* Activity */
+.activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.act-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.act-item:last-child {
+    border-bottom: none;
+}
+
+.act-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 5px;
+}
+
+.act-text {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+.act-time {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-top: 2px;
+}
+
+/* Quick Actions */
+.qa-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.qa {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: block;
+    color: inherit;
+}
+
+.qa:hover {
+    border-color: rgba(0, 229, 176, 0.25);
+    transform: translateY(-2px);
+}
+
+.qa-icon {
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+.qa-label {
+    font-family: var(--font-head);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+}
+
+.qa-sub {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+/* Buttons */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: var(--r-sm);
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: var(--teal);
+    color: var(--bg);
+}
+
+.btn-primary:hover {
+    background: var(--teal-dim);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 28px rgba(0, 229, 176, 0.25);
+}
+
+.btn-ghost {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+}
+
+.btn-ghost:hover {
+    background: var(--bg3);
+    border-color: rgba(255, 255, 255, 0.18);
+}
+
+.btn-sm {
+    padding: 6px 14px;
+    font-size: 11px;
+}
+
+.btn-danger {
+    background: var(--red);
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #e6455a;
+}
+
+/* Toast */
+.toast-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 380px;
+}
+
+.toast {
+    padding: 12px 16px;
+    border-radius: var(--r-sm);
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--info);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    transform: translateX(120%);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+}
+
+.toast.show {
+    transform: translateX(0);
+}
+
+.toast-success { border-left-color: var(--teal); }
+.toast-error { border-left-color: var(--red); }
+.toast-warning { border-left-color: var(--yellow); }
+.toast-info { border-left-color: var(--blue); }
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 32px 16px;
+}
+
+.empty-state .empty-icon {
+    font-size: 40px;
+    margin-bottom: 12px;
+    display: block;
+}
+
+.empty-state h3 {
+    font-family: var(--font-head);
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.empty-state p {
+    color: var(--text-muted);
+    font-size: 13px;
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .dash-layout {
+        grid-template-columns: 1fr;
+    }
+    .sidebar {
+        display: none;
+    }
+    .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .dash-grid {
+        grid-template-columns: 1fr;
+    }
+    .dash-grid2 {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .dash-main {
+        padding: 20px;
+    }
+    .dash-topbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .dash-actions {
+        width: 100%;
+    }
+    .dash-actions .btn {
+        flex: 1;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 600px) {
+    .kpi-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    .dash-grid2 {
+        grid-template-columns: 1fr;
+    }
+    .dash-main {
+        padding: 16px;
+    }
+    .dash-topbar h1 {
+        font-size: 22px;
+    }
+}
+
+/* Mobile Sidebar Toggle */
+.sidebar-toggle-mobile {
+    display: none;
+    position: fixed;
+    top: 76px;
+    left: 12px;
+    z-index: 100;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    color: var(--text);
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    align-items: center;
+    justify-content: center;
+}
+
+.sidebar-toggle-mobile:hover {
+    border-color: var(--teal);
+    color: var(--teal);
+}
+
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 99;
+}
+
+.sidebar-overlay.active {
+    display: block;
+}
+
+.sidebar.mobile-open {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    height: 100vh;
+    z-index: 100;
+    padding-top: 60px;
+}
+
+@media (max-width: 1024px) {
+    .sidebar-toggle-mobile {
+        display: flex;
+    }
+}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- Navigation -->
+{% include 'includes/nav.html' %}
+
+<!-- Sidebar Overlay (Mobile) -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMobileSidebar()"></div>
+
+<!-- Mobile Sidebar Toggle -->
+<button class="sidebar-toggle-mobile" id="sidebarToggleMobile" onclick="toggleMobileSidebar()" aria-label="Toggle sidebar">
+    ☰
+</button>
+
+<!-- Dashboard Layout -->
+<div class="dash-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="dashboardSidebar">
+        <div class="sb-section">
+            <div class="sb-label">Main</div>
+            <a href="{% url 'Diagnosis:dashboard' %}" class="sb-link active">
+                <span class="sb-icon"></span>Dashboard
+            </a>
+            <a href="{% url 'Diagnosis:diagnose' %}" class="sb-link">
+                <span class="sb-icon"></span>New Diagnosis
+            </a>
+            <a href="{% url 'Diagnosis:reports' %}" class="sb-link">
+                <span class="sb-icon"></span>Reports
+                {% if total_reports > 0 %}
+                    <span class="sb-badge">{{ total_reports }}</span>
+                {% endif %}
+            </a>
+            <a href="{% url 'Diagnosis:history' %}" class="sb-link">
+                <span class="sb-icon"></span>History
+            </a>
+        </div>
+        <div class="sb-section">
+            <div class="sb-label">Analysis</div>
+            <a href="{% url 'Diagnosis:modalities' %}" class="sb-link">
+                <span class="sb-icon"></span>Modalities
+            </a>
+            <a href="#" class="sb-link" onclick="showToast('📈 Analytics coming soon!', 'info')">
+                <span class="sb-icon"></span>Metrics
+            </a>
+        </div>
+        <div class="sb-section">
+            <div class="sb-label">Help</div>
+            <a href="{% url 'Diagnosis:documentation' %}" class="sb-link">
+                <span class="sb-icon"></span>Documentation
+            </a>
+            <a href="{% url 'Diagnosis:support' %}" class="sb-link">
+                <span class="sb-icon"></span>Support
+            </a>
+            <a href="{% url 'Diagnosis:faq' %}" class="sb-link">
+                <span class="sb-icon"></span>FAQ
+            </a>
+            <a href="{% url 'Diagnosis:pricing' %}" class="sb-link">
+                <span class="sb-icon"></span>Pricing
+            </a>
+        </div>
+        <div class="sb-bottom">
+            <div class="user-chip">
+                <div class="user-avatar" id="sbAvatar">
+                    {% if request.user.is_authenticated %}
+                        {{ request.user.first_name|slice:":1" }}{{ request.user.last_name|slice:":1"|default:request.user.username|slice:":1" }}
+                    {% else %}
+                        U
+                    {% endif %}
+                </div>
+                <div>
+                    <div class="user-name" id="sbName">
+                        {% if request.user.is_authenticated %}
+                            {{ request.user.get_full_name|default:request.user.username }}
+                        {% else %}
+                            Guest User
+                        {% endif %}
+                    </div>
+                    <div class="user-role" id="sbRole">
+                        {% if request.user.is_authenticated %}
+                            {% if request.user.is_superuser %}
+                                Admin
+                            {% else %}
+                                {{ role|default:"Researcher" }}
+                            {% endif %}
+                            {% if is_subscribed %}
+                                <span class="sub-badge">⭐ {{ subscription|default:"Pro" }}</span>
+                            {% endif %}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <form method="post" action="{% url 'Diagnosis:logout' %}" style="margin-top:10px;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger btn-sm" style="width:100%;justify-content:center;font-size:12px;">
+                    🚪 Sign Out
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="dash-main">
+        <div class="dash-topbar">
+            <div>
+                <h1 id="dashGreeting">
+                    {% if request.user.is_authenticated %}
+                        Good {{ time_of_day }}, {{ request.user.first_name|default:request.user.username }} 👋
+                    {% else %}
+                        Welcome to Dashboard
+                    {% endif %}
+                </h1>
+                <p>Here's your diagnostic overview for today — {% now "F j, Y" %}</p>
+            </div>
+            <div class="dash-actions">
+                <a href="{% url 'Diagnosis:diagnose' %}" class="btn btn-primary">+ New Diagnosis</a>
+                <a href="{% url 'Diagnosis:reports' %}" class="btn btn-ghost">View Reports</a>
+            </div>
+        </div>
+
+        <!-- KPIs -->
+        <div class="kpi-grid">
+            <div class="kpi">
+                <div class="kpi-icon">🧪</div>
+                <div>
+                    <div class="kpi-lbl">Total Analyses</div>
+                    <div class="kpi-val" style="color:var(--teal)">{{ total_analyses|default:0 }}</div>
+                    <div class="kpi-delta {% if weekly_analyses > 0 %}delta-up{% else %}delta-dn{% endif %}">
+                        {% if weekly_analyses > 0 %}↑{% else %}—{% endif %} {{ weekly_analyses|default:0 }} this week
+                    </div>
+                </div>
+            </div>
+            <div class="kpi">
+                <div class="kpi-icon">✅</div>
+                <div>
+                    <div class="kpi-lbl">Avg Confidence</div>
+                    <div class="kpi-val" style="color:var(--blue)">{{ avg_confidence|floatformat:1|default:"0.0" }}%</div>
+                    <div class="kpi-delta {% if confidence_change > 0 %}delta-up{% else %}delta-dn{% endif %}">
+                        {% if confidence_change > 0 %}↑{% elif confidence_change < 0 %}↓{% else %}—{% endif %}
+                        {{ confidence_change|floatformat:1|default:"0.0" }}%
+                    </div>
+                </div>
+            </div>
+            <div class="kpi">
+                <div class="kpi-icon">📄</div>
+                <div>
+                    <div class="kpi-lbl">Reports Generated</div>
+                    <div class="kpi-val" style="color:var(--violet)">{{ total_reports|default:0 }}</div>
+                    <div class="kpi-delta {% if new_reports > 0 %}delta-up{% else %}delta-dn{% endif %}">
+                        {% if new_reports > 0 %}↑{% else %}—{% endif %} {{ new_reports|default:0 }} new
+                    </div>
+                </div>
+            </div>
+            <div class="kpi">
+                <div class="kpi-icon">⏱️</div>
+                <div>
+                    <div class="kpi-lbl">Avg Inference Time</div>
+                    <div class="kpi-val" style="color:var(--yellow)">{{ avg_inference_time|floatformat:1|default:"0.0" }}s</div>
+                    <div class="kpi-delta delta-dn">~{{ avg_inference_time|floatformat:1|default:"0.0" }}s</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Grid -->
+        <div class="dash-grid">
+            <!-- Recent Diagnoses -->
+            <div class="dash-box">
+                <div class="db-header">
+                    <span class="db-title">Recent Diagnoses</span>
+                    <a href="{% url 'Diagnosis:history' %}" class="btn btn-ghost btn-sm">View All</a>
+                </div>
+                <div class="db-body" style="padding:0;">
+                    {% if recent_diagnoses %}
+                        <table class="rt">
+                            <thead>
+                                <tr>
+                                    <th>Case ID</th>
+                                    <th>Modality</th>
+                                    <th>Diagnosis</th>
+                                    <th>Confidence</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for record in recent_diagnoses %}
+                                    <tr>
+                                        <td style="font-family:var(--font-mono);font-size:11px;color:var(--text-muted);">{{ record.case_id }}</td>
+                                        <td>
+                                            <span class="badge badge-blue">{{ record.modality|default:"Unknown" }}</span>
+                                        </td>
+                                        <td>{{ record.diagnosis|default:"N/A" }}</td>
+                                        <td>
+                                            <span class="rt-conf" style="color:{% if record.confidence >= 90 %}var(--teal){% elif record.confidence >= 75 %}var(--yellow){% else %}var(--red){% endif %}">
+                                                {{ record.confidence|floatformat:1 }}%
+                                            </span>
+                                        </td>
+                                        <td style="font-size:11px;color:var(--text-dim);">{{ record.created_at|date:"M d" }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <div class="empty-state">
+                            <span class="empty-icon">🧠</span>
+                            <h3>No diagnoses yet</h3>
+                            <p>Start your first medical image analysis using the X-HViT diagnostic platform.</p>
+                            <a href="{% url 'Diagnosis:diagnose' %}" class="btn btn-primary btn-sm">Start Diagnosis →</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="dash-box">
+                <div class="db-header"><span class="db-title">Recent Activity</span></div>
+                <div class="db-body">
+                    {% if recent_activity %}
+                        <div class="activity-list">
+                            {% for activity in recent_activity %}
+                                <div class="act-item">
+                                    <div class="act-dot" style="background:{% if activity.type == 'diagnosis' %}var(--teal){% elif activity.type == 'report' %}var(--blue){% else %}var(--violet){% endif %}"></div>
+                                    <div>
+                                        <div class="act-text">{{ activity.text|safe }}</div>
+                                        <div class="act-time">{{ activity.time|timesince }} ago</div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="empty-state">
+                            <span class="empty-icon">📋</span>
+                            <h3>No activity yet</h3>
+                            <p>Your diagnostic activities will appear here once you start using the platform.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Second Grid -->
+        <div class="dash-grid2">
+            <!-- Modality Distribution -->
+            <div class="dash-box">
+                <div class="db-header"><span class="db-title">Modality Distribution</span></div>
+                <div class="db-body">
+                    {% if modality_distribution %}
+                        <div class="chart-bar-list">
+                            {% for modality in modality_distribution %}
+                                <div class="cb">
+                                    <div class="cb-header">
+                                        <span class="cb-lbl">{{ modality.icon }} {{ modality.name }}</span>
+                                        <span class="cb-val">{{ modality.count }} scans</span>
+                                    </div>
+                                    <div class="cb-bar">
+                                        <div class="cb-fill" style="width:{{ modality.percentage }}%;background:{{ modality.color }};"></div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="empty-state" style="padding:12px;">
+                            <span class="empty-icon" style="font-size:28px;">📊</span>
+                            <p style="font-size:13px;">No modality data available yet</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Accuracy by Modality -->
+            <div class="dash-box">
+                <div class="db-header"><span class="db-title">Avg Accuracy by Modality</span></div>
+                <div class="db-body">
+                    {% if modality_accuracy %}
+                        <div class="chart-bar-list">
+                            {% for item in modality_accuracy %}
+                                <div class="cb">
+                                    <div class="cb-header">
+                                        <span class="cb-lbl">{{ item.icon }} {{ item.name }}</span>
+                                        <span class="cb-val" style="color:{% if item.accuracy >= 90 %}var(--teal){% elif item.accuracy >= 75 %}var(--yellow){% else %}var(--red){% endif %}">
+                                            {{ item.accuracy|floatformat:1 }}%
+                                        </span>
+                                    </div>
+                                    <div class="cb-bar">
+                                        <div class="cb-fill" style="width:{{ item.accuracy }}%;background:{% if item.accuracy >= 90 %}var(--teal){% elif item.accuracy >= 75 %}var(--blue){% else %}var(--yellow){% endif %};"></div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="empty-state" style="padding:12px;">
+                            <span class="empty-icon" style="font-size:28px;">📊</span>
+                            <p style="font-size:13px;">No accuracy data available yet</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="dash-box">
+                <div class="db-header"><span class="db-title">Quick Actions</span></div>
+                <div class="db-body">
+                    <div class="qa-grid">
+                        <a href="{% url 'Diagnosis:diagnose' %}" class="qa">
+                            <div class="qa-icon">🧠</div>
+                            <div class="qa-label">Diagnose</div>
+                            <div class="qa-sub">New analysis</div>
+                        </a>
+                        <a href="{% url 'Diagnosis:reports' %}" class="qa">
+                            <div class="qa-icon">📄</div>
+                            <div class="qa-label">Reports</div>
+                            <div class="qa-sub">View all</div>
+                        </a>
+                        <a href="{% url 'Diagnosis:history' %}" class="qa">
+                            <div class="qa-icon">📁</div>
+                            <div class="qa-label">History</div>
+                            <div class="qa-sub">Past cases</div>
+                        </a>
+                        <a href="{% url 'Diagnosis:profile' %}" class="qa">
+                            <div class="qa-icon">👤</div>
+                            <div class="qa-label">Profile</div>
+                            <div class="qa-sub">Your account</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- Footer -->
+{% include 'includes/footer.html' %}
+
+<script src="{% static 'js/shared.js' %}"></script>
+
+<script>
+// ============================================
+// SIDEBAR TOGGLE (Mobile)
+// ============================================
+function toggleMobileSidebar() {
+    const sidebar = document.getElementById('dashboardSidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    const toggleBtn = document.getElementById('sidebarToggleMobile');
+    
+    sidebar.classList.toggle('mobile-open');
+    overlay.classList.toggle('active');
+    document.body.style.overflow = sidebar.classList.contains('mobile-open') ? 'hidden' : '';
+    
+    toggleBtn.textContent = sidebar.classList.contains('mobile-open') ? '✕' : '☰';
+}
+
+// Close sidebar on escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        const sidebar = document.getElementById('dashboardSidebar');
+        if (sidebar.classList.contains('mobile-open')) {
+            toggleMobileSidebar();
+        }
+    }
+});
+
+// Close sidebar on overlay click
+document.getElementById('sidebarOverlay').addEventListener('click', function() {
+    if (this.classList.contains('active')) {
+        toggleMobileSidebar();
+    }
+});
+
+// ============================================
+// TOAST NOTIFICATION
+// ============================================
+function showToast(message, type = 'info', duration = 4000) {
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    
+    const colors = {
+        success: 'var(--teal)',
+        error: 'var(--red)',
+        warning: 'var(--yellow)',
+        info: 'var(--blue)'
+    };
+    
+    const icons = {
+        success: '✅',
+        error: '❌',
+        warning: '⚠️',
+        info: 'ℹ️'
+    };
+    
+    toast.className = `toast toast-${type}`;
+    toast.innerHTML = `
+        <span style="font-size:18px;">${icons[type] || icons.info}</span>
+        <span>${message}</span>
+    `;
+    
+    container.appendChild(toast);
+    
+    requestAnimationFrame(() => {
+        toast.classList.add('show');
+    });
+    
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 400);
+    }, duration);
+}
+
+// ============================================
+// TIME OF DAY GREETING
+// ============================================
+(function() {
+    const hour = new Date().getHours();
+    let greeting = 'Morning';
+    if (hour >= 12 && hour < 17) greeting = 'Afternoon';
+    else if (hour >= 17 && hour < 21) greeting = 'Evening';
+    else if (hour >= 21) greeting = 'Night';
+    
+    const greetingEl = document.getElementById('dashGreeting');
+    if (greetingEl) {
+        const currentText = greetingEl.textContent;
+        greetingEl.textContent = currentText.replace('Good Morning', 'Good ' + greeting);
+        greetingEl.textContent = greetingEl.textContent.replace('Good morning', 'Good ' + greeting);
+    }
+})();
+
+console.log('Dashboard loaded');
+</script>
+</body>
+</html>

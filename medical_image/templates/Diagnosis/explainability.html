@@ -1,0 +1,1278 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+    <title>X-HViT | Explainability Hub - {{ record.case_id }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="{% static 'css/shared.css' %}"/>
+    <style>
+        /* ============================================
+           EXPLAINABILITY HUB STYLES
+           ============================================ */
+        .exp-page {
+            padding: 100px 0 80px;
+            position: relative;
+            z-index: 1;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ── Header ── */
+        .exp-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+        .exp-header-left h1 {
+            font-family: var(--font-head);
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin: 8px 0;
+        }
+        .exp-header-left h1 .gradient-text {
+            background: linear-gradient(135deg, var(--teal), var(--blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .exp-header-left p {
+            font-size: 14px;
+            color: var(--text-muted);
+            max-width: 560px;
+        }
+
+        .section-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--teal);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 4px 16px;
+            background: rgba(0, 229, 176, 0.06);
+            border: 1px solid rgba(0, 229, 176, 0.1);
+            border-radius: 100px;
+        }
+        .section-tag .pulse-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--teal);
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(0.7); }
+        }
+
+        .exp-header-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        /* ── Hero Confidence Panel ── */
+        .confidence-hero {
+            background: linear-gradient(135deg,
+                rgba(0, 229, 176, 0.06) 0%,
+                rgba(58, 155, 255, 0.04) 50%,
+                rgba(124, 106, 255, 0.03) 100%);
+            border: 1px solid rgba(0, 229, 176, 0.15);
+            border-radius: var(--r-lg);
+            padding: 32px;
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+        .confidence-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(0, 229, 176, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .ch-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 32px;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .ch-left .ch-label {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--teal);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+        .ch-left .ch-disease {
+            font-family: var(--font-head);
+            font-size: 42px;
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            line-height: 1.1;
+            margin-bottom: 12px;
+        }
+        .ch-left .ch-desc {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+        .ch-left .ch-desc strong { color: var(--teal); }
+
+        .ch-gauge {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .gauge-circle {
+            position: relative;
+            width: 200px;
+            height: 200px;
+        }
+        .gauge-svg {
+            transform: rotate(-90deg);
+            width: 100%;
+            height: 100%;
+        }
+        .gauge-track {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.05);
+            stroke-width: 12;
+        }
+        .gauge-fill {
+            fill: none;
+            stroke: var(--teal);
+            stroke-width: 12;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .gauge-value {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .gauge-value .gv-number {
+            font-family: var(--font-head);
+            font-size: 42px;
+            font-weight: 800;
+            color: var(--text);
+            letter-spacing: -2px;
+            line-height: 1;
+        }
+        .gauge-value .gv-label {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+
+        /* ── Metric Cards Grid ── */
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .metric-card {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: var(--r-md);
+            padding: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .metric-card:hover {
+            border-color: rgba(0, 229, 176, 0.2);
+            transform: translateY(-2px);
+        }
+        .metric-card .mc-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+        .metric-card .mc-icon.teal { background: rgba(0, 229, 176, 0.1); }
+        .metric-card .mc-icon.blue { background: rgba(58, 155, 255, 0.1); }
+        .metric-card .mc-icon.yellow { background: rgba(255, 201, 71, 0.1); }
+        .metric-card .mc-icon.red { background: rgba(255, 85, 117, 0.1); }
+
+        .metric-card .mc-label {
+            font-family: var(--font-mono);
+            font-size: 9px;
+            color: var(--text-dim);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        .metric-card .mc-value {
+            font-family: var(--font-head);
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+        .metric-card .mc-value.strong { color: var(--teal); }
+        .metric-card .mc-value.moderate { color: var(--blue); }
+        .metric-card .mc-value.weak { color: var(--yellow); }
+        .metric-card .mc-value.inconclusive { color: var(--red); }
+        .metric-card .mc-sub {
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        /* ── Section Card ── */
+        .section-card {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: var(--r-lg);
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+        .section-card-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            background: var(--bg3);
+        }
+        .section-card-header .sch-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .section-card-header .sch-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: rgba(0, 229, 176, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        .section-card-header h2 {
+            font-family: var(--font-head);
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            margin: 0;
+        }
+        .section-card-header h2 span {
+            display: block;
+            font-family: var(--font-body);
+            font-size: 12px;
+            font-weight: 400;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+        .section-card-header .sch-badge {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            padding: 4px 12px;
+            border-radius: 100px;
+            background: rgba(0, 229, 176, 0.08);
+            color: var(--teal);
+            border: 1px solid rgba(0, 229, 176, 0.12);
+        }
+        .section-card-body {
+            padding: 24px;
+        }
+
+        /* ── Differential Ranking ── */
+        .diff-ranking {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .diff-item {
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: var(--r-md);
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .diff-item:hover {
+            border-color: rgba(0, 229, 176, 0.15);
+        }
+        .diff-item.top {
+            background: rgba(0, 229, 176, 0.04);
+            border-color: rgba(0, 229, 176, 0.2);
+        }
+        .diff-rank {
+            font-family: var(--font-head);
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--text-dim);
+            width: 40px;
+            flex-shrink: 0;
+            text-align: center;
+        }
+        .diff-item.top .diff-rank {
+            color: var(--teal);
+        }
+        .diff-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .diff-name-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+        .diff-name {
+            font-family: var(--font-head);
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text);
+        }
+        .diff-item.top .diff-name {
+            color: var(--teal);
+        }
+        .diff-tag {
+            font-family: var(--font-mono);
+            font-size: 9px;
+            padding: 2px 8px;
+            border-radius: 100px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        .diff-tag.primary {
+            background: rgba(0, 229, 176, 0.15);
+            color: var(--teal);
+        }
+        .diff-tag.alternative {
+            background: rgba(58, 155, 255, 0.12);
+            color: var(--blue);
+        }
+        .diff-tag.excluded {
+            background: rgba(136, 146, 168, 0.12);
+            color: var(--text-muted);
+        }
+        .diff-bar-track {
+            height: 8px;
+            background: var(--bg2);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+        .diff-bar-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 0%;
+        }
+        .diff-pct {
+            font-family: var(--font-head);
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text);
+            flex-shrink: 0;
+            width: 80px;
+            text-align: right;
+        }
+        .diff-item.top .diff-pct {
+            color: var(--teal);
+        }
+        .diff-pct.strong { color: var(--teal); }
+        .diff-pct.moderate { color: var(--blue); }
+        .diff-pct.weak { color: var(--yellow); }
+
+        /* ── Trust Indicators ── */
+        .trust-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+        }
+        .trust-item {
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: var(--r-md);
+            padding: 16px 18px;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+        .trust-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+            font-weight: 700;
+        }
+        .trust-icon.pass {
+            background: rgba(0, 229, 176, 0.15);
+            color: var(--teal);
+        }
+        .trust-icon.warn {
+            background: rgba(255, 201, 71, 0.15);
+            color: var(--yellow);
+        }
+        .trust-icon.fail {
+            background: rgba(255, 85, 117, 0.15);
+            color: var(--red);
+        }
+        .trust-content {
+            flex: 1;
+        }
+        .trust-title {
+            font-family: var(--font-head);
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 3px;
+        }
+        .trust-desc {
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* ── Clinical Knowledge Panel ── */
+        .knowledge-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        .knowledge-block {
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: var(--r-md);
+            padding: 18px 20px;
+        }
+        .knowledge-block .kb-label {
+            font-family: var(--font-mono);
+            font-size: 9px;
+            color: var(--text-dim);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        .knowledge-block .kb-title {
+            font-family: var(--font-head);
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+        .knowledge-block .kb-content {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+        .severity-pill {
+            display: inline-block;
+            padding: 3px 12px;
+            border-radius: 100px;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .severity-pill.low {
+            background: rgba(0, 229, 176, 0.12);
+            color: var(--teal);
+        }
+        .severity-pill.medium {
+            background: rgba(255, 201, 71, 0.12);
+            color: var(--yellow);
+        }
+        .severity-pill.high {
+            background: rgba(255, 85, 117, 0.12);
+            color: var(--red);
+        }
+        .severity-pill.critical {
+            background: rgba(255, 85, 117, 0.2);
+            color: #ff2d55;
+        }
+
+        /* ── Historical Comparison ── */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+        .comparison-stat {
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: var(--r-md);
+            padding: 16px;
+            text-align: center;
+        }
+        .comparison-stat .cs-value {
+            font-family: var(--font-head);
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--teal);
+            letter-spacing: -1px;
+        }
+        .comparison-stat .cs-label {
+            font-family: var(--font-mono);
+            font-size: 9px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 4px;
+        }
+        .comparison-stat .cs-desc {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+
+        /* ── Groq Interpretation (reuses your styles) ── */
+        .llm-interpretation-container {
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: var(--r-md);
+            overflow: hidden;
+        }
+        .llm-interpretation-container .llm-header {
+            padding: 14px 20px;
+            background: var(--bg2);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .llm-interpretation-container .llm-header .llm-icon {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--teal);
+        }
+        .llm-interpretation-container .llm-header .llm-title {
+            font-weight: 700;
+            font-size: 15px;
+            color: var(--text);
+        }
+        .llm-interpretation-container .llm-header .llm-badge {
+            font-family: var(--font-mono);
+            font-size: 9px;
+            color: var(--teal);
+            background: rgba(0, 229, 176, 0.08);
+            padding: 2px 12px;
+            border-radius: 100px;
+            border: 1px solid rgba(0, 229, 176, 0.1);
+            margin-left: auto;
+        }
+        .llm-interpretation-container .llm-body { padding: 16px 20px; }
+        .llm-interpretation-container .llm-footer {
+            padding: 10px 20px;
+            border-top: 1px solid var(--border);
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--text-dim);
+        }
+        .llm-numbered-section {
+            margin: 14px 0;
+            padding: 12px 16px;
+            background: rgba(58, 155, 255, 0.04);
+            border-radius: 8px;
+            border-left: 3px solid var(--blue);
+        }
+        .llm-numbered-section .llm-section-number {
+            font-family: var(--font-head);
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--blue);
+            margin-bottom: 8px;
+        }
+        .llm-numbered-section .llm-section-content {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.8;
+        }
+        .llm-numbered-section .llm-section-content strong { color: var(--text); }
+        .llm-numbered-section .llm-section-content ul {
+            margin: 6px 0 6px 20px;
+            padding-left: 8px;
+            list-style: disc;
+        }
+        .llm-numbered-section .llm-section-content li {
+            margin-bottom: 6px;
+            font-size: 13px;
+        }
+        .llm-loader {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 24px;
+        }
+        .llm-loader .spinner-small {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border);
+            border-top-color: var(--teal);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ── Buttons ── */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: var(--r-sm);
+            font-family: var(--font-body);
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+            cursor: pointer;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--teal), var(--teal-dim));
+            color: var(--bg);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(0, 229, 176, 0.3);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid rgba(0, 229, 176, 0.2);
+            color: var(--teal);
+        }
+        .btn-outline:hover {
+            background: rgba(0, 229, 176, 0.06);
+        }
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+        .btn-ghost:hover {
+            background: var(--bg3);
+        }
+        .btn-sm {
+            padding: 6px 14px;
+            font-size: 12px;
+        }
+
+        /* ── Footer Actions ── */
+        .footer-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 32px 0;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 900px) {
+            .ch-grid { grid-template-columns: 1fr; }
+            .metric-grid { grid-template-columns: 1fr; }
+            .trust-grid { grid-template-columns: 1fr; }
+            .knowledge-grid { grid-template-columns: 1fr; }
+            .comparison-grid { grid-template-columns: 1fr; }
+            .exp-header-left h1 { font-size: 24px; }
+            .diff-item { flex-wrap: wrap; }
+            .diff-pct { width: auto; }
+        }
+        @media (max-width: 600px) {
+            .confidence-hero { padding: 20px; }
+            .section-card-body { padding: 16px; }
+            .gauge-circle { width: 160px; height: 160px; }
+            .gauge-value .gv-number { font-size: 32px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-bg"></div>
+    {% include 'includes/nav.html' %}
+
+    <div class="exp-page">
+        <div class="container">
+
+            <!-- ── Header ── -->
+            <div class="exp-header">
+                <div class="exp-header-left">
+                    <div class="section-tag">
+                        <span class="pulse-dot"></span>
+                        Explainability Hub
+                    </div>
+                    <h1>Why This <span class="gradient-text">Prediction?</span></h1>
+                    <p>
+                        A complete confidence-aware clinical interpretation of
+                        case <strong style="color:var(--teal);">{{ record.case_id }}</strong>.
+                        No heatmaps — just reasoned, quantified, clinically-grounded trust signals.
+                    </p>
+                </div>
+                <div class="exp-header-actions">
+                    <a href="{% url 'Diagnosis:report_detail' record.id %}" class="btn btn-ghost">📄 Full Report</a>
+                    <a href="{% url 'Diagnosis:diagnose' %}" class="btn btn-primary">+ New Diagnosis</a>
+                </div>
+            </div>
+
+            <!-- ── Hero Confidence Panel ── -->
+            <div class="confidence-hero">
+                <div class="ch-grid">
+                    <div class="ch-left">
+                        <div class="ch-label">Primary Diagnosis</div>
+                        <div class="ch-disease">{{ record.diagnosis }}</div>
+                        <div class="ch-desc">
+                            {% if record.is_positive %}
+                                The model detected signs consistent with <strong>{{ record.diagnosis }}</strong> with
+                                <strong>{{ record.confidence }}%</strong> confidence.
+                            {% else %}
+                                The model did <strong>not</strong> detect signs of the selected disease.
+                                Confidence in the negative finding: <strong>{{ record.confidence }}%</strong>.
+                            {% endif %}
+                            {% if record.confidence >= 90 %}
+                                This is a <strong>strong</strong> finding — the model is highly confident.
+                            {% elif record.confidence >= 75 %}
+                                This is a <strong>moderate</strong> finding — reasonably confident.
+                            {% elif record.confidence >= 60 %}
+                                This is a <strong>weak</strong> finding — consider human review.
+                            {% else %}
+                                This is <strong>inconclusive</strong> — human review is recommended.
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="ch-gauge">
+                        <div class="gauge-circle">
+                            <svg class="gauge-svg" viewBox="0 0 200 200">
+                                <circle class="gauge-track" cx="100" cy="100" r="85"></circle>
+                                <circle
+                                    class="gauge-fill"
+                                    id="gaugeFill"
+                                    cx="100" cy="100" r="85"
+                                    stroke-dasharray="534"
+                                    stroke-dashoffset="534"
+                                    data-confidence="{{ record.confidence }}"
+                                    style="stroke: {% if record.confidence >= 90 %}#00e5b0{% elif record.confidence >= 75 %}#3a9bff{% elif record.confidence >= 60 %}#ffc947{% else %}#ff5575{% endif %};"
+                                ></circle>
+                            </svg>
+                            <div class="gauge-value">
+                                <div class="gv-number">{{ record.confidence }}<span style="font-size:0.6em;">%</span></div>
+                                <div class="gv-label">Confidence</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Metric Cards ── -->
+            <div class="metric-grid">
+                <div class="metric-card">
+                    <div class="mc-icon teal">💪</div>
+                    <div class="mc-label">Finding Strength</div>
+                    <div class="mc-value {% if record.confidence >= 90 %}strong{% elif record.confidence >= 75 %}moderate{% elif record.confidence >= 60 %}weak{% else %}inconclusive{% endif %}">
+                        {% if record.confidence >= 90 %}Strong
+                        {% elif record.confidence >= 75 %}Moderate
+                        {% elif record.confidence >= 60 %}Weak
+                        {% else %}Inconclusive{% endif %}
+                    </div>
+                    <div class="mc-sub">
+                        {% if record.confidence >= 90 %}The model is highly confident in this prediction.
+                        {% elif record.confidence >= 75 %}Reasonably confident — a solid signal.
+                        {% elif record.confidence >= 60 %}Weaker signal — human review advised.
+                        {% else %}Not confident — defer to clinical judgment.{% endif %}
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="mc-icon blue">📏</div>
+                    <div class="mc-label">Decision Margin</div>
+                    <div class="mc-value" id="marginValue">—</div>
+                    <div class="mc-sub" id="marginSub">Gap between #1 and #2 predictions.</div>
+                </div>
+                <div class="metric-card">
+                    <div class="mc-icon yellow">🎯</div>
+                    <div class="mc-label">Top Alternatives</div>
+                    <div class="mc-value" id="altCount">—</div>
+                    <div class="mc-sub">Competing classes considered by the model.</div>
+                </div>
+            </div>
+
+            <!-- ── Differential Ranking ── -->
+            <div class="section-card">
+                <div class="section-card-header">
+                    <div class="sch-left">
+                        <div class="sch-icon">📊</div>
+                        <h2>Differential Diagnosis
+                            <span>Ranked alternatives with confidence breakdown</span>
+                        </h2>
+                    </div>
+                    <div class="sch-badge">Top 3+ candidates</div>
+                </div>
+                <div class="section-card-body">
+                    <div class="diff-ranking" id="diffRanking">
+                        {% for prob in probabilities %}
+                        <div class="diff-item {% if forloop.first %}top{% endif %}">
+                            <div class="diff-rank">#{{ forloop.counter }}</div>
+                            <div class="diff-info">
+                                <div class="diff-name-row">
+                                    <span class="diff-name">{{ prob.0 }}</span>
+                                    {% if forloop.first %}
+                                        <span class="diff-tag primary">Primary</span>
+                                    {% elif prob.1 >= 5 %}
+                                        <span class="diff-tag alternative">Alternative</span>
+                                    {% else %}
+                                        <span class="diff-tag excluded">Unlikely</span>
+                                    {% endif %}
+                                </div>
+                                <div class="diff-bar-track">
+                                    <div class="diff-bar-fill" 
+                                         style="background: {{ prob.2|default:'#00e5b0' }};"
+                                         data-width="{{ prob.1 }}"></div>
+                                </div>
+                            </div>
+                            <div class="diff-pct {% if prob.1 >= 75 %}strong{% elif prob.1 >= 40 %}moderate{% else %}weak{% endif %}">
+                                {{ prob.1 }}%
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Trust Indicators ── -->
+            <div class="section-card">
+                <div class="section-card-header">
+                    <div class="sch-left">
+                        <div class="sch-icon">🛡️</div>
+                        <h2>Trust Indicators
+                            <span>Signals that determine whether to trust this prediction</span>
+                        </h2>
+                    </div>
+                    <div class="sch-badge">CACI v1.0</div>
+                </div>
+                <div class="section-card-body">
+                    <div class="trust-grid">
+                        <div class="trust-item">
+                            <div class="trust-icon {% if record.confidence >= 75 %}pass{% elif record.confidence >= 60 %}warn{% else %}fail{% endif %}">
+                                {% if record.confidence >= 75 %}✓{% elif record.confidence >= 60 %}!{% else %}✕{% endif %}
+                            </div>
+                            <div class="trust-content">
+                                <div class="trust-title">Confidence Threshold</div>
+                                <div class="trust-desc">
+                                    {% if record.confidence >= 75 %}
+                                        Confidence of {{ record.confidence }}% meets the ≥75% threshold for reliable classification.
+                                    {% elif record.confidence >= 60 %}
+                                        Confidence of {{ record.confidence }}% is below the recommended 75% threshold.
+                                    {% else %}
+                                        Confidence of {{ record.confidence }}% is too low for reliable clinical action.
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="trust-item">
+                            <div class="trust-icon {% if record.confidence >= 90 %}pass{% elif record.confidence >= 70 %}warn{% else %}fail{% endif %}">
+                                {% if record.confidence >= 90 %}✓{% elif record.confidence >= 70 %}!{% else %}✕{% endif %}
+                            </div>
+                            <div class="trust-content">
+                                <div class="trust-title">Decision Margin</div>
+                                <div class="trust-desc" id="trustMargin">
+                                    Computing margin between top classes...
+                                </div>
+                            </div>
+                        </div>
+                        <div class="trust-item">
+                            <div class="trust-icon pass">✓</div>
+                            <div class="trust-content">
+                                <div class="trust-title">Model Coverage</div>
+                                <div class="trust-desc">
+                                    The HViT model was trained on 28,000+ images across 7 disease classes and validated with 5-fold cross-validation.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="trust-item">
+                            <div class="trust-icon pass">✓</div>
+                            <div class="trust-content">
+                                <div class="trust-title">Clinical Grounding</div>
+                                <div class="trust-desc">
+                                    Interpretation anchored to standard clinical knowledge and disease severity frameworks.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Clinical Knowledge Panel ── -->
+            {% if disease_info %}
+            <div class="section-card">
+                <div class="section-card-header">
+                    <div class="sch-left">
+                        <div class="sch-icon">📚</div>
+                        <h2>Clinical Knowledge
+                            <span>Reference information about the predicted condition</span>
+                        </h2>
+                    </div>
+                    <div class="sch-badge">
+                        <span class="severity-pill {% if disease_info.severity == 'Low' %}low{% elif disease_info.severity == 'Medium' %}medium{% elif disease_info.severity == 'High' %}high{% else %}critical{% endif %}">
+                            {{ disease_info.severity|default:"Unknown" }} Severity
+                        </span>
+                    </div>
+                </div>
+                <div class="section-card-body">
+                    <div class="knowledge-grid">
+                        <div class="knowledge-block">
+                            <div class="kb-label">Description</div>
+                            <div class="kb-content">{{ disease_info.description|default:"No description available." }}</div>
+                        </div>
+                        <div class="knowledge-block">
+                            <div class="kb-label">Common Symptoms</div>
+                            <div class="kb-content">{{ disease_info.common_symptoms|default:"Not documented." }}</div>
+                        </div>
+                        <div class="knowledge-block" style="grid-column: 1 / -1;">
+                            <div class="kb-label">Standard Treatment</div>
+                            <div class="kb-content">{{ disease_info.standard_treatment|default:"Clinical correlation recommended." }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- ── Historical Comparison ── -->
+            {% if similar_cases %}
+            <div class="section-card">
+                <div class="section-card-header">
+                    <div class="sch-left">
+                        <div class="sch-icon">📈</div>
+                        <h2>Historical Comparison
+                            <span>How this case compares to your past diagnoses</span>
+                        </h2>
+                    </div>
+                    <div class="sch-badge">{{ similar_cases|length }} similar cases</div>
+                </div>
+                <div class="section-card-body">
+                    <div class="comparison-grid">
+                        <div class="comparison-stat">
+                            <div class="cs-value">{{ similar_cases|length }}</div>
+                            <div class="cs-label">Similar Cases</div>
+                            <div class="cs-desc">With the same diagnosis</div>
+                        </div>
+                        <div class="comparison-stat">
+                            <div class="cs-value">
+                                {% with total=similar_cases|length %}
+                                    {% if total > 0 %}
+                                        {% widthratio similar_cases|length total 100 %}%
+                                    {% else %}0%{% endif %}
+                                {% endwith %}
+                            </div>
+                            <div class="cs-label">Match Rate</div>
+                            <div class="cs-desc">Consistency with past findings</div>
+                        </div>
+                        <div class="comparison-stat">
+                            <div class="cs-value">{{ record.confidence|floatformat:0 }}%</div>
+                            <div class="cs-label">This Case</div>
+                            <div class="cs-desc">Current confidence level</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- ── AI Clinical Interpretation ── -->
+            <div class="section-card">
+                <div class="section-card-header">
+                    <div class="sch-left">
+                        <div class="sch-icon">🤖</div>
+                        <h2>AI Clinical Interpretation
+                            <span>Structured narrative generated from your prediction</span>
+                        </h2>
+                    </div>
+                    <div class="sch-badge">Powered by Groq</div>
+                </div>
+                <div class="section-card-body">
+                    <div id="llmContainer">
+                        <div class="llm-loader" id="llmLoader">
+                            <div class="spinner-small"></div>
+                            <span style="color:var(--text-muted);font-size:13px;">Generating clinical interpretation...</span>
+                        </div>
+                        <div id="llmContent" style="display:none;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Footer Actions ── -->
+            <div class="footer-actions">
+                <a href="{% url 'Diagnosis:report_detail' record.id %}" class="btn btn-primary">📄 View Full Report</a>
+                <a href="{% url 'Diagnosis:history' %}" class="btn btn-outline">📋 Back to History</a>
+                <a href="{% url 'Diagnosis:diagnose' %}" class="btn btn-ghost">+ New Diagnosis</a>
+            </div>
+
+        </div>
+    </div>
+
+    {% include 'includes/footer.html' %}
+
+    <input type="hidden" id="csrfToken" value="{{ csrf_token }}">
+
+    <script src="{% static 'js/shared.js' %}"></script>
+
+    <script>
+    // ────────────────────────────────────────────
+    // Record data
+    // ────────────────────────────────────────────
+    const RECORD_DATA = {
+        id: {{ record.id }},
+        case_id: "{{ record.case_id }}",
+        diagnosis: "{{ record.diagnosis|escapejs }}",
+        confidence: {{ record.confidence }},
+        modality: "{{ record.modality|default:'Not specified'|escapejs }}",
+        is_positive: {{ record.is_positive|yesno:"true,false" }},
+    };
+
+    const PROBABILITIES = [
+        {% for p in probabilities %}
+        ["{{ p.0|escapejs }}", {{ p.1 }}, "{{ p.2|default:'#00e5b0' }}"]{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    ];
+
+    // ────────────────────────────────────────────
+    // Animate confidence gauge
+    // ────────────────────────────────────────────
+    function animateGauge() {
+        const gauge = document.getElementById('gaugeFill');
+        if (!gauge) return;
+        const confidence = parseFloat(gauge.dataset.confidence) || 0;
+        const circumference = 2 * Math.PI * 85; // 534
+        const offset = circumference - (confidence / 100) * circumference;
+        setTimeout(() => {
+            gauge.style.strokeDashoffset = offset;
+        }, 200);
+    }
+
+    // ────────────────────────────────────────────
+    // Animate differential bars
+    // ────────────────────────────────────────────
+    function animateDiffBars() {
+        setTimeout(() => {
+            document.querySelectorAll('.diff-bar-fill').forEach(el => {
+                el.style.width = el.dataset.width + '%';
+            });
+        }, 400);
+    }
+
+    // ────────────────────────────────────────────
+    // Compute decision margin
+    // ────────────────────────────────────────────
+    function computeMargin() {
+        if (PROBABILITIES.length < 2) return null;
+        const sorted = [...PROBABILITIES].sort((a, b) => b[1] - a[1]);
+        return {
+            value: (sorted[0][1] - sorted[1][1]).toFixed(1),
+            top: sorted[0][0],
+            second: sorted[1][0],
+        };
+    }
+
+    function renderMargin() {
+        const m = computeMargin();
+        const marginEl = document.getElementById('marginValue');
+        const marginSub = document.getElementById('marginSub');
+        const trustMargin = document.getElementById('trustMargin');
+
+        if (!m) {
+            marginEl.textContent = 'N/A';
+            marginSub.textContent = 'Not enough classes to compare.';
+            return;
+        }
+
+        marginEl.textContent = m.value + ' pts';
+
+        let label, cls;
+        if (m.value >= 50) { label = 'Clear margin'; cls = 'strong'; }
+        else if (m.value >= 20) { label = 'Moderate margin'; cls = 'moderate'; }
+        else { label = 'Narrow margin'; cls = 'weak'; }
+
+        marginEl.className = 'mc-value ' + cls;
+        marginSub.textContent = `${label} over "${m.second}".`;
+
+        // Trust indicator
+        let trustHtml;
+        if (m.value >= 50) {
+            trustHtml = `Clear margin of <strong>${m.value} pts</strong> between "${m.top}" and "${m.second}". Strong differentiation.`;
+        } else if (m.value >= 20) {
+            trustHtml = `Moderate margin of <strong>${m.value} pts</strong>. Reasonably distinct classes.`;
+        } else {
+            trustHtml = `<strong>Narrow margin</strong> of only ${m.value} pts between "${m.top}" and "${m.second}". The model is nearly split — human review recommended.`;
+        }
+        if (trustMargin) trustMargin.innerHTML = trustHtml;
+
+        // Alternative count
+        const altCount = document.getElementById('altCount');
+        if (altCount) {
+            const above5 = PROBABILITIES.filter(p => p[1] >= 5).length - 1;
+            altCount.textContent = above5 > 0 ? `${above5} relevant` : 'None relevant';
+        }
+    }
+
+    // ────────────────────────────────────────────
+    // CSRF token
+    // ────────────────────────────────────────────
+    function getCsrfToken() {
+        return document.getElementById('csrfToken')?.value || '';
+    }
+
+    // ────────────────────────────────────────────
+    // Fetch AI interpretation
+    // ────────────────────────────────────────────
+    async function fetchInterpretation() {
+        const loader = document.getElementById('llmLoader');
+        const content = document.getElementById('llmContent');
+
+        try {
+            loader.style.display = 'flex';
+            content.style.display = 'none';
+
+            const m = computeMargin();
+            const strength = RECORD_DATA.confidence >= 90 ? 'Strong positive finding'
+                            : RECORD_DATA.confidence >= 75 ? 'Moderate finding'
+                            : RECORD_DATA.confidence >= 60 ? 'Weak finding — recommend human review'
+                            : 'Inconclusive — recommend human review';
+            const marginLabel = m
+                ? (m.value >= 50 ? 'clear margin' : m.value >= 20 ? 'moderate margin' : 'narrow margin — consider differential')
+                : 'Not evaluated';
+
+            const response = await fetch('/api/generate-interpretation/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCsrfToken()
+                },
+                body: JSON.stringify({
+                    diagnosis: RECORD_DATA.diagnosis,
+                    confidence: RECORD_DATA.confidence,
+                    modality: RECORD_DATA.modality,
+                    case_id: RECORD_DATA.case_id,
+                    differential: PROBABILITIES.slice(0, 3),
+                    strength: strength,
+                    margin_label: marginLabel,
+                    force_local: false
+                })
+            });
+
+            if (!response.ok) throw new Error('Request failed');
+            const data = await response.json();
+
+            loader.style.display = 'none';
+            content.style.display = 'block';
+
+            if (data.status === 'success') {
+                let html = data.interpretation;
+                if (html && !html.includes('<div') && !html.includes('<p')) {
+                    html = formatPlainText(html);
+                }
+                content.innerHTML = html;
+                if (data.source && data.source.includes('local')) {
+                    content.innerHTML += `<div style="margin-top:8px;font-size:11px;color:var(--text-dim);text-align:right;font-family:var(--font-mono);">ℹ️ Local interpretation</div>`;
+                }
+            } else {
+                throw new Error(data.message || 'Unknown error');
+            }
+        } catch (err) {
+            loader.style.display = 'none';
+            content.style.display = 'block';
+            content.innerHTML = `
+                <div style="padding:16px;background:rgba(255,85,117,0.08);border-radius:8px;border:1px solid rgba(255,85,117,0.15);">
+                    <p style="color:var(--red);font-weight:600;">❌ Failed to load AI interpretation</p>
+                    <p style="color:var(--text-muted);font-size:13px;">${err.message || 'Please try again.'}</p>
+                </div>
+            `;
+        }
+    }
+
+    function formatPlainText(text) {
+        const lines = text.split('\n');
+        let html = '';
+        let currentSection = null;
+        let items = [];
+
+        function flush() {
+            if (!currentSection) return;
+            html += `<div class="llm-numbered-section">
+                <div class="llm-section-number">${currentSection}</div>
+                <div class="llm-section-content">${items.length ? '<ul>' + items.map(i => `<li>${i}</li>`).join('') + '</ul>' : ''}</div>
+            </div>`;
+            items = [];
+        }
+
+        for (const raw of lines) {
+            const line = raw.trim();
+            if (!line) continue;
+            const s = line.match(/^(\d+)\.\s+(.+)$/);
+            if (s) {
+                flush();
+                currentSection = `${s[1]}. ${s[2]}`;
+                continue;
+            }
+            const b = line.match(/^[-•]\s+(.+)$/);
+            if (b && currentSection) { items.push(b[1]); continue; }
+            if (currentSection) items.push(line);
+        }
+        flush();
+
+        return `<div class="llm-interpretation-container">
+            <div class="llm-header">
+                <span class="llm-icon">AI</span>
+                <span class="llm-title">Clinical Interpretation</span>
+                <span class="llm-badge">Powered by Groq</span>
+            </div>
+            <div class="llm-body">${html}</div>
+            <div class="llm-footer">Generated by AI - ${new Date().toLocaleString()}</div>
+        </div>`;
+    }
+
+    // ────────────────────────────────────────────
+    // Init
+    // ────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', function() {
+        animateGauge();
+        animateDiffBars();
+        renderMargin();
+        fetchInterpretation();
+    });
+    </script>
+</body>
+</html>

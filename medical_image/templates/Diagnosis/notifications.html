@@ -1,0 +1,777 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+    <title>X-HViT | Notifications</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="{% static 'css/shared.css' %}"/>
+    <style>
+        /* ============================================
+           NOTIFICATIONS PAGE STYLES
+           ============================================ */
+        .notifications-page {
+            padding: 120px 0 60px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Header */
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .page-header .header-left h1 {
+            font-family: var(--font-head);
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin: 0;
+        }
+
+        .page-header .header-left h1 .gradient-text {
+            background: linear-gradient(135deg, var(--teal), var(--blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-header .header-left p {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .page-header .header-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .section-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--teal);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 4px 16px;
+            background: rgba(0, 229, 176, 0.06);
+            border: 1px solid rgba(0, 229, 176, 0.1);
+            border-radius: 100px;
+            margin-bottom: 4px;
+        }
+
+        .section-tag .pulse-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--teal);
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(0.7); }
+        }
+
+        /* Stats */
+        .notif-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .notif-stat {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: var(--r-md);
+            padding: 16px 20px;
+            text-align: center;
+        }
+
+        .notif-stat .stat-number {
+            font-family: var(--font-head);
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--teal);
+        }
+
+        .notif-stat .stat-label {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 4px;
+        }
+
+        /* Notification List */
+        .notif-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .notif-item {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: var(--r-md);
+            padding: 16px 20px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            position: relative;
+        }
+
+        .notif-item:hover {
+            border-color: rgba(0, 229, 176, 0.15);
+        }
+
+        .notif-item.unread {
+            border-left: 4px solid var(--teal);
+            background: rgba(0, 229, 176, 0.02);
+        }
+
+        .notif-item .notif-icon {
+            font-size: 28px;
+            flex-shrink: 0;
+            width: 44px;
+            height: 44px;
+            background: var(--bg3);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .notif-item .notif-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .notif-item .notif-content .notif-title {
+            font-family: var(--font-head);
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .notif-item .notif-content .notif-message {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .notif-item .notif-content .notif-time {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--text-dim);
+            margin-top: 6px;
+        }
+
+        .notif-item .notif-actions {
+            display: flex;
+            gap: 6px;
+            flex-shrink: 0;
+            align-items: center;
+        }
+
+        .notif-item .notif-actions .btn-icon {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+
+        .notif-item .notif-actions .btn-icon:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text);
+        }
+
+        .notif-item .notif-actions .btn-icon.delete:hover {
+            color: var(--red);
+        }
+
+        .notif-item .notif-actions .btn-icon.read:hover {
+            color: var(--teal);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-state .empty-icon {
+            font-size: 60px;
+            opacity: 0.15;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .empty-state h3 {
+            font-family: var(--font-head);
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            color: var(--text-muted);
+            font-size: 14px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: var(--r-sm);
+            font-family: var(--font-body);
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--teal), var(--teal-dim));
+            color: var(--bg);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(0, 229, 176, 0.3);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        .btn-ghost:hover {
+            background: var(--bg3);
+            border-color: rgba(255, 255, 255, 0.18);
+            transform: translateY(-2px);
+        }
+
+        .btn-sm {
+            padding: 6px 14px;
+            font-size: 12px;
+        }
+
+        /* Toast */
+        .toast-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 380px;
+        }
+
+        .toast {
+            padding: 12px 16px;
+            border-radius: var(--r-sm);
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--info);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            transform: translateX(120%);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast-success { border-left-color: var(--teal); }
+        .toast-error { border-left-color: var(--red); }
+        .toast-warning { border-left-color: var(--yellow); }
+        .toast-info { border-left-color: var(--blue); }
+
+        /* Messages */
+        .messages {
+            margin-bottom: 16px;
+        }
+
+        .alert {
+            padding: 10px 14px;
+            border-radius: var(--r-sm);
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-success {
+            background: rgba(0, 229, 176, 0.08);
+            border: 1px solid rgba(0, 229, 176, 0.15);
+            color: var(--teal);
+        }
+
+        .alert-error {
+            background: rgba(255, 85, 117, 0.08);
+            border: 1px solid rgba(255, 85, 117, 0.15);
+            color: var(--red);
+        }
+
+        .alert-warning {
+            background: rgba(255, 201, 71, 0.08);
+            border: 1px solid rgba(255, 201, 71, 0.15);
+            color: var(--yellow);
+        }
+
+        .alert-info {
+            background: rgba(58, 155, 255, 0.08);
+            border: 1px solid rgba(58, 155, 255, 0.15);
+            color: var(--blue);
+        }
+
+        .alert .alert-icon {
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .notifications-page {
+                padding: 100px 0 40px;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .page-header .header-actions {
+                width: 100%;
+            }
+
+            .page-header .header-actions .btn {
+                flex: 1;
+                justify-content: center;
+            }
+
+            .notif-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .notif-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .notif-item .notif-actions {
+                width: 100%;
+                justify-content: flex-end;
+                margin-top: 8px;
+            }
+
+            .notif-item .notif-actions .btn-icon {
+                padding: 8px 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .notif-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .page-header .header-left h1 {
+                font-size: 22px;
+            }
+
+            .notif-item {
+                padding: 14px 16px;
+            }
+
+            .notif-item .notif-icon {
+                width: 36px;
+                height: 36px;
+                font-size: 20px;
+            }
+
+            .notif-item .notif-content .notif-title {
+                font-size: 14px;
+            }
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .notif-item {
+            animation: fadeInUp 0.4s ease forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .notif-item:nth-child(1) { animation-delay: 0.05s; }
+        .notif-item:nth-child(2) { animation-delay: 0.10s; }
+        .notif-item:nth-child(3) { animation-delay: 0.15s; }
+        .notif-item:nth-child(4) { animation-delay: 0.20s; }
+        .notif-item:nth-child(5) { animation-delay: 0.25s; }
+        .notif-item:nth-child(6) { animation-delay: 0.30s; }
+        .notif-item:nth-child(7) { animation-delay: 0.35s; }
+        .notif-item:nth-child(8) { animation-delay: 0.40s; }
+        .notif-item:nth-child(9) { animation-delay: 0.45s; }
+        .notif-item:nth-child(10) { animation-delay: 0.50s; }
+    </style>
+</head>
+<body>
+    <div class="grid-bg"></div>
+
+    <!-- Navigation -->
+    {% include 'includes/nav.html' %}
+
+    <!-- Notifications Page -->
+    <div class="notifications-page">
+        <div class="container">
+
+            <!-- Header -->
+            <div class="page-header reveal">
+                <div class="header-left">
+                    <div class="section-tag">
+                        <span class="pulse-dot"></span>
+                        Notifications
+                    </div>
+                    <h1>Your <span class="gradient-text">Notifications</span></h1>
+                    <p>Stay updated with your diagnostic activities and system alerts.</p>
+                </div>
+                <div class="header-actions">
+                    {% if unread_count > 0 %}
+                        <a href="?mark_all_read=true" class="btn btn-primary btn-sm" onclick="return confirm('Mark all notifications as read?')">
+                            ✅ Mark All Read
+                        </a>
+                    {% endif %}
+                    <a href="{% url 'Diagnosis:dashboard' %}" class="btn btn-ghost btn-sm">← Back to Dashboard</a>
+                </div>
+            </div>
+
+            <!-- Messages -->
+            {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    <span class="alert-icon">
+                        {% if message.tags == 'success' %}✅
+                        {% elif message.tags == 'error' %}❌
+                        {% elif message.tags == 'warning' %}⚠️
+                        {% else %}ℹ️{% endif %}
+                    </span>
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Stats -->
+            <div class="notif-stats reveal reveal-delay-1">
+                <div class="notif-stat">
+                    <div class="stat-number">{{ total_count|default:0 }}</div>
+                    <div class="stat-label">Total</div>
+                </div>
+                <div class="notif-stat">
+                    <div class="stat-number" style="color:var(--yellow);">{{ unread_count|default:0 }}</div>
+                    <div class="stat-label">Unread</div>
+                </div>
+                <div class="notif-stat">
+                    <div class="stat-number" style="color:var(--blue);">{{ read_count|default:0 }}</div>
+                    <div class="stat-label">Read</div>
+                </div>
+            </div>
+
+            <!-- Notification List -->
+            <div class="notif-list">
+                {% if notifications %}
+                    {% for notification in notifications %}
+                        <div class="notif-item {% if not notification.is_read %}unread{% endif %}" id="notif-{{ notification.id }}">
+                            <div class="notif-icon">
+                                {% if notification.notification_type == 'diagnosis_complete' %}🧠
+                                {% elif notification.notification_type == 'report_ready' %}📄
+                                {% elif notification.notification_type == 'payment_success' %}💰
+                                {% elif notification.notification_type == 'subscription_expiry' %}⚠️
+                                {% elif notification.notification_type == 'welcome' %}👋
+                                {% elif notification.notification_type == 'feedback_request' %}⭐
+                                {% elif notification.notification_type == 'system_update' %}🔄
+                                {% else %}📬{% endif %}
+                            </div>
+                            <div class="notif-content">
+                                <div class="notif-title">{{ notification.title }}</div>
+                                <div class="notif-message">{{ notification.message }}</div>
+                                <div class="notif-time">{{ notification.created_at|timesince }} ago</div>
+                            </div>
+                            <div class="notif-actions">
+                                {% if not notification.is_read %}
+                                    <button class="btn-icon read" onclick="markAsRead({{ notification.id }})" title="Mark as read">
+                                        ✅
+                                    </button>
+                                {% endif %}
+                                {% if notification.link %}
+                                    <a href="{{ notification.link }}" class="btn-icon" title="View details" style="color:var(--teal);text-decoration:none;">
+                                        👁️
+                                    </a>
+                                {% endif %}
+                                <button class="btn-icon delete" onclick="deleteNotification({{ notification.id }})" title="Delete">
+                                    🗑️
+                                </button>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <span class="empty-icon">📬</span>
+                        <h3>No notifications yet</h3>
+                        <p>When you receive notifications about your diagnostic activities, they will appear here.</p>
+                        <a href="{% url 'Diagnosis:diagnose' %}" class="btn btn-primary" style="margin-top:16px;">
+                            🧠 Start Your First Diagnosis
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Footer -->
+    {% include 'includes/footer.html' %}
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="{% static 'js/shared.js' %}"></script>
+
+    <script>
+        // ============================================
+        // CSRF TOKEN HELPER
+        // ============================================
+        function getCsrfToken() {
+            return document.querySelector('[name=csrfmiddlewaretoken]').value;
+        }
+
+        // ============================================
+        // MARK NOTIFICATION AS READ
+        // ============================================
+        function markAsRead(notificationId) {
+            fetch(`/notifications/mark-read/${notificationId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCsrfToken(),
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    const item = document.getElementById(`notif-${notificationId}`);
+                    item.classList.remove('unread');
+                    const actions = item.querySelector('.notif-actions');
+                    const readBtn = actions.querySelector('.read');
+                    if (readBtn) readBtn.remove();
+                    
+                    // Update stats
+                    updateStats();
+                    
+                    showToast('✅ Notification marked as read', 'success');
+                } else {
+                    showToast('❌ Failed to mark as read', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('❌ An error occurred', 'error');
+            });
+        }
+
+        // ============================================
+        // DELETE NOTIFICATION
+        // ============================================
+        function deleteNotification(notificationId) {
+            if (!confirm('Delete this notification?')) return;
+            
+            fetch(`/notifications/delete/${notificationId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCsrfToken(),
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    const item = document.getElementById(`notif-${notificationId}`);
+                    item.style.transition = 'all 0.3s ease';
+                    item.style.opacity = '0';
+                    item.style.transform = 'translateX(20px)';
+                    setTimeout(() => {
+                        item.remove();
+                        updateStats();
+                        // Show empty state if no notifications left
+                        const list = document.querySelector('.notif-list');
+                        if (list.children.length === 0) {
+                            list.innerHTML = `
+                                <div class="empty-state">
+                                    <span class="empty-icon">📬</span>
+                                    <h3>No notifications yet</h3>
+                                    <p>When you receive notifications about your diagnostic activities, they will appear here.</p>
+                                    <a href="{% url 'Diagnosis:diagnose' %}" class="btn btn-primary" style="margin-top:16px;">
+                                        🧠 Start Your First Diagnosis
+                                    </a>
+                                </div>
+                            `;
+                        }
+                    }, 300);
+                    
+                    showToast('🗑️ Notification deleted', 'info');
+                } else {
+                    showToast('❌ Failed to delete notification', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('❌ An error occurred', 'error');
+            });
+        }
+
+        // ============================================
+        // UPDATE STATS
+        // ============================================
+        function updateStats() {
+            const items = document.querySelectorAll('.notif-item');
+            const total = items.length;
+            const unread = document.querySelectorAll('.notif-item.unread').length;
+            const read = total - unread;
+            
+            const statNumbers = document.querySelectorAll('.stat-number');
+            if (statNumbers.length >= 3) {
+                statNumbers[0].textContent = total;
+                statNumbers[1].textContent = unread;
+                statNumbers[2].textContent = read;
+            }
+        }
+
+        // ============================================
+        // TOAST NOTIFICATION
+        // ============================================
+        function showToast(message, type = 'info', duration = 4000) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            const colors = {
+                success: 'var(--teal)',
+                error: 'var(--red)',
+                warning: 'var(--yellow)',
+                info: 'var(--blue)'
+            };
+            const icons = {
+                success: '✅',
+                error: '❌',
+                warning: '⚠️',
+                info: 'ℹ️'
+            };
+
+            toast.className = `toast toast-${type}`;
+            toast.innerHTML = `
+                <span style="font-size:18px;">${icons[type] || icons.info}</span>
+                <span>${message}</span>
+            `;
+            container.appendChild(toast);
+
+            requestAnimationFrame(() => {
+                toast.classList.add('show');
+            });
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 400);
+            }, duration);
+        }
+
+        // ============================================
+        // REVEAL ANIMATIONS
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            const reveals = document.querySelectorAll('.reveal');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            reveals.forEach(el => observer.observe(el));
+
+            // Show toast if there are messages
+            {% if messages %}
+                {% for message in messages %}
+                    showToast('{{ message }}', '{{ message.tags }}');
+                {% endfor %}
+            {% endif %}
+
+            console.log('Notifications page loaded');
+        });
+    </script>
+</body>
+</html>

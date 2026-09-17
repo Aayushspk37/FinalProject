@@ -1,0 +1,492 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>X-HViT | Support</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="{% static 'css/shared.css' %}"/>
+<style>
+/* Hero */
+.support-hero {
+  padding: 160px 32px 70px;
+  position: relative; z-index: 1;
+  background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(58,155,255,0.07) 0%, transparent 70%);
+}
+.support-hero .hero-badge {
+  display: inline-block;
+  padding: 4px 16px;
+  border-radius: 100px;
+  background: rgba(0,229,176,0.08);
+  color: var(--teal);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border: 1px solid rgba(0,229,176,0.12);
+  margin-bottom: 16px;
+}
+
+/* Quick actions */
+#quick { padding: 70px 0; position: relative; z-index:1; }
+.quick-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; margin-top: 48px; }
+.quick-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r-lg); padding: 32px 28px;
+  transition: all 0.3s; cursor: pointer; text-decoration: none; color: inherit;
+  display: block; position: relative; overflow: hidden;
+}
+.quick-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top right, rgba(0,229,176,0.03) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.quick-card:hover::before { opacity: 1; }
+.quick-card:hover { border-color: rgba(0,229,176,0.25); transform: translateY(-6px); box-shadow: 0 20px 60px rgba(0,0,0,0.10); }
+.quick-card .qc-icon { font-size: 36px; margin-bottom: 16px; display: block; }
+.quick-card .qc-title { font-family: var(--font-head); font-size: 18px; font-weight: 700; letter-spacing: -0.4px; margin-bottom: 8px; }
+.quick-card .qc-desc { font-size: 13.5px; color: var(--text-muted); line-height: 1.65; }
+.quick-card .qc-arrow { margin-top: 16px; font-family: var(--font-mono); font-size: 12px; color: var(--teal); display: inline-flex; align-items: center; gap: 6px; }
+.quick-card .qc-arrow::after { content: '→'; transition: transform 0.3s; }
+.quick-card:hover .qc-arrow::after { transform: translateX(4px); }
+.quick-card .qc-badge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  font-family: var(--font-mono);
+  font-size: 7px;
+  padding: 2px 10px;
+  border-radius: 100px;
+  background: rgba(0,229,176,0.08);
+  color: var(--teal);
+  border: 1px solid rgba(0,229,176,0.1);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* FAQ Section */
+#faq { padding: 80px 0; background: var(--bg2); position: relative; z-index:1; }
+.faq-list { margin-top: 48px; display: flex; flex-direction: column; gap: 8px; max-width: 860px; margin-left: auto; margin-right: auto; }
+.faq-item {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r-md); overflow: hidden;
+  transition: all 0.3s;
+}
+.faq-item:hover { border-color: rgba(0,229,176,0.12); }
+.faq-item.open { border-color: rgba(0,229,176,0.2); box-shadow: 0 4px 20px rgba(0,229,176,0.04); }
+.faq-q {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 24px; cursor: pointer;
+  font-family: var(--font-head); font-size: 15px; font-weight: 700;
+  letter-spacing: -0.2px; color: var(--text);
+  transition: color 0.3s;
+  gap: 16px;
+}
+.faq-q:hover { color: var(--teal); }
+.faq-q .faq-icon { 
+  font-size: 20px; 
+  color: var(--text-dim); 
+  transition: transform 0.3s, color 0.3s;
+  flex-shrink: 0;
+  font-weight: 300;
+}
+.faq-item.open .faq-icon { transform: rotate(45deg); color: var(--teal); }
+.faq-item .faq-q .faq-num {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--teal);
+  opacity: 0.5;
+  margin-right: 8px;
+}
+.faq-a {
+  display: none; padding: 0 24px 20px;
+  font-size: 14px; color: var(--text-muted); line-height: 1.75;
+}
+.faq-item.open .faq-a { display: block; animation: fadeIn 0.3s ease; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.faq-a .faq-tag {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  padding: 2px 10px;
+  border-radius: 100px;
+  background: rgba(0,229,176,0.06);
+  color: var(--teal);
+  border: 1px solid rgba(0,229,176,0.08);
+  margin-top: 8px;
+  letter-spacing: 0.5px;
+}
+
+/* Contact Section */
+#contact { padding: 80px 0; position: relative; z-index:1; }
+.contact-layout { display: grid; grid-template-columns: 1fr 1.4fr; gap: 48px; margin-top: 56px; align-items: start; }
+.contact-info { display: flex; flex-direction: column; gap: 16px; }
+.ci-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r-md); padding: 20px 22px;
+  display: flex; align-items: flex-start; gap: 16px;
+  transition: all 0.3s;
+}
+.ci-card:hover { border-color: rgba(0,229,176,0.15); }
+.ci-icon { font-size: 24px; flex-shrink: 0; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: rgba(0,229,176,0.06); border-radius: 10px; }
+.ci-label { font-family: var(--font-mono); font-size: 9px; color: var(--teal); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 3px; }
+.ci-value { font-size: 14px; color: var(--text); font-weight: 500; }
+.ci-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+.contact-form {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--r-lg); overflow: hidden;
+}
+.cf-header { padding: 16px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+.cf-header .cf-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); }
+.cf-header h3 { font-family: var(--font-head); font-size: 16px; font-weight: 700; letter-spacing: -0.3px; }
+.cf-body { padding: 28px; display: flex; flex-direction: column; gap: 16px; }
+.form-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-group2 {}
+.form-label2 { display: block; font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 6px; }
+.form-input2, .form-select2, .form-textarea {
+  width: 100%; padding: 11px 16px; border-radius: var(--r-sm);
+  background: var(--bg); border: 1px solid var(--border);
+  color: var(--text); font-family: var(--font-body); font-size: 14px;
+  outline: none; transition: border-color 0.2s; appearance: none;
+}
+.form-input2:focus, .form-select2:focus, .form-textarea:focus { border-color: rgba(0,229,176,0.4); }
+.form-textarea { resize: vertical; min-height: 110px; }
+.form-select2 option { background: var(--bg2); }
+.submit-btn {
+  width: 100%; padding: 14px;
+  background: var(--teal); color: var(--bg);
+  border: none; border-radius: var(--r-md);
+  font-family: var(--font-head); font-size: 15px; font-weight: 700;
+  cursor: pointer; transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.submit-btn:hover { background: var(--teal-dim); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,229,176,0.2); }
+.submit-success {
+  display: none; text-align: center; padding: 32px 24px;
+  background: rgba(0,229,176,0.06); border: 1px solid rgba(0,229,176,0.15);
+  border-radius: var(--r-md);
+}
+.submit-success.show { display: block; animation: fadeIn 0.4s ease; }
+.submit-success .ss-icon { font-size: 44px; margin-bottom: 12px; display: block; }
+.submit-success h4 { font-family: var(--font-head); font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+.submit-success p { font-size: 13px; color: var(--text-muted); }
+
+/* Responsive */
+@media(max-width:1024px) {
+  .quick-grid { grid-template-columns: 1fr 1fr; }
+  .contact-layout { grid-template-columns: 1fr; }
+}
+@media(max-width:768px) {
+  .quick-grid { grid-template-columns: 1fr; }
+  .form-row2 { grid-template-columns: 1fr; }
+  .support-hero { padding: 130px 20px 50px; }
+}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+{% include 'includes/nav.html' %}
+
+<div class="support-hero">
+  <div class="container">
+    <div style="animation:fadeUp 0.6s ease both">
+      <div class="hero-badge">🆘 Help Center</div>
+      <h1 style="font-family:var(--font-head);font-size:clamp(38px,6vw,68px);font-weight:800;letter-spacing:-3px;margin-bottom:16px">Support <span style="color:var(--teal)">&amp; Help</span></h1>
+      <p style="font-size:17px;color:var(--text-muted);max-width:540px;line-height:1.7">Get help using X-HViT, report bugs, or contact the development team. We're here to assist with your research experience.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section-divider"></div>
+
+<!-- Quick Actions -->
+<section id="quick">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-tag">Quick Help</div>
+      <h2 class="section-title">How Can We <span class="teal">Help?</span></h2>
+      <p class="section-desc" style="margin-top:8px;">Choose from the options below to get the support you need.</p>
+    </div>
+    <div class="quick-grid">
+      <a href="#faq" class="quick-card reveal">
+        <span class="qc-badge">Popular</span>
+        <span class="qc-icon">❓</span>
+        <div class="qc-title">Frequently Asked Questions</div>
+        <div class="qc-desc">Browse answers to common questions about the platform, model, and diagnostic process.</div>
+        <div class="qc-arrow">Browse FAQ</div>
+      </a>
+      <a href="#contact" class="quick-card reveal reveal-d1">
+        <span class="qc-badge">Contact</span>
+        <span class="qc-icon">✉️</span>
+        <div class="qc-title">Contact the Team</div>
+        <div class="qc-desc">Send a message directly to the development team for technical issues, feedback, or collaboration.</div>
+        <div class="qc-arrow">Send Message</div>
+      </a>
+      <a href="/documentation" class="quick-card reveal reveal-d2">
+        <span class="qc-badge">Docs</span>
+        <span class="qc-icon">📚</span>
+        <div class="qc-title">Documentation</div>
+        <div class="qc-desc">Read the full documentation covering architecture, API, and integration guides.</div>
+        <div class="qc-arrow">View Docs</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- FAQ Section -->
+<section id="faq">
+  <div class="container">
+    <div class="reveal" style="text-align:center">
+      <div class="section-tag" style="justify-content:center;">FAQ</div>
+      <h2 class="section-title">Frequently Asked <span class="teal">Questions</span></h2>
+      <p class="section-desc" style="margin-top:8px;">Find quick answers to the most common questions.</p>
+    </div>
+    <div class="faq-list reveal">
+      <div class="faq-item open">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span><span class="faq-num">01.</span>Can X-HViT be used for real clinical diagnosis?</span>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-a">
+          No. X-HViT is an academic research prototype. Its outputs are AI-generated predictions for educational purposes only and must not be used to make clinical decisions. Always consult a qualified medical professional for diagnosis and treatment.
+          <span class="faq-tag">⚠️ Important</span>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span><span class="faq-num">02.</span>What image formats are supported?</span>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-a">
+          The platform accepts JPEG (.jpg), PNG (.png), TIFF (.tiff), and DICOM (.dcm) files. All images are internally resized to 224×224 pixels and normalized before inference. Images should be single-channel or RGB; multi-frame DICOM stacks are not supported in the current version.
+          <span class="faq-tag">📷 Formats</span>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span><span class="faq-num">03.</span>How does Grad-CAM explainability work?</span>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-a">
+          Grad-CAM (Gradient-weighted Class Activation Mapping) uses gradients of the predicted class score flowing back into the final CNN convolutional layer to produce a heatmap highlighting the regions most relevant to the prediction. Higher-intensity (red/yellow) regions indicate higher contribution to the classification decision.
+          <span class="faq-tag">🔬 XAI</span>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span><span class="faq-num">04.</span>What diseases can X-HViT detect?</span>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-a">
+          X-HViT currently supports: Brain tumors (Glioma, Meningioma, Pituitary) from MRI; Lung adenocarcinoma and nodules from CT; Pneumonia, tuberculosis, fractures from X-ray; and malignant cells, malaria, skin lesions from microscopic imaging. Visit the Modalities page for full details.
+          <span class="faq-tag">🩺 Diseases</span>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span><span class="faq-num">05.</span>Is my uploaded image data stored?</span>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-a">
+          No. Uploaded images are processed entirely in-session and are not permanently stored on any server. The system does not retain patient data beyond the active browser session. Always anonymize DICOM files before uploading by stripping patient metadata.
+          <span class="faq-tag">🔒 Privacy</span>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span><span class="faq-num">06.</span>What training data was used?</span>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-a">
+          The model was trained on 28,000+ labeled medical images sourced from Mendeley Data, covering CT, MRI, X-ray, and microscopic modalities. Data was preprocessed with normalization, Gaussian noise filtering, and augmentation (rotation, flipping, zoom) for robust generalization.
+          <span class="faq-tag">📊 Data</span>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span><span class="faq-num">07.</span>How do I download a diagnostic report?</span>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-a">
+          After running a diagnosis, click the "Full Report" button in the result panel. This takes you to the Report page where you can view the structured diagnostic summary and download it as a PDF. Report generation includes the diagnosis, confidence scores, probability distribution, and Grad-CAM heatmap.
+          <span class="faq-tag">📄 Reports</span>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span><span class="faq-num">08.</span>What is the model's accuracy?</span>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-a">
+          X-HViT targets 95%+ classification accuracy with 93.8% precision, 94.5% recall, and 94.1% F1-score across the test dataset. Performance varies by modality and disease class. See the Metrics page for full evaluation results and evaluation methodology.
+          <span class="faq-tag">📊 Performance</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- Contact Section -->
+<section id="contact">
+  <div class="container">
+    <div class="reveal" style="text-align:center">
+      <div class="section-tag" style="justify-content:center;">Contact</div>
+      <h2 class="section-title">Get In <span class="teal">Touch</span></h2>
+      <p class="section-desc" style="margin-top:8px;">Have a question, found a bug, or want to collaborate? Reach out to the team.</p>
+    </div>
+    <div class="contact-layout">
+      <div class="contact-info reveal">
+        <div class="ci-card">
+          <div class="ci-icon">📧</div>
+          <div>
+            <div class="ci-label">Email</div>
+            <div class="ci-value">xhvit@medical.ai</div>
+            <div class="ci-sub">Response within 2–3 business days</div>
+          </div>
+        </div>
+        <div class="ci-card">
+          <div class="ci-icon">💬</div>
+          <div>
+            <div class="ci-label">GitHub Issues</div>
+            <div class="ci-value">Report bugs &amp; request features</div>
+            <div class="ci-sub">Open an issue on our repository</div>
+          </div>
+        </div>
+        <div class="ci-card">
+          <div class="ci-icon">📚</div>
+          <div>
+            <div class="ci-label">Documentation</div>
+            <div class="ci-value">Full API reference &amp; guides</div>
+            <div class="ci-sub">Available 24/7</div>
+          </div>
+        </div>
+        <div class="ci-card">
+          <div class="ci-icon">🌐</div>
+          <div>
+            <div class="ci-label">Location</div>
+            <div class="ci-value">Nepal</div>
+            <div class="ci-sub">UTC +5:45</div>
+          </div>
+        </div>
+      </div>
+      <div class="contact-form reveal reveal-d1">
+        <div class="cf-header">
+          <div class="cf-dot"></div>
+          <h3>Send a Message</h3>
+        </div>
+        <div class="cf-body">
+          <div class="submit-success" id="submitSuccess">
+            <span class="ss-icon">✅</span>
+            <h4>Message Sent!</h4>
+            <p>Thank you for reaching out. The X-HViT team will respond within 2–3 business days.</p>
+          </div>
+          <div id="contactForm">
+            <div class="form-row2">
+              <div class="form-group2">
+                <label class="form-label2">Full Name</label>
+                <input class="form-input2" type="text" placeholder="Your name" id="contactName"/>
+              </div>
+              <div class="form-group2">
+                <label class="form-label2">Email</label>
+                <input class="form-input2" type="email" placeholder="your@email.com" id="contactEmail"/>
+              </div>
+            </div>
+            <div class="form-group2">
+              <label class="form-label2">Category</label>
+              <select class="form-select2" id="contactCategory">
+                <option value="bug">Bug Report</option>
+                <option value="feature">Feature Request</option>
+                <option value="collaboration">Research Collaboration</option>
+                <option value="question">General Question</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="form-group2">
+              <label class="form-label2">Subject</label>
+              <input class="form-input2" type="text" placeholder="Brief summary of your message" id="contactSubject"/>
+            </div>
+            <div class="form-group2">
+              <label class="form-label2">Message</label>
+              <textarea class="form-textarea" placeholder="Describe your issue or question in detail…" id="contactMessage"></textarea>
+            </div>
+            <button class="submit-btn" onclick="submitForm()">
+              <span>✉️</span> Send Message
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% include 'includes/footer.html' %}
+
+<script src="{% static 'js/shared.js' %}"></script>
+
+<script>
+// ============================================
+// FAQ TOGGLE
+// ============================================
+function toggleFaq(el) {
+  const item = el.parentElement;
+  const isOpen = item.classList.contains('open');
+  
+  // Close all other items
+  document.querySelectorAll('.faq-item').forEach(function(i) {
+    if (i !== item) {
+      i.classList.remove('open');
+    }
+  });
+  
+  // Toggle clicked item
+  item.classList.toggle('open');
+}
+
+// ============================================
+// CONTACT FORM SUBMISSION
+// ============================================
+function submitForm() {
+  const name = document.getElementById('contactName').value.trim();
+  const email = document.getElementById('contactEmail').value.trim();
+  const subject = document.getElementById('contactSubject').value.trim();
+  const message = document.getElementById('contactMessage').value.trim();
+  
+  // Simple validation
+  if (!name || !email || !subject || !message) {
+    alert('Please fill in all fields before submitting.');
+    return;
+  }
+  
+  if (!email.includes('@')) {
+    alert('Please enter a valid email address.');
+    return;
+  }
+  
+  // Show success
+  document.getElementById('contactForm').style.display = 'none';
+  document.getElementById('submitSuccess').classList.add('show');
+}
+
+// ============================================
+// AUTO-OPEN FIRST FAQ ON LOAD
+// ============================================
+document.addEventListener('DOMContentLoaded', function() {
+  const firstFaq = document.querySelector('.faq-item');
+  if (firstFaq) {
+    firstFaq.classList.add('open');
+  }
+});
+</script>
+</body>
+</html>

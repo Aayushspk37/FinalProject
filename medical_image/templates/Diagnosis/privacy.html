@@ -1,0 +1,759 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+    <title>X-HViT | Privacy Policy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="{% static 'css/shared.css' %}"/>
+    <style>
+        /* ============================================
+           PRIVACY PAGE STYLES
+           ============================================ */
+        .privacy-page {
+            padding: 120px 0 60px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .section-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--teal);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 4px 16px;
+            background: rgba(0, 229, 176, 0.06);
+            border: 1px solid rgba(0, 229, 176, 0.1);
+            border-radius: 100px;
+            margin-bottom: 12px;
+        }
+
+        .section-tag .pulse-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--teal);
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(0.7); }
+        }
+
+        .page-title {
+            font-family: var(--font-head);
+            font-size: clamp(36px, 4vw, 48px);
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            margin-bottom: 12px;
+        }
+
+        .page-title .gradient-text {
+            background: linear-gradient(135deg, var(--teal), var(--blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-desc {
+            font-size: 16px;
+            color: var(--text-muted);
+            max-width: 560px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        .last-updated {
+            text-align: center;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-dim);
+            margin-top: 8px;
+        }
+
+        /* Privacy Content */
+        .privacy-content {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: var(--r-lg);
+            padding: 48px;
+        }
+
+        .privacy-content .section {
+            margin-bottom: 32px;
+            padding-bottom: 32px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .privacy-content .section:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .privacy-content .section h2 {
+            font-family: var(--font-head);
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 12px;
+            color: var(--text);
+        }
+
+        .privacy-content .section h2 .section-number {
+            color: var(--teal);
+            font-family: var(--font-mono);
+            font-size: 14px;
+            margin-right: 8px;
+        }
+
+        .privacy-content .section p {
+            font-size: 15px;
+            color: var(--text-muted);
+            line-height: 1.8;
+            margin-bottom: 12px;
+        }
+
+        .privacy-content .section p:last-child {
+            margin-bottom: 0;
+        }
+
+        .privacy-content .section ul {
+            list-style: none;
+            margin: 12px 0 16px;
+            padding: 0;
+        }
+
+        .privacy-content .section ul li {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 14.5px;
+            color: var(--text-muted);
+            line-height: 1.7;
+            padding: 6px 0;
+        }
+
+        .privacy-content .section ul li .li-icon {
+            color: var(--teal);
+            font-weight: 700;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .privacy-content .section ul li strong {
+            color: var(--text);
+        }
+
+        .privacy-content .section .highlight-box {
+            background: rgba(0, 229, 176, 0.04);
+            border: 1px solid rgba(0, 229, 176, 0.1);
+            border-radius: var(--r-sm);
+            padding: 16px 20px;
+            margin: 12px 0;
+        }
+
+        .privacy-content .section .highlight-box strong {
+            color: var(--teal);
+        }
+
+        .privacy-content .section .data-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 12px 0;
+        }
+
+        .privacy-content .section .data-grid .data-item {
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: var(--r-sm);
+            padding: 14px 16px;
+        }
+
+        .privacy-content .section .data-grid .data-item .data-label {
+            font-family: var(--font-mono);
+            font-size: 9px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .privacy-content .section .data-grid .data-item .data-value {
+            font-size: 13px;
+            color: var(--text);
+            margin-top: 4px;
+            font-weight: 500;
+        }
+
+        /* Table of Contents */
+        .toc {
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: var(--r-md);
+            padding: 20px 24px;
+            margin-bottom: 32px;
+        }
+
+        .toc .toc-title {
+            font-family: var(--font-head);
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text);
+        }
+
+        .toc .toc-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px 24px;
+        }
+
+        .toc .toc-list a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 13px;
+            padding: 4px 0;
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .toc .toc-list a:hover {
+            color: var(--teal);
+        }
+
+        .toc .toc-list a .toc-num {
+            color: var(--teal);
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        /* Back to Top */
+        .back-top {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--teal);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: gap 0.3s ease;
+        }
+
+        .back-top:hover {
+            gap: 14px;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: var(--r-sm);
+            font-family: var(--font-body);
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--teal), var(--teal-dim));
+            color: var(--bg);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(0, 229, 176, 0.3);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        .btn-ghost:hover {
+            background: var(--bg3);
+            border-color: rgba(255, 255, 255, 0.18);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid rgba(0, 229, 176, 0.2);
+            color: var(--teal);
+        }
+
+        .btn-outline:hover {
+            background: rgba(0, 229, 176, 0.06);
+            border-color: rgba(0, 229, 176, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Print Styles */
+        @media print {
+            nav, footer, .back-top {
+                display: none !important;
+            }
+            .privacy-page {
+                padding: 20px 0 !important;
+            }
+            .privacy-content {
+                border: none !important;
+                background: none !important;
+                padding: 0 !important;
+            }
+            .toc {
+                background: #f5f5f5 !important;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .privacy-page {
+                padding: 100px 0 40px;
+            }
+
+            .privacy-content {
+                padding: 24px 20px;
+            }
+
+            .privacy-content .section h2 {
+                font-size: 19px;
+            }
+
+            .toc .toc-list {
+                grid-template-columns: 1fr;
+            }
+
+            .page-title {
+                font-size: 28px;
+            }
+
+            .privacy-content .section .data-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .privacy-content {
+                padding: 16px;
+            }
+
+            .privacy-content .section h2 {
+                font-size: 17px;
+            }
+
+            .privacy-content .section p {
+                font-size: 14px;
+            }
+
+            .privacy-content .section ul li {
+                font-size: 13.5px;
+            }
+
+            .toc {
+                padding: 16px;
+            }
+        }
+
+        /* Reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-bg"></div>
+
+    <!-- Navigation -->
+    {% include 'includes/nav.html' %}
+
+    <!-- Privacy Page -->
+    <div class="privacy-page">
+        <div class="container">
+
+            <!-- Header -->
+            <div class="page-header reveal">
+                <div class="section-tag">
+                    <span class="pulse-dot"></span>
+                    Privacy
+                </div>
+                <h1 class="page-title">Privacy <span class="gradient-text">Policy</span></h1>
+                <p class="page-desc">We are committed to protecting your privacy and handling your data with care and transparency.</p>
+                <div class="last-updated">Last Updated: February 15, 2026</div>
+            </div>
+
+            <!-- Table of Contents -->
+            <div class="toc reveal reveal-delay-1">
+                <div class="toc-title">📑 Table of Contents</div>
+                <div class="toc-list">
+                    <a href="#section-1"><span class="toc-num">1.</span> Introduction</a>
+                    <a href="#section-2"><span class="toc-num">2.</span> Information We Collect</a>
+                    <a href="#section-3"><span class="toc-num">3.</span> How We Use Your Information</a>
+                    <a href="#section-4"><span class="toc-num">4.</span> Data Storage and Security</a>
+                    <a href="#section-5"><span class="toc-num">5.</span> Data Sharing and Disclosure</a>
+                    <a href="#section-6"><span class="toc-num">6.</span> Your Rights and Choices</a>
+                    <a href="#section-7"><span class="toc-num">7.</span> Medical Data and Images</a>
+                    <a href="#section-8"><span class="toc-num">8.</span> Cookies and Tracking</a>
+                    <a href="#section-9"><span class="toc-num">9.</span> International Data Transfers</a>
+                    <a href="#section-10"><span class="toc-num">10.</span> Children's Privacy</a>
+                    <a href="#section-11"><span class="toc-num">11.</span> Data Retention</a>
+                    <a href="#section-12"><span class="toc-num">12.</span> Changes to Privacy Policy</a>
+                    <a href="#section-13"><span class="toc-num">13.</span> Contact Us</a>
+                </div>
+            </div>
+
+            <!-- Privacy Content -->
+            <div class="privacy-content reveal reveal-delay-2">
+
+                <!-- Section 1 -->
+                <div class="section" id="section-1">
+                    <h2><span class="section-number">1.</span> Introduction</h2>
+                    <p>
+                        X-HViT ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we 
+                        collect, use, disclose, and safeguard your information when you use our AI-powered medical image analysis platform.
+                    </p>
+                    <p>
+                        Please read this Privacy Policy carefully. By using the Service, you consent to the collection and use of your 
+                        information in accordance with this policy.
+                    </p>
+                    <div class="highlight-box">
+                        <strong>Key Point:</strong> Your privacy matters to us. We are committed to transparent data practices and 
+                        protecting your personal information.
+                    </div>
+                </div>
+
+                <!-- Section 2 -->
+                <div class="section" id="section-2">
+                    <h2><span class="section-number">2.</span> Information We Collect</h2>
+                    <p>
+                        We collect information to provide better services to all our users. The types of information we collect include:
+                    </p>
+
+                    <h3 style="font-family:var(--font-head);font-size:16px;font-weight:700;margin-top:16px;margin-bottom:8px;color:var(--text);">Personal Information</h3>
+                    <ul>
+                        <li><span class="li-icon">•</span> <strong>Account Information:</strong> Name, email address, username, password</li>
+                        <li><span class="li-icon">•</span> <strong>Profile Information:</strong> Institution, role, profile picture</li>
+                        <li><span class="li-icon">•</span> <strong>Contact Information:</strong> Phone number, email address</li>
+                        <li><span class="li-icon">•</span> <strong>Payment Information:</strong> Billing details, subscription plans</li>
+                    </ul>
+
+                    <h3 style="font-family:var(--font-head);font-size:16px;font-weight:700;margin-top:16px;margin-bottom:8px;color:var(--text);">Medical Data and Images</h3>
+                    <ul>
+                        <li><span class="li-icon">•</span> Medical images uploaded for analysis (CT, MRI, X-ray, Microscopic)</li>
+                        <li><span class="li-icon">•</span> Diagnostic results and generated reports</li>
+                        <li><span class="li-icon">•</span> Modality information and metadata</li>
+                        <li><span class="li-icon">•</span> Case IDs and diagnostic history</li>
+                    </ul>
+
+                    <h3 style="font-family:var(--font-head);font-size:16px;font-weight:700;margin-top:16px;margin-bottom:8px;color:var(--text);">Usage Information</h3>
+                    <ul>
+                        <li><span class="li-icon">•</span> IP address and browser information</li>
+                        <li><span class="li-icon">•</span> Device information and operating system</li>
+                        <li><span class="li-icon">•</span> Pages visited and features used</li>
+                        <li><span class="li-icon">•</span> Time and date of access</li>
+                    </ul>
+
+                    <div class="data-grid">
+                        <div class="data-item">
+                            <div class="data-label">Data Type</div>
+                            <div class="data-value">Personal Information</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Purpose</div>
+                            <div class="data-value">Account Management</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Data Type</div>
+                            <div class="data-value">Medical Images</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Purpose</div>
+                            <div class="data-value">Diagnosis and Analysis</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 3 -->
+                <div class="section" id="section-3">
+                    <h2><span class="section-number">3.</span> How We Use Your Information</h2>
+                    <p>We use your information for the following purposes:</p>
+                    <ul>
+                        <li><span class="li-icon">•</span> <strong>Providing Services:</strong> To process medical images and generate diagnostic reports</li>
+                        <li><span class="li-icon">•</span> <strong>Account Management:</strong> To create and manage your user account</li>
+                        <li><span class="li-icon">•</span> <strong>Communication:</strong> To send notifications, updates, and support messages</li>
+                        <li><span class="li-icon">•</span> <strong>Improvement:</strong> To analyze usage patterns and improve our AI models</li>
+                        <li><span class="li-icon">•</span> <strong>Compliance:</strong> To comply with legal obligations and enforce our Terms of Service</li>
+                    </ul>
+                    <p>
+                        We use de-identified and aggregated data for research purposes to improve the accuracy and capabilities of 
+                        our AI models. This data does not contain personally identifiable information.
+                    </p>
+                </div>
+
+                <!-- Section 4 -->
+                <div class="section" id="section-4">
+                    <h2><span class="section-number">4.</span> Data Storage and Security</h2>
+                    <p>
+                        We implement appropriate technical and organizational measures to protect your data against unauthorized access, 
+                        alteration, disclosure, or destruction.
+                    </p>
+                    <ul>
+                        <li><span class="li-icon">•</span> <strong>Encryption:</strong> All data is encrypted in transit (TLS/SSL) and at rest</li>
+                        <li><span class="li-icon">•</span> <strong>Access Control:</strong> Strict access controls and authentication mechanisms</li>
+                        <li><span class="li-icon">•</span> <strong>Secure Storage:</strong> Data stored on secure, HIPAA-compliant servers</li>
+                        <li><span class="li-icon">•</span> <strong>Regular Audits:</strong> Regular security audits and vulnerability assessments</li>
+                        <li><span class="li-icon">•</span> <strong>Data Backup:</strong> Regular backups to prevent data loss</li>
+                    </ul>
+                    <div class="highlight-box">
+                        <strong>Security:</strong> We take data security seriously and employ industry-standard measures to protect your information.
+                    </div>
+                </div>
+
+                <!-- Section 5 -->
+                <div class="section" id="section-5">
+                    <h2><span class="section-number">5.</span> Data Sharing and Disclosure</h2>
+                    <p>
+                        We do not sell, trade, or rent your personal information to third parties. We may share your information in the 
+                        following circumstances:
+                    </p>
+                    <ul>
+                        <li><span class="li-icon">•</span> <strong>Service Providers:</strong> With trusted third-party service providers who assist in operating the Service</li>
+                        <li><span class="li-icon">•</span> <strong>Legal Compliance:</strong> When required by law, court order, or government regulation</li>
+                        <li><span class="li-icon">•</span> <strong>Business Transfers:</strong> In connection with a merger, acquisition, or sale of assets</li>
+                        <li><span class="li-icon">•</span> <strong>With Your Consent:</strong> When you explicitly consent to sharing your data</li>
+                    </ul>
+                    <p>
+                        We require all third-party service providers to maintain confidentiality and comply with applicable data protection laws.
+                    </p>
+                </div>
+
+                <!-- Section 6 -->
+                <div class="section" id="section-6">
+                    <h2><span class="section-number">6.</span> Your Rights and Choices</h2>
+                    <p>You have the following rights regarding your personal data:</p>
+                    <ul>
+                        <li><span class="li-icon">•</span> <strong>Access:</strong> You can request a copy of your personal data</li>
+                        <li><span class="li-icon">•</span> <strong>Rectification:</strong> You can correct inaccurate or incomplete data</li>
+                        <li><span class="li-icon">•</span> <strong>Deletion:</strong> You can request deletion of your data (subject to legal requirements)</li>
+                        <li><span class="li-icon">•</span> <strong>Restriction:</strong> You can restrict processing of your data</li>
+                        <li><span class="li-icon">•</span> <strong>Data Portability:</strong> You can request a copy of your data in a portable format</li>
+                        <li><span class="li-icon">•</span> <strong>Withdraw Consent:</strong> You can withdraw consent for data processing at any time</li>
+                    </ul>
+                    <p>
+                        To exercise these rights, please contact us using the information in the "Contact Us" section below.
+                    </p>
+                </div>
+
+                <!-- Section 7 -->
+                <div class="section" id="section-7">
+                    <h2><span class="section-number">7.</span> Medical Data and Images</h2>
+                    <p>
+                        We understand the sensitive nature of medical data and images. We handle this data with the highest level of care:
+                    </p>
+                    <ul>
+                        <li><span class="li-icon">•</span> Medical images are processed securely and are not shared with third parties</li>
+                        <li><span class="li-icon">•</span> Images are stored only as long as necessary to provide the Service</li>
+                        <li><span class="li-icon">•</span> You retain ownership of all uploaded medical images</li>
+                        <li><span class="li-icon">•</span> Anonymized data may be used for research and model improvement</li>
+                        <li><span class="li-icon">•</span> You can request deletion of your medical data at any time</li>
+                    </ul>
+                    <div class="highlight-box">
+                        <strong>Medical Data:</strong> Your medical images are treated with the highest level of privacy and security.
+                    </div>
+                </div>
+
+                <!-- Section 8 -->
+                <div class="section" id="section-8">
+                    <h2><span class="section-number">8.</span> Cookies and Tracking</h2>
+                    <p>
+                        We use cookies and similar tracking technologies to enhance your experience on our platform. Cookies help us:
+                    </p>
+                    <ul>
+                        <li><span class="li-icon">•</span> Remember your preferences and settings</li>
+                        <li><span class="li-icon">•</span> Maintain your session and login status</li>
+                        <li><span class="li-icon">•</span> Analyze usage patterns and improve the Service</li>
+                        <li><span class="li-icon">•</span> Provide personalized content and features</li>
+                    </ul>
+                    <p>
+                        You can control cookie preferences through your browser settings. However, disabling certain cookies may affect 
+                        the functionality of the Service.
+                    </p>
+                </div>
+
+                <!-- Section 9 -->
+                <div class="section" id="section-9">
+                    <h2><span class="section-number">9.</span> International Data Transfers</h2>
+                    <p>
+                        Your information may be transferred to and processed in countries other than the country in which you reside. 
+                        We ensure that appropriate safeguards are in place to protect your data in accordance with applicable data 
+                        protection laws.
+                    </p>
+                    <p>
+                        By using the Service, you consent to the transfer of your data to countries that may have different data 
+                        protection laws than your country of residence.
+                    </p>
+                </div>
+
+                <!-- Section 10 -->
+                <div class="section" id="section-10">
+                    <h2><span class="section-number">10.</span> Children's Privacy</h2>
+                    <p>
+                        The Service is not intended for children under the age of 18. We do not knowingly collect personal information 
+                        from children under 18. If we become aware that we have collected personal information from a child under 18, 
+                        we will take steps to delete that information.
+                    </p>
+                    <p>
+                        If you are a parent or guardian and believe your child has provided us with personal information, please contact us.
+                    </p>
+                </div>
+
+                <!-- Section 11 -->
+                <div class="section" id="section-11">
+                    <h2><span class="section-number">11.</span> Data Retention</h2>
+                    <p>
+                        We retain your personal data for as long as necessary to provide the Service and fulfill the purposes outlined 
+                        in this Privacy Policy. The retention period depends on the type of data and the purpose for which it is processed.
+                    </p>
+                    <ul>
+                        <li><span class="li-icon">•</span> <strong>Account Data:</strong> Retained until you delete your account or request deletion</li>
+                        <li><span class="li-icon">•</span> <strong>Medical Images:</strong> Retained as long as you have an active account</li>
+                        <li><span class="li-icon">•</span> <strong>Diagnostic Reports:</strong> Retained for reference and compliance</li>
+                        <li><span class="li-icon">•</span> <strong>Usage Data:</strong> Retained for analysis and improvement of the Service</li>
+                    </ul>
+                    <p>
+                        You may request deletion of your data at any time. We will respond to deletion requests within 30 days.
+                    </p>
+                </div>
+
+                <!-- Section 12 -->
+                <div class="section" id="section-12">
+                    <h2><span class="section-number">12.</span> Changes to Privacy Policy</h2>
+                    <p>
+                        We may update this Privacy Policy from time to time to reflect changes in our practices or legal requirements. 
+                        We will notify you of any material changes by:
+                    </p>
+                    <ul>
+                        <li><span class="li-icon">•</span> Email notification to registered users</li>
+                        <li><span class="li-icon">•</span> Notice on the X-HViT platform</li>
+                        <li><span class="li-icon">•</span> Updated "Last Updated" date</li>
+                    </ul>
+                    <p>
+                        Your continued use of the Service after changes constitutes acceptance of the updated Privacy Policy.
+                    </p>
+                </div>
+
+                <!-- Section 13 -->
+                <div class="section" id="section-13">
+                    <h2><span class="section-number">13.</span> Contact Us</h2>
+                    <p>
+                        If you have any questions, concerns, or requests regarding this Privacy Policy or our data practices, please 
+                        contact us:
+                    </p>
+                    <ul>
+                        <li><span class="li-icon">📧</span> Email: <a href="mailto:xhvit@medical.ai" style="color:var(--teal);">xhvit@medical.ai</a></li>
+                        <li><span class="li-icon">💬</span> WhatsApp: <a href="https://wa.me/9779849977377" style="color:var(--teal);">+977 9849977377</a></li>
+                        <li><span class="li-icon">📍</span> Address: Nepal</li>
+                    </ul>
+                    <p>
+                        We will respond to all inquiries within 2-3 business days.
+                    </p>
+                    <div class="highlight-box">
+                        <strong>Privacy Concerns:</strong> If you have any privacy concerns or believe your data has been mishandled, 
+                        please contact us immediately.
+                    </div>
+                </div>
+
+                <!-- Back to Top -->
+                <a href="#" class="back-top">↑ Back to Top</a>
+
+            </div>
+
+            <!-- Footer CTA -->
+            <div style="text-align:center;margin-top:48px;padding:32px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);">
+                <h3 style="font-family:var(--font-head);font-size:20px;font-weight:700;margin-bottom:8px;">Privacy Questions?</h3>
+                <p style="font-size:14px;color:var(--text-muted);margin-bottom:16px;">We're here to address any privacy concerns you may have.</p>
+                <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+                    <a href="{% url 'Diagnosis:contact' %}" class="btn btn-primary">Contact Us</a>
+                    <a href="{% url 'Diagnosis:terms' %}" class="btn btn-ghost">Terms of Service</a>
+                    <a href="{% url 'Diagnosis:index' %}" class="btn btn-outline">Home</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Footer -->
+    {% include 'includes/footer.html' %}
+
+    <script src="{% static 'js/shared.js' %}"></script>
+
+    <script>
+        // ============================================
+        // SMOOTH SCROLL FOR TOC LINKS
+        // ============================================
+        document.querySelectorAll('.toc-list a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // ============================================
+        // REVEAL ANIMATIONS
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            const reveals = document.querySelectorAll('.reveal');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            reveals.forEach(el => observer.observe(el));
+            
+            console.log('Privacy page loaded');
+        });
+    </script>
+
+</body>
+</html>

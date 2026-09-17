@@ -1,0 +1,1313 @@
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>X-HViT | Reports</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'css/shared.css' %}" />
+    <style>
+      :root {
+        --bg: #0a0f1a;
+        --bg2: #111927;
+        --bg3: #1a2332;
+        --surface: #111927;
+        --border: rgba(255, 255, 255, 0.06);
+        --text: #e8edf5;
+        --text-muted: #8892a8;
+        --text-dim: #4a5568;
+        --teal: #00e5b0;
+        --teal-dim: #00c49a;
+        --blue: #3a9bff;
+        --violet: #7c6aff;
+        --yellow: #ffc947;
+        --red: #ff5575;
+        --font-head: "Syne", sans-serif;
+        --font-body: "DM Sans", sans-serif;
+        --font-mono: "DM Mono", monospace;
+        --r-sm: 8px;
+        --r-md: 12px;
+        --r-lg: 16px;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--font-body);
+        -webkit-font-smoothing: antialiased;
+        line-height: 1.6;
+        overflow-x: hidden;
+      }
+      .grid-bg {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+        background-size: 64px 64px;
+      }
+      .reports-page {
+        padding: 100px 0 80px;
+        position: relative;
+        z-index: 1;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+      .section-tag {
+        font-family: var(--font-mono);
+        font-size: 10px;
+        color: var(--teal);
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+      }
+      .section-title {
+        font-family: var(--font-head);
+        font-size: 36px;
+        font-weight: 800;
+        letter-spacing: -1.5px;
+        margin-bottom: 8px;
+      }
+      .section-title .teal {
+        color: var(--teal);
+      }
+      .section-desc {
+        font-size: 15px;
+        color: var(--text-muted);
+        max-width: 560px;
+        line-height: 1.6;
+      }
+      .reports-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-bottom: 28px;
+      }
+      .search-bar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: var(--r-sm);
+        padding: 10px 14px;
+        transition: border-color 0.2s;
+        flex: 1;
+        max-width: 400px;
+        position: relative;
+      }
+      .search-bar:focus-within {
+        border-color: rgba(0, 229, 176, 0.4);
+        box-shadow: 0 0 0 3px rgba(0, 229, 176, 0.05);
+      }
+      .search-bar input {
+        background: none;
+        border: none;
+        outline: none;
+        color: var(--text);
+        font-family: var(--font-body);
+        font-size: 14px;
+        width: 100%;
+      }
+      .search-bar input::placeholder {
+        color: var(--text-dim);
+      }
+      .search-clear {
+        cursor: pointer;
+        color: var(--text-dim);
+        font-size: 14px;
+        padding: 0 4px;
+        display: none;
+        transition: color 0.2s;
+      }
+      .search-clear:hover {
+        color: var(--text);
+      }
+      .search-shortcut {
+        font-family: var(--font-mono);
+        font-size: 10px;
+        color: var(--text-dim);
+        background: var(--bg3);
+        padding: 2px 8px;
+        border-radius: 4px;
+        opacity: 0.6;
+      }
+      .filter-select {
+        padding: 10px 14px;
+        border-radius: var(--r-sm);
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        color: var(--text);
+        font-family: var(--font-body);
+        font-size: 13px;
+        appearance: none;
+        outline: none;
+        cursor: pointer;
+        min-width: 140px;
+        transition: border-color 0.2s;
+      }
+      .filter-select:focus {
+        border-color: rgba(0, 229, 176, 0.4);
+      }
+      .filter-select option {
+        background: var(--bg);
+      }
+      .reports-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+      }
+      .report-card {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: var(--r-lg);
+        overflow: hidden;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+      }
+      .report-card:hover {
+        border-color: rgba(0, 229, 176, 0.2);
+        transform: translateY(-4px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+      }
+      .rc-preview {
+        height: 140px;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 229, 176, 0.04);
+      }
+      .rc-preview-inner {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 52px;
+        opacity: 0.7;
+        transition: transform 0.3s;
+      }
+      .report-card:hover .rc-preview-inner {
+        transform: scale(1.05);
+      }
+      .rc-scan-line {
+        position: absolute;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--teal),
+          transparent
+        );
+        animation: scanAnim 3s linear infinite;
+        opacity: 0.5;
+      }
+      @keyframes scanAnim {
+        0% { top: 0; }
+        100% { top: 100%; }
+      }
+      .rc-body {
+        padding: 20px;
+      }
+      .rc-case {
+        font-family: var(--font-mono);
+        font-size: 10px;
+        color: var(--text-dim);
+        margin-bottom: 6px;
+        letter-spacing: 0.5px;
+      }
+      .rc-disease {
+        font-family: var(--font-head);
+        font-size: 17px;
+        font-weight: 700;
+        letter-spacing: -0.3px;
+        margin-bottom: 6px;
+      }
+      .rc-meta {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 14px;
+      }
+      .rc-conf {
+        font-family: var(--font-mono);
+        font-size: 12px;
+        color: var(--teal);
+      }
+      .rc-date {
+        font-family: var(--font-mono);
+        font-size: 11px;
+        color: var(--text-dim);
+      }
+      .rc-status {
+        font-family: var(--font-mono);
+        font-size: 10px;
+        padding: 2px 10px;
+        border-radius: 100px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 600;
+      }
+      .status-completed {
+        background: rgba(0, 229, 176, 0.12);
+        color: var(--teal);
+      }
+      .status-review {
+        background: rgba(255, 201, 71, 0.12);
+        color: var(--yellow);
+      }
+      .status-error {
+        background: rgba(255, 85, 117, 0.12);
+        color: var(--red);
+      }
+      .rc-actions {
+        display: flex;
+        gap: 8px;
+      }
+      .rc-actions .btn {
+        flex: 1;
+        font-size: 12px;
+        padding: 8px 12px;
+        justify-content: center;
+        text-decoration: none;
+      }
+      .btn-outline {
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--text);
+      }
+      .btn-outline:hover {
+        background: var(--bg3);
+        border-color: rgba(255, 255, 255, 0.18);
+      }
+      .btn-ghost {
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--text);
+      }
+      .btn-ghost:hover {
+        background: var(--bg3);
+        border-color: rgba(255, 255, 255, 0.18);
+      }
+      .btn-ghost:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+      .empty-reports {
+        text-align: center;
+        padding: 80px 32px;
+        grid-column: 1/-1;
+      }
+      .empty-icon {
+        font-size: 60px;
+        opacity: 0.15;
+        margin-bottom: 16px;
+      }
+      .empty-title {
+        font-family: var(--font-head);
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--text-dim);
+        margin-bottom: 8px;
+      }
+      .empty-sub {
+        font-size: 14px;
+        color: var(--text-dim);
+      }
+      .empty-action {
+        margin-top: 20px;
+      }
+      .reports-stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-bottom: 28px;
+      }
+      .rstat {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--r-md);
+        padding: 18px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: default;
+      }
+      .rstat:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        border-color: rgba(255, 255, 255, 0.08);
+      }
+      .rstat-icon {
+        font-size: 24px;
+      }
+      .rstat-lbl {
+        font-family: var(--font-mono);
+        font-size: 9px;
+        color: var(--text-muted);
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        margin-bottom: 3px;
+      }
+      .rstat-val {
+        font-family: var(--font-head);
+        font-size: 22px;
+        font-weight: 800;
+        letter-spacing: -1px;
+      }
+      .badge {
+        display: inline-block;
+        padding: 2px 10px;
+        border-radius: 100px;
+        font-size: 10px;
+        font-weight: 600;
+        font-family: var(--font-mono);
+      }
+      .badge-blue { background: rgba(58, 155, 255, 0.15); color: var(--blue); }
+      .badge-teal { background: rgba(0, 229, 176, 0.15); color: var(--teal); }
+      .badge-violet { background: rgba(124, 106, 255, 0.15); color: var(--violet); }
+      .badge-yellow { background: rgba(255, 201, 71, 0.15); color: var(--yellow); }
+      .badge-red { background: rgba(255, 85, 117, 0.15); color: var(--red); }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        border-radius: var(--r-sm);
+        font-family: var(--font-body);
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s;
+        border: none;
+        cursor: pointer;
+      }
+      .btn-primary {
+        background: var(--teal);
+        color: var(--bg);
+      }
+      .btn-primary:hover {
+        background: var(--teal-dim);
+        transform: translateY(-1px);
+        box-shadow: 0 8px 28px rgba(0, 229, 176, 0.25);
+      }
+      .btn-sm {
+        padding: 6px 14px;
+        font-size: 11px;
+      }
+
+      .toast-container {
+        position: fixed;
+        top: 80px;
+        right: 24px;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        max-width: 400px;
+        width: 100%;
+        pointer-events: none;
+      }
+      .toast {
+        pointer-events: auto;
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: var(--r-md);
+        padding: 14px 18px;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        animation: slideInRight 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        min-width: 280px;
+        backdrop-filter: blur(12px);
+      }
+      .toast-success { border-left: 4px solid var(--teal); }
+      .toast-error { border-left: 4px solid var(--red); }
+      .toast-info { border-left: 4px solid var(--blue); }
+      .toast-icon {
+        font-size: 20px;
+        flex-shrink: 0;
+        margin-top: 2px;
+      }
+      .toast-content { flex: 1; min-width: 0; }
+      .toast-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text);
+        margin-bottom: 2px;
+      }
+      .toast-message {
+        font-size: 12px;
+        color: var(--text-dim);
+        word-wrap: break-word;
+      }
+      .toast-close {
+        cursor: pointer;
+        color: var(--text-dim);
+        font-size: 18px;
+        background: none;
+        border: none;
+        padding: 0 4px;
+        transition: color 0.2s;
+        flex-shrink: 0;
+        margin-top: -2px;
+      }
+      .toast-close:hover { color: var(--text); }
+      @keyframes slideInRight {
+        0% { opacity: 0; transform: translateX(40px) scale(0.95); }
+        100% { opacity: 1; transform: translateX(0) scale(1); }
+      }
+      @keyframes fadeOut {
+        0% { opacity: 1; transform: translateX(0) scale(1); }
+        100% { opacity: 0; transform: translateX(40px) scale(0.95); }
+      }
+
+      .loading-spinner {
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        border: 2px solid var(--bg);
+        border-top-color: transparent;
+        border-radius: 50%;
+        animation: spin 0.6s linear infinite;
+        flex-shrink: 0;
+      }
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+
+      .quick-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+      }
+      .quick-action {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: var(--r-sm);
+        padding: 8px 16px;
+        font-size: 12px;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: all 0.2s;
+        font-family: var(--font-body);
+      }
+      .quick-action:hover {
+        background: var(--bg3);
+        color: var(--text);
+        border-color: rgba(255, 255, 255, 0.1);
+      }
+      .quick-action.active {
+        background: rgba(0, 229, 176, 0.08);
+        color: var(--teal);
+        border-color: rgba(0, 229, 176, 0.2);
+      }
+
+      nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 32px;
+        height: 68px;
+        background: rgba(6, 13, 26, 0.92);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid var(--border);
+      }
+      .nav-logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+      }
+      .logo-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        background: linear-gradient(135deg, var(--teal), var(--blue));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        font-weight: 800;
+        color: var(--bg);
+        flex-shrink: 0;
+      }
+      .logo-text {
+        font-family: var(--font-head);
+        font-size: 17px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        color: var(--text);
+      }
+      .logo-text span { color: var(--teal); }
+      .nav-links {
+        display: flex;
+        list-style: none;
+        gap: 4px;
+        margin: 0;
+        padding: 0;
+        align-items: center;
+      }
+      .nav-links li a {
+        padding: 8px 14px;
+        border-radius: var(--r-sm);
+        color: var(--text-muted);
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 500;
+        transition: all 0.2s;
+      }
+      .nav-links li a:hover {
+        color: var(--text);
+        background: rgba(255, 255, 255, 0.04);
+      }
+      .nav-links li a.active {
+        color: var(--teal);
+        background: rgba(0, 229, 176, 0.08);
+      }
+      .nav-cta {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .hamburger {
+        display: none;
+        flex-direction: column;
+        gap: 4px;
+        cursor: pointer;
+        padding: 4px;
+        background: none;
+        border: none;
+      }
+      .hamburger span {
+        width: 24px;
+        height: 2px;
+        background: var(--text);
+        border-radius: 2px;
+        transition: all 0.3s;
+      }
+      .hamburger.active span:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 5px);
+      }
+      .hamburger.active span:nth-child(2) { opacity: 0; }
+      .hamburger.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(5px, -5px);
+      }
+
+      footer {
+        margin-top: 60px;
+        padding: 48px 0 24px;
+        border-top: 1px solid var(--border);
+        background: var(--bg2);
+      }
+      .footer-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+        gap: 32px;
+        margin-bottom: 32px;
+      }
+      .footer-brand p {
+        font-size: 13px;
+        color: var(--text-muted);
+        margin-top: 10px;
+        max-width: 300px;
+      }
+      .footer-col h5 {
+        font-family: var(--font-head);
+        font-size: 13px;
+        font-weight: 700;
+        margin-bottom: 12px;
+        color: var(--text);
+      }
+      .footer-col ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .footer-col ul li { margin-bottom: 6px; }
+      .footer-col ul li a {
+        color: var(--text-muted);
+        text-decoration: none;
+        font-size: 13px;
+        transition: color 0.2s;
+      }
+      .footer-col ul li a:hover { color: var(--teal); }
+      .footer-bottom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 20px;
+        border-top: 1px solid var(--border);
+      }
+      .footer-copy {
+        font-size: 12px;
+        color: var(--text-dim);
+      }
+      .footer-copy span { color: var(--text-muted); }
+      .footer-badges { display: flex; gap: 12px; }
+      .footer-badge {
+        font-family: var(--font-mono);
+        font-size: 9px;
+        padding: 4px 12px;
+        border-radius: 100px;
+        background: var(--bg3);
+        color: var(--text-dim);
+      }
+
+      .messages { margin-bottom: 16px; }
+      .alert {
+        padding: 12px 16px;
+        border-radius: var(--r-sm);
+        font-size: 13px;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .alert-success {
+        background: rgba(0, 229, 176, 0.08);
+        border: 1px solid rgba(0, 229, 176, 0.15);
+        color: var(--teal);
+      }
+      .alert-error {
+        background: rgba(255, 85, 117, 0.08);
+        border: 1px solid rgba(255, 85, 117, 0.15);
+        color: var(--red);
+      }
+      .alert-warning {
+        background: rgba(255, 201, 71, 0.08);
+        border: 1px solid rgba(255, 201, 71, 0.15);
+        color: var(--yellow);
+      }
+      .alert-info {
+        background: rgba(58, 155, 255, 0.08);
+        border: 1px solid rgba(58, 155, 255, 0.15);
+        color: var(--blue);
+      }
+
+      @media (max-width: 1024px) {
+        .reports-grid { grid-template-columns: repeat(2, 1fr); }
+        .reports-stats { grid-template-columns: repeat(2, 1fr); }
+        .footer-grid { grid-template-columns: 1fr 1fr; }
+      }
+      @media (max-width: 768px) {
+        .nav-links { display: none; }
+        .hamburger { display: flex; }
+        .nav-links.active {
+          display: flex;
+          flex-direction: column;
+          position: absolute;
+          top: 68px;
+          left: 0;
+          right: 0;
+          background: rgba(6, 13, 26, 0.98);
+          padding: 16px 24px;
+          border-bottom: 1px solid var(--border);
+        }
+        .nav-cta.active {
+          display: flex;
+          flex-direction: column;
+          position: absolute;
+          top: 68px;
+          right: 0;
+          padding: 16px 24px;
+          background: rgba(6, 13, 26, 0.98);
+          border-bottom: 1px solid var(--border);
+        }
+        .section-title { font-size: 28px; }
+        .reports-toolbar { flex-direction: column; align-items: stretch; }
+        .search-bar { max-width: 100%; }
+        .quick-actions {
+          overflow-x: auto;
+          flex-wrap: nowrap;
+          padding-bottom: 4px;
+        }
+        .quick-action { white-space: nowrap; }
+        .toast-container {
+          right: 12px;
+          left: 12px;
+          max-width: none;
+        }
+      }
+      @media (max-width: 580px) {
+        .reports-grid { grid-template-columns: 1fr; }
+        .reports-stats { grid-template-columns: 1fr 1fr; }
+        .footer-grid { grid-template-columns: 1fr; }
+        nav { padding: 0 16px; }
+        .rstat { padding: 14px; }
+        .rstat-val { font-size: 18px; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="grid-bg"></div>
+
+    {% include "includes/nav.html" %}
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <div class="reports-page">
+      <div class="container">
+        <div class="messages">
+          {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+              <span>
+                {% if message.tags == 'success' %}✅
+                {% elif message.tags == 'error' %}❌
+                {% elif message.tags == 'warning' %}⚠️
+                {% else %}ℹ️{% endif %}
+              </span>
+              {{ message }}
+            </div>
+            {% endfor %}
+          {% endif %}
+        </div>
+
+        <div style="margin-bottom: 36px">
+          <div class="section-tag">📋 Records</div>
+          <h1 class="section-title">
+            Diagnostic <span class="teal">Reports</span>
+          </h1>
+          <p class="section-desc">
+            All generated diagnostic reports with confidence-aware clinical
+            summaries, differential diagnoses, and downloadable PDFs.
+          </p>
+        </div>
+
+        <div class="reports-stats">
+          <div class="rstat">
+            <div class="rstat-icon">📄</div>
+            <div>
+              <div class="rstat-lbl">Total Reports</div>
+              <div class="rstat-val" style="color: var(--teal)">
+                {{ total_reports|default:0 }}
+              </div>
+            </div>
+          </div>
+          <div class="rstat">
+            <div class="rstat-icon">🧪</div>
+            <div>
+              <div class="rstat-lbl">Total Diagnoses</div>
+              <div class="rstat-val" style="color: var(--blue)">
+                {{ total_diagnoses|default:0 }}
+              </div>
+            </div>
+          </div>
+          <div class="rstat">
+            <div class="rstat-icon">⬇️</div>
+            <div>
+              <div class="rstat-lbl">PDFs Downloaded</div>
+              <div class="rstat-val" style="color: var(--violet)">
+                {{ total_downloads|default:0 }}
+              </div>
+            </div>
+          </div>
+          <div class="rstat">
+            <div class="rstat-icon">📅</div>
+            <div>
+              <div class="rstat-lbl">This Month</div>
+              <div class="rstat-val" style="color: var(--yellow)">
+                {{ monthly_reports|default:0 }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="quick-actions">
+          <button class="quick-action active" data-filter="all">
+            📋 All Reports
+          </button>
+          <button class="quick-action" data-filter="today">📅 Today</button>
+          <button class="quick-action" data-filter="week">📆 This Week</button>
+          <button class="quick-action" data-filter="month">
+            📊 This Month
+          </button>
+          <button class="quick-action" data-filter="high-conf">
+            🎯 High Confidence
+          </button>
+        </div>
+
+        <div class="reports-toolbar">
+          <div style="display: flex; gap: 10px; flex-wrap: wrap; flex: 1">
+            <div class="search-bar">
+              <span style="color: var(--text-dim)">🔍</span>
+              <input
+                type="text"
+                id="searchRep"
+                placeholder="Search diagnosis, case ID… (Ctrl+K)"
+                oninput="filterCards()"
+              />
+              <span class="search-clear" id="searchClear" onclick="clearSearch()">✕</span>
+              <span class="search-shortcut">⌘K</span>
+            </div>
+            <select class="filter-select" id="modRep" onchange="filterCards()">
+              <option value="">All Modalities</option>
+              <option value="MRI">🧠 MRI</option>
+              <option value="CT">🫁 CT</option>
+              <option value="X-ray">🩻 X-ray</option>
+              <option value="Micro">🔬 Micro</option>
+              <option value="auto">🤖 Auto</option>
+            </select>
+            <select class="filter-select" id="statusRep" onchange="filterCards()">
+              <option value="">All Status</option>
+              <option value="Completed">✅ Completed</option>
+              <option value="Review">🔄 Review</option>
+              <option value="Error">❌ Error</option>
+            </select>
+            <select class="filter-select" id="sortRep" onchange="filterCards()">
+              <option value="newest">📅 Newest First</option>
+              <option value="oldest">📅 Oldest First</option>
+              <option value="confidence">🎯 Highest Confidence</option>
+            </select>
+          </div>
+          <a href="{% url 'Diagnosis:diagnose' %}" class="btn btn-primary"
+            >+ New Diagnosis</a
+          >
+        </div>
+
+        <div class="reports-grid" id="reportsGrid">
+          {% if reports %}
+            {% for report in reports %}
+            <div
+              class="report-card"
+              data-mod="{{ report.modality }}"
+              data-status="{{ report.status }}"
+              data-search="{{ report.case_id }} {{ report.diagnosis }}"
+              data-date="{{ report.created_at|date:'Y-m-d' }}"
+              data-confidence="{{ report.confidence|default:0 }}"
+            >
+              <div
+                class="rc-preview"
+                style="background: {{ report.bg_color|default:'rgba(0,229,176,0.04)' }}"
+              >
+                <div class="rc-preview-inner">{{ report.icon|default:'📊' }}</div>
+                <div class="rc-scan-line"></div>
+              </div>
+              <div class="rc-body">
+                <div class="rc-case">{{ report.case_id }}</div>
+                <div class="rc-disease">
+                  {{ report.diagnosis|default:'Unknown' }}
+                </div>
+                <div class="rc-meta">
+                  <span
+                    class="badge {{ report.badge_class|default:'badge-blue' }}"
+                    >{{ report.modality|default:'Unknown' }}</span
+                  >
+                  <span class="rc-conf"
+                    >✓ {{ report.confidence|floatformat:1 }}%</span
+                  >
+                  <span class="rc-date"
+                    >{{ report.created_at|date:"M d, Y" }}</span
+                  >
+                  <span class="rc-status status-{{ report.status|lower }}"
+                    >{{ report.status|default:'Completed' }}</span
+                  >
+                </div>
+                <div class="rc-actions">
+                  <a
+                    href="{% url 'Diagnosis:report_detail' report.id %}"
+                    class="btn btn-outline btn-sm"
+                    >👁 View</a
+                  >
+                  <a
+                    href="{% url 'Diagnosis:explainability' report.id %}"
+                    class="btn btn-ghost btn-sm"
+                    >🧠 Why?</a
+                  >
+                  <button
+                    class="btn btn-ghost btn-sm download-btn"
+                    data-report-id="{{ report.id }}"
+                    onclick="downloadReport({{ report.id }}, this)"
+                  >
+                    ⬇ PDF
+                  </button>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          {% else %}
+          <div class="empty-reports">
+            <div class="empty-icon">📂</div>
+            <div class="empty-title">No Reports Found</div>
+            <div class="empty-sub">
+              You haven't generated any diagnostic reports yet.
+            </div>
+            <div class="empty-action">
+              <a href="{% url 'Diagnosis:diagnose' %}" class="btn btn-primary"
+                >Start Your First Diagnosis →</a
+              >
+            </div>
+          </div>
+          {% endif %}
+        </div>
+
+        {% if reports %}
+        <div style="text-align: center; margin-top: 32px">
+          <button
+            class="btn btn-ghost"
+            id="loadMoreBtn"
+            style="display: none"
+            onclick="loadMore()"
+          >
+            Load More Reports
+          </button>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    {% include "includes/footer.html" %}
+
+    <script src="{% static 'js/shared.js' %}"></script>
+
+    <script>
+      function showToast(title, message, type = 'success') {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+
+        const icons = {
+          success: '✅',
+          error: '❌',
+          info: 'ℹ️',
+          warning: '⚠️'
+        };
+
+        toast.innerHTML = `
+          <span class="toast-icon">${icons[type] || 'ℹ️'}</span>
+          <div class="toast-content">
+            <div class="toast-title">${title}</div>
+            <div class="toast-message">${message}</div>
+          </div>
+          <button class="toast-close" onclick="this.parentElement.remove()">✕</button>
+        `;
+
+        container.appendChild(toast);
+
+        setTimeout(() => {
+          if (toast.parentElement) {
+            toast.style.animation = 'fadeOut 0.4s ease forwards';
+            setTimeout(() => {
+              if (toast.parentElement) toast.remove();
+            }, 400);
+          }
+        }, 5000);
+      }
+
+      function downloadReport(reportId, buttonElement) {
+        if (!buttonElement) {
+          buttonElement = document.querySelector(`[data-report-id="${reportId}"]`);
+        }
+        if (!buttonElement) return;
+
+        const originalText = buttonElement.innerHTML;
+        const originalDisabled = buttonElement.disabled;
+
+        buttonElement.innerHTML = '<span class="loading-spinner"></span> Downloading...';
+        buttonElement.disabled = true;
+
+        const iframe = document.createElement('iframe');
+        iframe.style.display = 'none';
+        iframe.style.width = '0';
+        iframe.style.height = '0';
+        iframe.src = `/reports/${reportId}/download/`;
+
+        let downloadStarted = false;
+        let timeoutId = null;
+
+        const cleanup = function(success = true) {
+          if (timeoutId) {
+            clearTimeout(timeoutId);
+            timeoutId = null;
+          }
+          iframe.removeEventListener('load', handleLoad);
+          iframe.removeEventListener('error', handleError);
+          setTimeout(() => {
+            if (iframe.parentElement) iframe.remove();
+          }, 1000);
+
+          if (buttonElement) {
+            buttonElement.innerHTML = originalText;
+            buttonElement.disabled = originalDisabled;
+          }
+        };
+
+        const handleLoad = function() {
+          if (!downloadStarted) {
+            downloadStarted = true;
+            try {
+              const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
+              if (iframeDoc && iframeDoc.body) {
+                const bodyText = iframeDoc.body.textContent || '';
+                if (bodyText.includes('Error') || bodyText.includes('error') || bodyText.includes('404')) {
+                  showToast('Download Failed', 'The report could not be generated. Please try again.', 'error');
+                  cleanup(false);
+                  return;
+                }
+              }
+              showToast('PDF Download Started', 'Your report is being downloaded.', 'success');
+            } catch (e) {
+              showToast('PDF Download Started', 'Your report is being downloaded.', 'success');
+            }
+            cleanup(true);
+          }
+        };
+
+        const handleError = function() {
+          if (!downloadStarted) {
+            downloadStarted = true;
+            showToast('Download Failed', 'Could not download the PDF. Please check your connection and try again.', 'error');
+            cleanup(false);
+          }
+        };
+
+        iframe.addEventListener('load', handleLoad);
+        iframe.addEventListener('error', handleError);
+
+        timeoutId = setTimeout(() => {
+          if (!downloadStarted) {
+            downloadStarted = true;
+            showToast('Download Taking Long', 'The download is taking longer than expected. Please check your downloads folder.', 'info');
+            cleanup(true);
+          }
+        }, 10000);
+
+        document.body.appendChild(iframe);
+      }
+
+      const reportData = [
+        {% for report in reports %}
+        {
+          id: {{ report.id }},
+          case_id: "{{ report.case_id }}",
+          modality: "{{ report.modality|default:'Unknown' }}",
+          badge_class: "{{ report.badge_class|default:'badge-blue' }}",
+          diagnosis: "{{ report.diagnosis|default:'Unknown' }}",
+          confidence: {{ report.confidence|default:0 }},
+          date: "{{ report.created_at|date:'M d, Y' }}",
+          dateRaw: "{{ report.created_at|date:'Y-m-d' }}",
+          icon: "{{ report.icon|default:'📊' }}",
+          bg: "{{ report.bg_color|default:'rgba(0,229,176,0.04)' }}",
+          status: "{{ report.status|default:'Completed' }}",
+          status_class: "status-{{ report.status|lower|default:'completed' }}"
+        },
+        {% endfor %}
+      ];
+
+      let filtered = [...reportData];
+      let currentPage = 1;
+      const perPage = 9;
+
+      function renderCards() {
+        const grid = document.getElementById('reportsGrid');
+        if (!filtered.length) {
+          grid.innerHTML = `
+            <div class="empty-reports">
+              <div class="empty-icon">🔍</div>
+              <div class="empty-title">No Reports Found</div>
+              <div class="empty-sub">Try adjusting your search or filters to find what you're looking for.</div>
+              <div class="empty-action">
+                <button class="btn btn-ghost" onclick="resetFilters()">Reset Filters</button>
+              </div>
+            </div>`;
+          document.getElementById('loadMoreBtn').style.display = 'none';
+          return;
+        }
+
+        const start = 0;
+        const end = currentPage * perPage;
+        const visible = filtered.slice(start, end);
+
+        grid.innerHTML = visible.map(r => `
+          <div class="report-card">
+            <div class="rc-preview" style="background: ${r.bg}">
+              <div class="rc-preview-inner">${r.icon}</div>
+              <div class="rc-scan-line"></div>
+            </div>
+            <div class="rc-body">
+              <div class="rc-case">${r.case_id}</div>
+              <div class="rc-disease">${r.diagnosis}</div>
+              <div class="rc-meta">
+                <span class="badge ${r.badge_class}">${r.modality}</span>
+                <span class="rc-conf">✓ ${r.confidence.toFixed(1)}%</span>
+                <span class="rc-date">${r.date}</span>
+                <span class="rc-status ${r.status_class}">${r.status}</span>
+              </div>
+              <div class="rc-actions">
+                <a href="/reports/${r.id}/" class="btn btn-outline btn-sm">👁 View</a>
+                <a href="/explainability/${r.id}/" class="btn btn-ghost btn-sm">🧠 Why?</a>
+                <button class="btn btn-ghost btn-sm download-btn" data-report-id="${r.id}" onclick="downloadReport(${r.id}, this)">
+                  ⬇ PDF
+                </button>
+              </div>
+            </div>
+          </div>
+        `).join('');
+
+        const loadMoreBtn = document.getElementById('loadMoreBtn');
+        if (filtered.length > currentPage * perPage) {
+          loadMoreBtn.style.display = 'inline-flex';
+        } else {
+          loadMoreBtn.style.display = 'none';
+        }
+      }
+
+      function loadMore() {
+        currentPage++;
+        renderCards();
+      }
+
+      function filterCards() {
+        const query = document.getElementById('searchRep').value.toLowerCase().trim();
+        const mod = document.getElementById('modRep').value;
+        const status = document.getElementById('statusRep').value;
+        const sort = document.getElementById('sortRep').value;
+
+        document.getElementById('searchClear').style.display = query ? 'block' : 'none';
+
+        filtered = reportData.filter(r => {
+          const matchSearch = !query ||
+                             r.case_id.toLowerCase().includes(query) ||
+                             r.diagnosis.toLowerCase().includes(query);
+          const matchMod = !mod || r.modality === mod;
+          const matchStatus = !status || r.status === status;
+          return matchSearch && matchMod && matchStatus;
+        });
+
+        if (sort === 'newest') {
+          filtered.sort((a, b) => new Date(b.dateRaw) - new Date(a.dateRaw));
+        } else if (sort === 'oldest') {
+          filtered.sort((a, b) => new Date(a.dateRaw) - new Date(b.dateRaw));
+        } else if (sort === 'confidence') {
+          filtered.sort((a, b) => b.confidence - a.confidence);
+        }
+
+        currentPage = 1;
+        renderCards();
+      }
+
+      function clearSearch() {
+        document.getElementById('searchRep').value = '';
+        document.getElementById('searchClear').style.display = 'none';
+        filterCards();
+        document.getElementById('searchRep').focus();
+      }
+
+      function resetFilters() {
+        document.getElementById('searchRep').value = '';
+        document.getElementById('searchClear').style.display = 'none';
+        document.getElementById('modRep').value = '';
+        document.getElementById('statusRep').value = '';
+        document.getElementById('sortRep').value = 'newest';
+        document.querySelectorAll('.quick-action').forEach(btn => btn.classList.remove('active'));
+        document.querySelector('.quick-action[data-filter="all"]').classList.add('active');
+        filterCards();
+      }
+
+      document.querySelectorAll('.quick-action').forEach(btn => {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll('.quick-action').forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+
+          const filter = this.dataset.filter;
+          const now = new Date();
+          const todayStr = now.toISOString().split('T')[0];
+
+          if (filter === 'today') {
+            filtered = reportData.filter(r => r.dateRaw === todayStr);
+          } else if (filter === 'week') {
+            const weekAgo = new Date(now);
+            weekAgo.setDate(weekAgo.getDate() - 7);
+            const weekStr = weekAgo.toISOString().split('T')[0];
+            filtered = reportData.filter(r => r.dateRaw >= weekStr);
+          } else if (filter === 'month') {
+            const monthAgo = new Date(now);
+            monthAgo.setDate(monthAgo.getDate() - 30);
+            const monthStr = monthAgo.toISOString().split('T')[0];
+            filtered = reportData.filter(r => r.dateRaw >= monthStr);
+          } else if (filter === 'high-conf') {
+            filtered = reportData.filter(r => r.confidence >= 90);
+          } else {
+            filtered = [...reportData];
+          }
+
+          const sort = document.getElementById('sortRep').value;
+          if (sort === 'newest') {
+            filtered.sort((a, b) => new Date(b.dateRaw) - new Date(a.dateRaw));
+          } else if (sort === 'oldest') {
+            filtered.sort((a, b) => new Date(a.dateRaw) - new Date(b.dateRaw));
+          } else if (sort === 'confidence') {
+            filtered.sort((a, b) => b.confidence - a.confidence);
+          }
+
+          currentPage = 1;
+          renderCards();
+        });
+      });
+
+      document.addEventListener('keydown', function(e) {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+          e.preventDefault();
+          const searchInput = document.getElementById('searchRep');
+          searchInput.focus();
+          searchInput.select();
+        }
+        if (e.key === 'Escape') {
+          const searchInput = document.getElementById('searchRep');
+          if (document.activeElement === searchInput) {
+            clearSearch();
+            searchInput.blur();
+          }
+        }
+      });
+
+      document.addEventListener('DOMContentLoaded', function() {
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.querySelector('.nav-links');
+        const navCta = document.querySelector('.nav-cta');
+
+        if (hamburger) {
+          hamburger.addEventListener('click', function() {
+            this.classList.toggle('active');
+            if (navLinks) navLinks.classList.toggle('active');
+            if (navCta) navCta.classList.toggle('active');
+          });
+        }
+
+        renderCards();
+      });
+    </script>
+  </body>
+</html>

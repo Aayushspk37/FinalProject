@@ -1,0 +1,990 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+    <title>X-HViT | FAQ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="{% static 'css/shared.css' %}"/>
+    <style>
+        /* ============================================
+           FAQ PAGE STYLES
+           ============================================ */
+        .faq-page {
+            padding: 120px 0 80px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Header */
+        .faq-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .section-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--teal);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 4px 16px;
+            background: rgba(0, 229, 176, 0.06);
+            border: 1px solid rgba(0, 229, 176, 0.1);
+            border-radius: 100px;
+            margin-bottom: 12px;
+        }
+
+        .section-tag .pulse-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--teal);
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(0.7); }
+        }
+
+        .page-title {
+            font-family: var(--font-head);
+            font-size: clamp(36px, 4vw, 48px);
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            margin-bottom: 12px;
+        }
+
+        .page-title .gradient-text {
+            background: linear-gradient(135deg, var(--teal), var(--blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-desc {
+            font-size: 16px;
+            color: var(--text-muted);
+            max-width: 560px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* Search Bar */
+        .faq-search {
+            margin-bottom: 40px;
+        }
+
+        .search-wrapper {
+            position: relative;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .search-wrapper .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-dim);
+            font-size: 16px;
+        }
+
+        .search-wrapper input {
+            width: 100%;
+            padding: 14px 20px 14px 48px;
+            background: var(--bg2);
+            border: 2px solid var(--border);
+            border-radius: var(--r-md);
+            color: var(--text);
+            font-family: var(--font-body);
+            font-size: 15px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .search-wrapper input:focus {
+            border-color: rgba(0, 229, 176, 0.4);
+            box-shadow: 0 0 0 4px rgba(0, 229, 176, 0.06);
+        }
+
+        .search-wrapper input::placeholder {
+            color: var(--text-dim);
+        }
+
+        .search-wrapper .clear-btn {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-dim);
+            cursor: pointer;
+            font-size: 18px;
+            padding: 4px;
+            display: none;
+        }
+
+        .search-wrapper .clear-btn.visible {
+            display: block;
+        }
+
+        .search-wrapper .clear-btn:hover {
+            color: var(--text);
+        }
+
+        /* Category Tabs */
+        .category-tabs {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        .category-tab {
+            padding: 8px 20px;
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            background: transparent;
+            color: var(--text-muted);
+            font-family: var(--font-body);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .category-tab:hover {
+            border-color: rgba(0, 229, 176, 0.3);
+            color: var(--text);
+        }
+
+        .category-tab.active {
+            background: rgba(0, 229, 176, 0.08);
+            border-color: rgba(0, 229, 176, 0.2);
+            color: var(--teal);
+        }
+
+        .category-tab .count {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--text-dim);
+            margin-left: 4px;
+        }
+
+        .category-tab.active .count {
+            color: var(--teal);
+        }
+
+        /* FAQ Accordion */
+        .faq-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .faq-item {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: var(--r-md);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .faq-item:hover {
+            border-color: rgba(0, 229, 176, 0.15);
+        }
+
+        .faq-item.active {
+            border-color: rgba(0, 229, 176, 0.25);
+        }
+
+        .faq-item.hidden {
+            display: none;
+        }
+
+        .faq-question {
+            padding: 18px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.3s ease;
+        }
+
+        .faq-question:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .faq-question .q-icon {
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .faq-question .q-text {
+            font-family: var(--font-head);
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text);
+            letter-spacing: -0.2px;
+            flex: 1;
+        }
+
+        .faq-question .q-toggle {
+            font-size: 20px;
+            color: var(--text-dim);
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .faq-item.active .faq-question .q-toggle {
+            transform: rotate(180deg);
+            color: var(--teal);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s ease;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 600px;
+        }
+
+        .faq-answer-inner {
+            padding: 0 24px 20px 24px;
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .faq-answer-inner p {
+            margin: 0 0 8px 0;
+        }
+
+        .faq-answer-inner p:last-child {
+            margin-bottom: 0;
+        }
+
+        .faq-answer-inner ul {
+            margin: 8px 0;
+            padding-left: 20px;
+            list-style-type: disc;
+        }
+
+        .faq-answer-inner ul li {
+            margin-bottom: 4px;
+        }
+
+        .faq-answer-inner strong {
+            color: var(--text);
+        }
+
+        /* No Results */
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            display: none;
+        }
+
+        .no-results.visible {
+            display: block;
+        }
+
+        .no-results .no-results-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.3;
+        }
+
+        .no-results h3 {
+            font-family: var(--font-head);
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .no-results p {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin: 0;
+        }
+
+        /* Still Have Questions */
+        .still-questions {
+            margin-top: 48px;
+            padding: 40px;
+            background: linear-gradient(135deg, rgba(0, 229, 176, 0.04), rgba(0, 229, 176, 0.01));
+            border: 1px solid rgba(0, 229, 176, 0.1);
+            border-radius: var(--r-lg);
+            text-align: center;
+        }
+
+        .still-questions h3 {
+            font-family: var(--font-head);
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .still-questions p {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .still-questions .btn-group {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 24px;
+            border-radius: var(--r-sm);
+            font-family: var(--font-body);
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--teal), var(--teal-dim));
+            color: var(--bg);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(0, 229, 176, 0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid rgba(0, 229, 176, 0.2);
+            color: var(--teal);
+        }
+
+        .btn-outline:hover {
+            background: rgba(0, 229, 176, 0.06);
+            border-color: rgba(0, 229, 176, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        .btn-ghost:hover {
+            background: var(--bg3);
+            border-color: rgba(255, 255, 255, 0.18);
+            transform: translateY(-2px);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .faq-page {
+                padding: 100px 0 60px;
+            }
+
+            .faq-question {
+                padding: 14px 16px;
+            }
+
+            .faq-question .q-text {
+                font-size: 14px;
+            }
+
+            .faq-answer-inner {
+                padding: 0 16px 16px 16px;
+                font-size: 13px;
+            }
+
+            .category-tabs {
+                gap: 6px;
+            }
+
+            .category-tab {
+                padding: 6px 14px;
+                font-size: 12px;
+            }
+
+            .still-questions {
+                padding: 24px 20px;
+            }
+
+            .still-questions h3 {
+                font-size: 18px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-title {
+                font-size: 28px;
+            }
+
+            .category-tabs {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .category-tab {
+                text-align: center;
+            }
+
+            .still-questions .btn-group .btn {
+                flex: 1;
+                justify-content: center;
+            }
+
+            .search-wrapper input {
+                padding: 12px 16px 12px 44px;
+                font-size: 14px;
+            }
+        }
+
+        /* Animation */
+        .faq-item {
+            animation: fadeInUp 0.4s ease forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .faq-item:nth-child(1) { animation-delay: 0.05s; }
+        .faq-item:nth-child(2) { animation-delay: 0.10s; }
+        .faq-item:nth-child(3) { animation-delay: 0.15s; }
+        .faq-item:nth-child(4) { animation-delay: 0.20s; }
+        .faq-item:nth-child(5) { animation-delay: 0.25s; }
+        .faq-item:nth-child(6) { animation-delay: 0.30s; }
+        .faq-item:nth-child(7) { animation-delay: 0.35s; }
+        .faq-item:nth-child(8) { animation-delay: 0.40s; }
+        .faq-item:nth-child(9) { animation-delay: 0.45s; }
+        .faq-item:nth-child(10) { animation-delay: 0.50s; }
+        .faq-item:nth-child(11) { animation-delay: 0.55s; }
+        .faq-item:nth-child(12) { animation-delay: 0.60s; }
+    </style>
+</head>
+<body>
+    <div class="grid-bg"></div>
+
+    <!-- Navigation -->
+    {% include 'includes/nav.html' %}
+
+    <!-- FAQ Page -->
+    <div class="faq-page">
+        <div class="container">
+
+            <!-- Header -->
+            <div class="faq-header reveal">
+                <div class="section-tag">
+                    <span class="pulse-dot"></span>
+                    Frequently Asked Questions
+                </div>
+                <h1 class="page-title">Got <span class="gradient-text">Questions</span>?</h1>
+                <p class="page-desc">Find answers to the most common questions about X-HViT, pricing, and how it works.</p>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="faq-search reveal">
+                <div class="search-wrapper">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="faqSearch" placeholder="Search for answers..." oninput="searchFAQ()"/>
+                    <button class="clear-btn" id="clearBtn" onclick="clearSearch()">✕</button>
+                </div>
+            </div>
+
+            <!-- Category Tabs -->
+            <div class="category-tabs reveal">
+                <button class="category-tab active" data-category="all" onclick="filterCategory('all')">
+                    All <span class="count">(12)</span>
+                </button>
+                <button class="category-tab" data-category="general" onclick="filterCategory('general')">
+                    General <span class="count">(4)</span>
+                </button>
+                <button class="category-tab" data-category="pricing" onclick="filterCategory('pricing')">
+                    Pricing <span class="count">(3)</span>
+                </button>
+                <button class="category-tab" data-category="technical" onclick="filterCategory('technical')">
+                    Technical <span class="count">(3)</span>
+                </button>
+                <button class="category-tab" data-category="support" onclick="filterCategory('support')">
+                    Support <span class="count">(2)</span>
+                </button>
+            </div>
+
+            <!-- FAQ List -->
+            <div class="faq-list" id="faqList">
+
+                <!-- General Questions -->
+                <div class="faq-item" data-category="general">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span class="q-icon">💡</span>
+                        <span class="q-text">What is X-HViT?</span>
+                        <span class="q-toggle">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-inner">
+                            <p><strong>X-HViT (Explainable Hybrid Vision Transformer)</strong> is an AI-powered medical imaging platform that combines Convolutional Neural Networks (CNN) with Vision Transformers (ViT) to provide accurate and explainable disease diagnosis from medical images.</p>
+                            <p>It supports multiple imaging modalities including MRI, CT, X-ray, and Microscopic images, and provides Grad-CAM and Attention Map visualizations to explain each prediction.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item" data-category="general">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span class="q-icon">🧠</span>
+                        <span class="q-text">How does X-HViT work?</span>
+                        <span class="q-toggle">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-inner">
+                            <p>X-HViT uses a hybrid architecture that combines:</p>
+                            <ul>
+                                <li><strong>CNN Backbone:</strong> Extracts local spatial features from medical images</li>
+                                <li><strong>Vision Transformer:</strong> Captures global context and long-range dependencies</li>
+                                <li><strong>Grad-CAM:</strong> Highlights regions that influence the diagnosis</li>
+                                <li><strong>Attention Maps:</strong> Shows what the Transformer focused on</li>
+                            </ul>
+                            <p>This combination ensures both high accuracy and interpretability.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item" data-category="general">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span class="q-icon">🩻</span>
+                        <span class="q-text">What imaging modalities are supported?</span>
+                        <span class="q-toggle">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-inner">
+                            <p>X-HViT currently supports <strong>four imaging modalities</strong>:</p>
+                            <ul>
+                                <li><strong>MRI:</strong> Brain tumor detection (Glioma, Meningioma, Pituitary)</li>
+                                <li><strong>CT Scan:</strong> Chest conditions (Pneumonia, Tuberculosis, Fractures)</li>
+                                <li><strong>X-ray:</strong> Bone fractures and chest conditions</li>
+                                <li><strong>Microscopic:</strong> Skin cancer, Diabetic Retinopathy, and cellular analysis</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item" data-category="general">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span class="q-icon">🎯</span>
+                        <span class="q-text">How accurate is X-HViT?</span>
+                        <span class="q-toggle">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-inner">
+                            <p>X-HViT achieves <strong>95%+ accuracy</strong> across all supported modalities, validated through rigorous 5-fold cross-validation.</p>
+                            <p>Specific accuracies by modality:</p>
+                            <ul>
+                                <li><strong>MRI:</strong> 96.2%</li>
+                                <li><strong>CT Scan:</strong> 94.8%</li>
+                                <li><strong>X-ray:</strong> 93.5%</li>
+                                <li><strong>Microscopic:</strong> 95.7%</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pricing Questions -->
+                <div class="faq-item" data-category="pricing">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span class="q-icon">💰</span>
+                        <span class="q-text">Is X-HViT free to use?</span>
+                        <span class="q-toggle">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-inner">
+                            <p><strong>Yes!</strong> X-HViT offers a <strong>Free Plan</strong> for academic research, students, and individual developers.</p>
+                            <p>The Free Plan includes:</p>
+                            <ul>
+                                <li>10 diagnoses per month</li>
+                                <li>All four imaging modalities</li>
+                                <li>Grad-CAM heatmaps</li>
+                                <li>Basic PDF reports</li>
+                                <li>30-day diagnosis history</li>
+                            </ul>
+                            <p>For higher usage, we offer Research and Clinical plans with additional features.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item" data-category="pricing">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span class="q-icon">📊</span>
+                        <span class="q-text">What are the pricing plans?</span>
+                        <span class="q-toggle">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-inner">
+                            <p>X-HViT offers <strong>four pricing plans</strong>:</p>
+                            <ul>
+                                <li><strong>Free:</strong> 10 diagnoses/month - Perfect for students and researchers</li>
+                                <li><strong>Research (NRs. 2,999/mo):</strong> 100 diagnoses/month - For research teams and labs</li>
+                                <li><strong>Clinical (NRs. 5,999/mo):</strong> 500 diagnoses/month - For medical institutions</li>
+                                <li><strong>Enterprise:</strong> Custom pricing - For hospitals and large-scale deployments</li>
+                            </ul>
+                            <p>All paid plans include a 14-day free trial. Yearly billing offers 20% savings.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item" data-category="pricing">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span class="q-icon">💳</span>
+                        <span class="q-text">What payment methods do you accept?</span>
+                        <span class="q-toggle">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-inner">
+                            <p>We accept the following payment methods:</p>
+                            <ul>
+                                <li><strong>eSewa:</strong> Scan QR code for quick payment</li>
+                                <li><strong>Khalti:</strong> Digital wallet payment</li>
+                                <li><strong>Bank Transfer:</strong> Direct bank transfers</li>
+                                <li><strong>Institutional PO:</strong> Purchase orders for enterprises</li>
+                            </ul>
+                            <p>For enterprise payments, please contact our sales team.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Technical Questions -->
+                <div class="faq-item" data-category="technical">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span class="q-icon">🔬</span>
+                        <span class="q-text">What is Grad-CAM and how does it help?</span>
+                        <span class="q-toggle">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-inner">
+                            <p><strong>Grad-CAM (Gradient-weighted Class Activation Mapping)</strong> is a visualization technique that highlights the regions of an image that most influenced the AI's diagnosis.</p>
+                            <p>It helps clinicians understand:</p>
+                            <ul>
+                                <li>Which areas of the image the model focused on</li>
+                                <li>Why a particular diagnosis was made</li>
+                                <li>Whether the AI is looking at the right features</li>
+                            </ul>
+                            <p>This makes the AI's decisions more transparent and trustworthy.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item" data-category="technical">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span class="q-icon">🧬</span>
+                        <span class="q-text">What models are used for each modality?</span>
+                        <span class="q-toggle">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-inner">
+                            <p>X-HViT uses specialized <strong>EnhancedHViT models</strong> for each disease category:</p>
+                            <ul>
+                                <li><strong>Brain Tumor:</strong> 4-class classification (No Tumor, Glioma, Meningioma, Pituitary)</li>
+                                <li><strong>Bone Fracture:</strong> 2-class classification (Normal, Fracture)</li>
+                                <li><strong>Tuberculosis:</strong> 2-class classification (Normal, TB)</li>
+                                <li><strong>Diabetic Retinopathy:</strong> 5-class severity classification</li>
+                                <li><strong>Skin Cancer:</strong> 7-class lesion classification</li>
+                                <li><strong>Pneumonia:</strong> 2-class classification (Normal, Pneumonia)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item" data-category="technical">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span class="q-icon">🔒</span>
+                        <span class="q-text">Is my data secure?</span>
+                        <span class="q-toggle">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-inner">
+                            <p><strong>Yes!</strong> X-HViT prioritizes data security and privacy:</p>
+                            <ul>
+                                <li>All images are processed on secure servers</li>
+                                <li>No images are stored permanently without user consent</li>
+                                <li>Diagnosis history is private and only accessible to you</li>
+                                <li>We comply with medical data protection standards</li>
+                            </ul>
+                            <p>For research purposes, data is anonymized before any analysis.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Support Questions -->
+                <div class="faq-item" data-category="support">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span class="q-icon">📧</span>
+                        <span class="q-text">How can I get support?</span>
+                        <span class="q-toggle">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-inner">
+                            <p>We offer multiple support channels:</p>
+                            <ul>
+                                <li><strong>Email:</strong> Contact our support team at <a href="mailto:support@xhvit.com" style="color:var(--teal);">support@xhvit.com</a></li>
+                                <li><strong>WhatsApp:</strong> Quick support via WhatsApp at +977 9849977377</li>
+                                <li><strong>FAQ:</strong> Browse our comprehensive FAQ section</li>
+                                <li><strong>Documentation:</strong> Detailed technical documentation available</li>
+                            </ul>
+                            <p>Paid plan users get priority support with faster response times.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item" data-category="support">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span class="q-icon">🔄</span>
+                        <span class="q-text">Can I cancel my subscription?</span>
+                        <span class="q-toggle">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-inner">
+                            <p><strong>Yes!</strong> You can cancel your subscription at any time:</p>
+                            <ul>
+                                <li>No cancellation fees</li>
+                                <li>Your account remains active until the billing period ends</li>
+                                <li>All your data and history will be preserved</li>
+                                <li>You can resubscribe at any time</li>
+                            </ul>
+                            <p>To cancel, visit your account settings or contact our support team.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- No Results -->
+            <div class="no-results" id="noResults">
+                <div class="no-results-icon">🔍</div>
+                <h3>No results found</h3>
+                <p>Try adjusting your search terms or browse the categories above.</p>
+            </div>
+
+            <!-- Still Have Questions -->
+            <div class="still-questions reveal">
+                <h3>Still have <span class="gradient-text">questions</span>?</h3>
+                <p>Can't find what you're looking for? We're here to help.</p>
+                <div class="btn-group">
+                    <a href="{% url 'Diagnosis:contact' %}" class="btn btn-primary">📧 Contact Us</a>
+                    <a href="{% url 'Diagnosis:support' %}" class="btn btn-outline">💬 Support</a>
+                    <a href="{% url 'Diagnosis:documentation' %}" class="btn btn-ghost">📖 Documentation</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Footer -->
+    {% include 'includes/footer.html' %}
+
+    <script src="{% static 'js/shared.js' %}"></script>
+
+    <script>
+        // ============================================
+        // TOGGLE FAQ ITEM
+        // ============================================
+        function toggleFAQ(element) {
+            const item = element.closest('.faq-item');
+            const isActive = item.classList.contains('active');
+
+            // Close other items
+            document.querySelectorAll('.faq-item.active').forEach(el => {
+                if (el !== item) {
+                    el.classList.remove('active');
+                }
+            });
+
+            // Toggle current item
+            if (isActive) {
+                item.classList.remove('active');
+            } else {
+                item.classList.add('active');
+                // Scroll to the item
+                item.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        // ============================================
+        // SEARCH FAQ
+        // ============================================
+        function searchFAQ() {
+            const query = document.getElementById('faqSearch').value.toLowerCase().trim();
+            const items = document.querySelectorAll('.faq-item');
+            const clearBtn = document.getElementById('clearBtn');
+            const noResults = document.getElementById('noResults');
+            let found = 0;
+
+            // Show/hide clear button
+            if (query.length > 0) {
+                clearBtn.classList.add('visible');
+            } else {
+                clearBtn.classList.remove('visible');
+            }
+
+            // Get active category
+            const activeCategory = document.querySelector('.category-tab.active');
+            const category = activeCategory ? activeCategory.dataset.category : 'all';
+
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                const itemCategory = item.dataset.category;
+                const matchesSearch = text.includes(query);
+                const matchesCategory = category === 'all' || itemCategory === category;
+
+                if (matchesSearch && matchesCategory) {
+                    item.classList.remove('hidden');
+                    found++;
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+
+            // Show/hide no results
+            if (found === 0 && query.length > 0) {
+                noResults.classList.add('visible');
+            } else {
+                noResults.classList.remove('visible');
+            }
+        }
+
+        // ============================================
+        // CLEAR SEARCH
+        // ============================================
+        function clearSearch() {
+            document.getElementById('faqSearch').value = '';
+            document.getElementById('clearBtn').classList.remove('visible');
+            document.querySelectorAll('.faq-item').forEach(item => {
+                item.classList.remove('hidden');
+            });
+            document.getElementById('noResults').classList.remove('visible');
+            document.getElementById('faqSearch').focus();
+        }
+
+        // ============================================
+        // FILTER BY CATEGORY
+        // ============================================
+        function filterCategory(category) {
+            // Update active tab
+            document.querySelectorAll('.category-tab').forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.dataset.category === category) {
+                    tab.classList.add('active');
+                }
+            });
+
+            // Filter items
+            const items = document.querySelectorAll('.faq-item');
+            const searchQuery = document.getElementById('faqSearch').value.toLowerCase().trim();
+            let found = 0;
+
+            items.forEach(item => {
+                const itemCategory = item.dataset.category;
+                const matchesCategory = category === 'all' || itemCategory === category;
+
+                if (searchQuery.length > 0) {
+                    const text = item.textContent.toLowerCase();
+                    const matchesSearch = text.includes(searchQuery);
+                    if (matchesSearch && matchesCategory) {
+                        item.classList.remove('hidden');
+                        found++;
+                    } else {
+                        item.classList.add('hidden');
+                    }
+                } else {
+                    if (matchesCategory) {
+                        item.classList.remove('hidden');
+                        found++;
+                    } else {
+                        item.classList.add('hidden');
+                    }
+                }
+            });
+
+            // Show/hide no results
+            const noResults = document.getElementById('noResults');
+            if (found === 0) {
+                noResults.classList.add('visible');
+            } else {
+                noResults.classList.remove('visible');
+            }
+        }
+
+        // ============================================
+        // KEYBOARD SHORTCUTS
+        // ============================================
+        document.addEventListener('keydown', function(e) {
+            // Ctrl+F or Ctrl+K to focus search
+            if ((e.ctrlKey || e.metaKey) && (e.key === 'f' || e.key === 'k')) {
+                e.preventDefault();
+                document.getElementById('faqSearch').focus();
+            }
+
+            // Escape to clear search
+            if (e.key === 'Escape') {
+                clearSearch();
+                document.getElementById('faqSearch').blur();
+            }
+        });
+
+        // ============================================
+        // REVEAL ANIMATIONS
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            const reveals = document.querySelectorAll('.reveal');
+
+            const revealObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            });
+
+            reveals.forEach(el => revealObserver.observe(el));
+        });
+
+        console.log('FAQ page loaded');
+    </script>
+</body>
+</html>

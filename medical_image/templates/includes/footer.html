@@ -1,0 +1,555 @@
+{% load static %}
+<footer class="site-footer">
+  <div class="footer-container">
+    <!-- Main Footer Content -->
+    <div class="footer-main">
+      
+      <!-- Brand Column -->
+      <div class="footer-col footer-brand">
+        <div class="footer-logo">
+          <a href="{% url 'Diagnosis:index' %}" class="footer-logo-link">
+            <div class="logo-icon">⚡</div>
+            <div class="logo-text">
+              <span class="logo-highlight">HViT</span> Medical
+            </div>
+          </a>
+        </div>
+        <p class="footer-tagline">Explainable Hybrid Vision Transformer for AI-assisted medical image diagnosis.</p>
+        <div class="footer-social">
+          <a href="#" class="social-link" aria-label="GitHub">
+            <svg class="social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.03-2.682-.103-.253-.447-1.27.098-2.646 0 0 .84-.269 2.75 1.025.8-.223 1.65-.334 2.5-.334.85 0 1.7.111 2.5.334 1.91-1.294 2.75-1.025 2.75-1.025.545 1.376.201 2.393.099 2.646.64.698 1.03 1.591 1.03 2.682 0 3.841-2.337 4.687-4.565 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.161 22 16.418 22 12c0-5.523-4.477-10-10-10z"/>
+            </svg>
+          </a>
+          <a href="#" class="social-link" aria-label="Twitter">
+            <svg class="social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/>
+            </svg>
+          </a>
+          <a href="#" class="social-link" aria-label="LinkedIn">
+            <svg class="social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+              <rect x="2" y="9" width="4" height="12"/>
+              <circle cx="4" cy="4" r="2"/>
+            </svg>
+          </a>
+          <a href="#" class="social-link" aria-label="YouTube">
+            <svg class="social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"/>
+              <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Platform Links -->
+      <div class="footer-col">
+        <h4 class="footer-heading">Platform</h4>
+        <ul class="footer-links">
+          <li><a href="{% url 'Diagnosis:index' %}">Home</a></li>
+          <li><a href="{% url 'Diagnosis:diagnose' %}">Diagnose</a></li>
+          <li><a href="{% url 'Diagnosis:dashboard' %}">Dashboard</a></li>
+          <li><a href="{% url 'Diagnosis:reports' %}">Reports</a></li>
+          <li><a href="{% url 'Diagnosis:pricing' %}">Pricing</a></li>
+        </ul>
+      </div>
+
+      <!-- Learn Links -->
+      <div class="footer-col">
+        <h4 class="footer-heading">Learn</h4>
+        <ul class="footer-links">
+          <li><a href="{% url 'Diagnosis:modalities' %}">Modalities</a></li>
+          <li><a href="{% url 'Diagnosis:documentation' %}">Documentation</a></li>
+          <li><a href="{% url 'Diagnosis:faq' %}">FAQ</a></li>
+          <li><a href="{% url 'Diagnosis:support' %}">Support</a></li>
+          
+        </ul>
+      </div>
+
+      <!-- Company Links -->
+      <div class="footer-col">
+        <h4 class="footer-heading">Company</h4>
+        <ul class="footer-links">
+          <li><a href="{% url 'Diagnosis:about' %}">About Us</a></li>
+          <li><a href="{% url 'Diagnosis:team' %}">Team</a></li>
+          <li><a href="{% url 'Diagnosis:contact' %}">Contact</a></li>
+          <li><a href="{% url 'Diagnosis:services' %}">Services</a></li>
+          
+        </ul>
+      </div>
+
+      <!-- Legal & Newsletter -->
+      <div class="footer-col footer-newsletter">
+        <h4 class="footer-heading">Stay Updated</h4>
+        <p class="newsletter-text">Subscribe to our newsletter for updates on HViT.</p>
+        <form class="newsletter-form" method="POST" action="#">
+          {% csrf_token %}
+          <div class="newsletter-input-group">
+            <input type="email" class="newsletter-input" placeholder="Enter your email" required>
+            <button type="submit" class="newsletter-btn">Subscribe</button>
+          </div>
+        </form>
+        <ul class="footer-links footer-legal">
+          <li><a href="{% url 'Diagnosis:terms' %}">Terms of Service</a></li>
+          <li><a href="{% url 'Diagnosis:privacy' %}">Privacy Policy</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- Footer Bottom - Centered Copyright -->
+    <div class="footer-bottom">
+      <div class="footer-copyright">
+        <p>© 2026 <span class="copyright-highlight">HViT Medical AI</span></p>
+        <p class="copyright-sub">Built with ❤️ for AI-assisted medical diagnosis</p>
+      </div>
+    </div>
+
+  </div>
+</footer>
+
+<style>
+/* ============================================
+   ENHANCED FOOTER STYLES
+   ============================================ */
+
+.site-footer {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  padding: 60px 0 0;
+  margin-top: 60px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle gradient overlay */
+.site-footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--teal), var(--blue), transparent);
+  opacity: 0.3;
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Footer Main Grid */
+.footer-main {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1.5fr;
+  gap: 32px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Brand Column */
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.footer-logo-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+
+.logo-icon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, var(--teal), var(--blue));
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--bg);
+}
+
+.logo-text {
+  font-family: var(--font-head);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.logo-highlight {
+  color: var(--teal);
+}
+
+.footer-tagline {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  max-width: 300px;
+  margin: 0;
+}
+
+/* Social Links */
+.footer-social {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.social-link {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.social-link:hover {
+  border-color: var(--teal);
+  color: var(--teal);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 229, 176, 0.15);
+}
+
+.social-icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* Footer Columns */
+.footer-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-heading {
+  font-family: var(--font-head);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 14px;
+  letter-spacing: -0.2px;
+  position: relative;
+}
+
+.footer-heading::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 24px;
+  height: 2px;
+  background: var(--teal);
+  border-radius: 2px;
+}
+
+.footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.footer-links li a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 13px;
+  transition: all 0.2s ease;
+  display: inline-block;
+  position: relative;
+}
+
+.footer-links li a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--teal);
+  transition: width 0.3s ease;
+}
+
+.footer-links li a:hover {
+  color: var(--text);
+}
+
+.footer-links li a:hover::after {
+  width: 100%;
+}
+
+/* Newsletter */
+.newsletter-text {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 0 0 12px 0;
+  line-height: 1.5;
+}
+
+.newsletter-form {
+  width: 100%;
+}
+
+.newsletter-input-group {
+  display: flex;
+  gap: 8px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  transition: border-color 0.3s ease;
+}
+
+.newsletter-input-group:focus-within {
+  border-color: rgba(0, 229, 176, 0.4);
+}
+
+.newsletter-input {
+  flex: 1;
+  padding: 10px 14px;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 13px;
+}
+
+.newsletter-input::placeholder {
+  color: var(--text-dim);
+}
+
+.newsletter-btn {
+  padding: 10px 16px;
+  background: linear-gradient(135deg, var(--teal), var(--teal-dim));
+  color: var(--bg);
+  border: none;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.newsletter-btn:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 16px rgba(0, 229, 176, 0.25);
+}
+
+/* Footer Legal Links */
+.footer-legal {
+  margin-top: 12px;
+  flex-direction: row;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.footer-legal li a {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.footer-legal li a::after {
+  display: none;
+}
+
+.footer-legal li a:hover {
+  color: var(--text-muted);
+}
+
+/* ============================================
+   FOOTER BOTTOM - CENTERED COPYRIGHT
+   ============================================ */
+.footer-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 0 28px;
+  text-align: center;
+  gap: 6px;
+}
+
+.footer-copyright {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.footer-copyright p {
+  font-size: 15px;
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.6;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+.footer-copyright .copyright-highlight {
+  color: var(--teal);
+  font-weight: 700;
+  font-size: 16px;
+  background: linear-gradient(135deg, var(--teal), var(--blue));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.footer-copyright .copyright-sub {
+  font-size: 13px;
+  color: var(--text-dim);
+  font-weight: 400;
+  letter-spacing: 0.2px;
+}
+
+/* Badges */
+.footer-badges {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.badge-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-dim);
+  padding: 4px 12px;
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  background: var(--bg3);
+  transition: all 0.3s ease;
+}
+
+.badge-item:hover {
+  border-color: rgba(0, 229, 176, 0.2);
+  color: var(--text-muted);
+}
+
+.badge-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--teal);
+  display: inline-block;
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.7); }
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .footer-main {
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 28px;
+  }
+  .footer-brand {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 768px) {
+  .footer-main {
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    padding-bottom: 24px;
+  }
+  .footer-brand {
+    grid-column: 1 / -1;
+  }
+  .footer-newsletter {
+    grid-column: 1 / -1;
+  }
+  .footer-bottom {
+    padding-top: 16px;
+  }
+  .footer-tagline {
+    max-width: 100%;
+  }
+  .footer-copyright p {
+    font-size: 14px;
+  }
+  .footer-copyright .copyright-highlight {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer-main {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .footer-brand {
+    grid-column: 1;
+  }
+  .footer-newsletter {
+    grid-column: 1;
+  }
+  .newsletter-input-group {
+    flex-direction: column;
+  }
+  .newsletter-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .site-footer {
+    padding-top: 40px;
+  }
+  .footer-bottom {
+    gap: 8px;
+    padding: 16px 0 20px;
+  }
+  .footer-legal {
+    flex-direction: column;
+    gap: 4px;
+    align-items: center;
+  }
+  .footer-copyright p {
+    font-size: 13px;
+  }
+  .footer-copyright .copyright-highlight {
+    font-size: 14px;
+  }
+  .footer-copyright .copyright-sub {
+    font-size: 12px;
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: light) {
+  .site-footer {
+    background: #f8fafc;
+  }
+  .newsletter-input-group {
+    background: #f1f4f9;
+  }
+  .badge-item {
+    background: #f1f4f9;
+  }
+  .footer-logo-link .logo-text {
+    color: #1a1a2e;
+  }
+}
+</style>

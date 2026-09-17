@@ -1,0 +1,49 @@
+# Django
+Django==5.2.15
+django-crispy-forms==2.3
+crispy-bootstrap5==0.7
+
+# Django Extensions (Recommended)
+djangorestframework==3.15.2
+django-cors-headers==4.6.0
+django-filter==24.3
+whitenoise==6.7.0
+gunicorn==23.0.0
+
+# Core ML Libraries
+torch==2.5.1
+torchvision==0.20.1
+numpy==1.26.4
+pandas==2.2.3
+scikit-learn==1.5.2
+scipy==1.14.1
+matplotlib==3.9.2
+seaborn==0.13.2
+
+# Image Processing - FIXED (removed the incorrect version)
+opencv-python==4.10.0.84
+opencv-python-headless==4.10.0.84
+
+Pillow==10.4.0
+
+# Deep Learning Libraries
+timm==1.0.11
+einops==0.8.0
+albumentations==1.4.0
+
+# XAI (Explainable AI) 
+grad-cam==1.4.8
+captum==0.7.0
+
+# Medical Imaging
+pydicom==3.0.1
+
+# PDF Report Generation
+reportlab==4.2.5
+
+# Model Serialization
+joblib==1.4.2
+
+# Visualization & Utilities
+tqdm==4.67.0
+python-dotenv==1.0.1

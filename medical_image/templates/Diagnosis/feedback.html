@@ -1,0 +1,1122 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+    <title>X-HViT | Feedback</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="{% static 'css/shared.css' %}"/>
+    <style>
+        /* ============================================
+           FEEDBACK PAGE STYLES
+           ============================================ */
+        .feedback-page {
+            padding: 120px 0 60px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .section-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--teal);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 4px 16px;
+            background: rgba(0, 229, 176, 0.06);
+            border: 1px solid rgba(0, 229, 176, 0.1);
+            border-radius: 100px;
+            margin-bottom: 12px;
+        }
+
+        .section-tag .pulse-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--teal);
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(0.7); }
+        }
+
+        .page-title {
+            font-family: var(--font-head);
+            font-size: clamp(32px, 4vw, 42px);
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            margin-bottom: 8px;
+        }
+
+        .page-title .gradient-text {
+            background: linear-gradient(135deg, var(--teal), var(--blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-desc {
+            font-size: 15px;
+            color: var(--text-muted);
+            max-width: 500px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* Stats */
+        .feedback-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .feedback-stat {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: var(--r-md);
+            padding: 16px 20px;
+            text-align: center;
+        }
+
+        .feedback-stat .stat-number {
+            font-family: var(--font-head);
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--teal);
+        }
+
+        .feedback-stat .stat-label {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 4px;
+        }
+
+        .feedback-stat .stat-stars {
+            font-size: 20px;
+            margin-top: 4px;
+        }
+
+        /* Rating Distribution */
+        .rating-distribution {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: var(--r-lg);
+            padding: 24px;
+            margin-bottom: 28px;
+        }
+
+        .rating-distribution .rd-title {
+            font-family: var(--font-head);
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .rd-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 6px;
+        }
+
+        .rd-bar .rd-label {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-muted);
+            min-width: 40px;
+            text-align: right;
+        }
+
+        .rd-bar .rd-track {
+            flex: 1;
+            height: 6px;
+            background: var(--bg3);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .rd-bar .rd-track .rd-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 1.2s ease;
+            width: 0%;
+        }
+
+        .rd-bar .rd-track .rd-fill.star-5 { background: var(--teal); }
+        .rd-bar .rd-track .rd-fill.star-4 { background: var(--blue); }
+        .rd-bar .rd-track .rd-fill.star-3 { background: var(--yellow); }
+        .rd-bar .rd-track .rd-fill.star-2 { background: #ff9f43; }
+        .rd-bar .rd-track .rd-fill.star-1 { background: var(--red); }
+
+        .rd-bar .rd-count {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-dim);
+            min-width: 30px;
+        }
+
+        /* Submit Feedback Form */
+        .feedback-form-wrapper {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: var(--r-lg);
+            padding: 32px;
+            margin-bottom: 32px;
+        }
+
+        .feedback-form-wrapper h3 {
+            font-family: var(--font-head);
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .feedback-form-wrapper .form-subtitle {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+
+        .feedback-form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .form-group label .required {
+            color: var(--red);
+            margin-left: 2px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper .input-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-dim);
+            font-size: 16px;
+        }
+
+        .input-wrapper textarea {
+            width: 100%;
+            padding: 12px 16px 12px 44px;
+            background: var(--bg3);
+            border: 2px solid var(--border);
+            border-radius: var(--r-sm);
+            color: var(--text);
+            font-family: var(--font-body);
+            font-size: 14px;
+            transition: all 0.3s ease;
+            outline: none;
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .input-wrapper textarea:focus {
+            border-color: rgba(0, 229, 176, 0.4);
+            box-shadow: 0 0 0 4px rgba(0, 229, 176, 0.06);
+        }
+
+        .input-wrapper textarea::placeholder {
+            color: var(--text-dim);
+        }
+
+        .input-wrapper textarea.input-error {
+            border-color: var(--red);
+        }
+
+        .form-error {
+            font-size: 12px;
+            color: var(--red);
+            margin-top: 4px;
+            display: none;
+        }
+
+        .form-error.visible {
+            display: block;
+        }
+
+        /* ============================================
+           ENHANCED STAR RATING
+           ============================================ */
+        .star-rating {
+            display: flex;
+            gap: 8px;
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+            padding: 8px 0;
+        }
+
+        .star-rating input {
+            display: none;
+        }
+
+        .star-rating label {
+            font-size: 36px;
+            cursor: pointer;
+            color: var(--text-dim);
+            transition: all 0.2s ease;
+            position: relative;
+            user-select: none;
+        }
+
+        /* Hover effect - stars light up */
+        .star-rating label:hover,
+        .star-rating label:hover ~ label {
+            color: #ffc947;
+            transform: scale(1.2);
+        }
+
+        /* Selected stars */
+        .star-rating input:checked ~ label {
+            color: #ffc947;
+        }
+
+        /* Pulse animation for selected stars */
+        .star-rating input:checked ~ label {
+            animation: starPulse 0.4s ease;
+        }
+
+        @keyframes starPulse {
+            0% {
+                transform: scale(1);
+            }
+            30% {
+                transform: scale(1.4);
+                color: #ffdd77;
+            }
+            60% {
+                transform: scale(0.9);
+            }
+            100% {
+                transform: scale(1);
+                color: #ffc947;
+            }
+        }
+
+        /* Glow effect on hover */
+        .star-rating:hover label {
+            text-shadow: 0 0 20px rgba(255, 201, 71, 0.2);
+        }
+
+        /* Rating text feedback */
+        .rating-feedback {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 4px;
+            min-height: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .rating-feedback .rating-label {
+            font-weight: 600;
+            padding: 2px 12px;
+            border-radius: 100px;
+            display: inline-block;
+        }
+
+        .rating-feedback .rating-label.excellent {
+            color: var(--teal);
+            background: rgba(0, 229, 176, 0.08);
+        }
+
+        .rating-feedback .rating-label.good {
+            color: var(--blue);
+            background: rgba(58, 155, 255, 0.08);
+        }
+
+        .rating-feedback .rating-label.average {
+            color: var(--yellow);
+            background: rgba(255, 201, 71, 0.08);
+        }
+
+        .rating-feedback .rating-label.poor {
+            color: #ff9f43;
+            background: rgba(255, 159, 67, 0.08);
+        }
+
+        .rating-feedback .rating-label.terrible {
+            color: var(--red);
+            background: rgba(255, 85, 117, 0.08);
+        }
+
+        /* Star shake animation for invalid selection */
+        .star-rating.shake label {
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-10px); }
+            40% { transform: translateX(10px); }
+            60% { transform: translateX(-5px); }
+            80% { transform: translateX(5px); }
+        }
+
+        /* Recent Feedback List */
+        .feedback-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .feedback-item {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: var(--r-md);
+            padding: 16px 20px;
+            transition: all 0.3s ease;
+        }
+
+        .feedback-item:hover {
+            border-color: rgba(0, 229, 176, 0.15);
+        }
+
+        .feedback-item .fb-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+
+        .feedback-item .fb-header .fb-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feedback-item .fb-header .fb-user .fb-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--teal), var(--blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-head);
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--bg);
+            flex-shrink: 0;
+        }
+
+        .feedback-item .fb-header .fb-user .fb-name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .feedback-item .fb-header .fb-stars {
+            font-size: 16px;
+            color: #ffc947;
+        }
+
+        .feedback-item .fb-header .fb-date {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--text-dim);
+        }
+
+        .feedback-item .fb-comment {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .feedback-item .fb-diagnosis {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--text-dim);
+            margin-top: 6px;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: var(--r-sm);
+            font-family: var(--font-body);
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--teal), var(--teal-dim));
+            color: var(--bg);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(0, 229, 176, 0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        .btn-ghost:hover {
+            background: var(--bg3);
+            border-color: rgba(255, 255, 255, 0.18);
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: var(--red);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #e6455a;
+            transform: translateY(-2px);
+        }
+
+        .btn .spinner {
+            display: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-top-color: var(--bg);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .btn.loading .spinner {
+            display: inline-block;
+        }
+
+        .btn.loading .btn-text {
+            display: none;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .feedback-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        /* Messages */
+        .messages {
+            margin-bottom: 16px;
+        }
+
+        .alert {
+            padding: 10px 14px;
+            border-radius: var(--r-sm);
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-success {
+            background: rgba(0, 229, 176, 0.08);
+            border: 1px solid rgba(0, 229, 176, 0.15);
+            color: var(--teal);
+        }
+
+        .alert-error {
+            background: rgba(255, 85, 117, 0.08);
+            border: 1px solid rgba(255, 85, 117, 0.15);
+            color: var(--red);
+        }
+
+        .alert-warning {
+            background: rgba(255, 201, 71, 0.08);
+            border: 1px solid rgba(255, 201, 71, 0.15);
+            color: var(--yellow);
+        }
+
+        .alert-info {
+            background: rgba(58, 155, 255, 0.08);
+            border: 1px solid rgba(58, 155, 255, 0.15);
+            color: var(--blue);
+        }
+
+        .alert .alert-icon {
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        /* Toast */
+        .toast-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 380px;
+        }
+
+        .toast {
+            padding: 12px 16px;
+            border-radius: var(--r-sm);
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--info);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            transform: translateX(120%);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast-success { border-left-color: var(--teal); }
+        .toast-error { border-left-color: var(--red); }
+        .toast-warning { border-left-color: var(--yellow); }
+        .toast-info { border-left-color: var(--blue); }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .feedback-page {
+                padding: 100px 0 40px;
+            }
+
+            .feedback-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .feedback-form-wrapper {
+                padding: 20px;
+            }
+
+            .feedback-item .fb-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .star-rating label {
+                font-size: 30px;
+            }
+
+            .feedback-actions {
+                flex-direction: column;
+            }
+
+            .feedback-actions .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .feedback-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .page-title {
+                font-size: 28px;
+            }
+
+            .feedback-form-wrapper h3 {
+                font-size: 18px;
+            }
+
+            .star-rating label {
+                font-size: 28px;
+            }
+
+            .rd-bar {
+                gap: 8px;
+            }
+
+            .rd-bar .rd-label {
+                min-width: 30px;
+                font-size: 10px;
+            }
+
+            .rd-bar .rd-count {
+                min-width: 25px;
+                font-size: 10px;
+            }
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-bg"></div>
+
+    <!-- Navigation -->
+    {% include 'includes/nav.html' %}
+
+    <!-- Feedback Page -->
+    <div class="feedback-page">
+        <div class="container">
+
+            <!-- Header -->
+            <div class="page-header reveal">
+                <div class="section-tag">
+                    <span class="pulse-dot"></span>
+                    Feedback
+                </div>
+                <h1 class="page-title">Share Your <span class="gradient-text">Feedback</span></h1>
+                <p class="page-desc">Help us improve X-HViT by sharing your experience and suggestions.</p>
+            </div>
+
+            <!-- Messages -->
+            {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    <span class="alert-icon">
+                        {% if message.tags == 'success' %}✅
+                        {% elif message.tags == 'error' %}❌
+                        {% elif message.tags == 'warning' %}⚠️
+                        {% else %}ℹ️{% endif %}
+                    </span>
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Stats -->
+            <div class="feedback-stats reveal reveal-delay-1">
+                <div class="feedback-stat">
+                    <div class="stat-number">{{ total_feedback|default:0 }}</div>
+                    <div class="stat-label">Total Feedback</div>
+                </div>
+                <div class="feedback-stat">
+                    <div class="stat-number">{{ avg_rating|default:"0.0" }}</div>
+                    <div class="stat-label">Average Rating</div>
+                    <div class="stat-stars">
+                        {% if avg_rating %}
+                            {% for i in "12345"|make_list %}
+                                {% if forloop.counter <= avg_rating|floatformat:"0"|add:"0" %}
+                                    ⭐
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="feedback-stat">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Satisfaction Rate</div>
+                </div>
+            </div>
+
+            <!-- Rating Distribution -->
+            {% if rating_distribution %}
+            <div class="rating-distribution reveal reveal-delay-2">
+                <div class="rd-title">Rating Distribution</div>
+                {% for item in rating_distribution %}
+                <div class="rd-bar">
+                    <span class="rd-label">{{ item.stars }} ⭐</span>
+                    <div class="rd-track">
+                        <div class="rd-fill star-{{ item.stars }}" style="width:{{ item.percentage }}%;"></div>
+                    </div>
+                    <span class="rd-count">{{ item.count }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Submit Feedback -->
+            <div class="feedback-form-wrapper reveal reveal-delay-3">
+                <h3>📝 Submit Feedback</h3>
+                <p class="form-subtitle">Your feedback helps us improve X-HViT for everyone.</p>
+
+                <form class="feedback-form" method="post" action="{% url 'Diagnosis:submit_feedback' %}" id="feedbackForm">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <label>Rating <span class="required">*</span></label>
+                        <div class="star-rating" id="starRating">
+                            <input type="radio" name="rating" id="star5" value="5">
+                            <label for="star5" title="Excellent">⭐</label>
+                            <input type="radio" name="rating" id="star4" value="4">
+                            <label for="star4" title="Good">⭐</label>
+                            <input type="radio" name="rating" id="star3" value="3">
+                            <label for="star3" title="Average">⭐</label>
+                            <input type="radio" name="rating" id="star2" value="2">
+                            <label for="star2" title="Poor">⭐</label>
+                            <input type="radio" name="rating" id="star1" value="1">
+                            <label for="star1" title="Terrible">⭐</label>
+                        </div>
+                        <div class="rating-feedback" id="ratingFeedback">
+                            <span class="rating-label" style="opacity:0;">Select a rating</span>
+                        </div>
+                        <div class="form-error" id="ratingError">Please select a rating</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="diagnosis_id">Related Diagnosis (Optional)</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🔬</span>
+                            <select id="diagnosis_id" name="diagnosis_id" style="width:100%;padding:12px 16px 12px 44px;background:var(--bg3);border:2px solid var(--border);border-radius:var(--r-sm);color:var(--text);font-family:var(--font-body);font-size:14px;outline:none;transition:all 0.3s ease;">
+                                <option value="">Select a diagnosis...</option>
+                                {% for record in recent_diagnoses %}
+                                    <option value="{{ record.id }}">{{ record.case_id }} - {{ record.diagnosis }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="comment">Comment <span class="required">*</span></label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">✏️</span>
+                            <textarea id="comment" name="comment" placeholder="Share your thoughts, suggestions, or report any issues..." required>{{ comment|default:'' }}</textarea>
+                        </div>
+                        <div class="form-error" id="commentError">Please enter your comment</div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                        <span class="btn-text">⭐ Submit Feedback</span>
+                        <span class="spinner"></span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Recent Feedback -->
+            <div class="feedback-list">
+                {% if feedbacks %}
+                    {% for feedback in feedbacks %}
+                    <div class="feedback-item reveal">
+                        <div class="fb-header">
+                            <div class="fb-user">
+                                <div class="fb-avatar">
+                                    {{ feedback.user.first_name|slice:":1" }}{{ feedback.user.last_name|slice:":1"|default:feedback.user.username|slice:":1" }}
+                                </div>
+                                <span class="fb-name">{{ feedback.user.get_full_name|default:feedback.user.username }}</span>
+                            </div>
+                            <div class="fb-stars">
+                                {% for i in "12345"|make_list %}
+                                    {% if forloop.counter <= feedback.rating %}
+                                        ⭐
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <span class="fb-date">{{ feedback.created_at|date:"M d, Y" }}</span>
+                        </div>
+                        {% if feedback.comment %}
+                            <p class="fb-comment">{{ feedback.comment }}</p>
+                        {% endif %}
+                        {% if feedback.diagnosis_record %}
+                            <div class="fb-diagnosis">🔬 Related to: {{ feedback.diagnosis_record.case_id }} - {{ feedback.diagnosis_record.diagnosis }}</div>
+                        {% endif %}
+                        {% if request.user == feedback.user %}
+                        <div style="margin-top:8px;">
+                            <a href="{% url 'Diagnosis:delete_feedback' feedback.id %}" class="btn btn-danger btn-sm" onclick="return confirm('Delete this feedback?')">🗑️ Delete</a>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state" style="text-align:center;padding:40px 20px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);">
+                        <span style="font-size:48px;display:block;margin-bottom:12px;">📝</span>
+                        <h3 style="font-family:var(--font-head);font-size:18px;font-weight:700;">No feedback yet</h3>
+                        <p style="color:var(--text-muted);font-size:14px;">Be the first to share your feedback about X-HViT!</p>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- View All -->
+            {% if feedbacks.count > 10 %}
+            <div style="text-align:center;margin-top:20px;">
+                <a href="#" class="btn btn-ghost">View All Feedback →</a>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <!-- Footer -->
+    {% include 'includes/footer.html' %}
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="{% static 'js/shared.js' %}"></script>
+
+    <script>
+        // ============================================
+        // ENHANCED STAR RATING WITH ANIMATION
+        // ============================================
+        const starRating = document.getElementById('starRating');
+        const ratingFeedback = document.getElementById('ratingFeedback');
+        const ratingLabels = {
+            1: { label: 'Terrible', class: 'terrible' },
+            2: { label: 'Poor', class: 'poor' },
+            3: { label: 'Average', class: 'average' },
+            4: { label: 'Good', class: 'good' },
+            5: { label: 'Excellent!', class: 'excellent' }
+        };
+
+        // Get all star inputs
+        const starInputs = document.querySelectorAll('.star-rating input');
+        
+        // Function to update rating feedback
+        function updateRatingFeedback(value) {
+            const rating = parseInt(value);
+            if (rating >= 1 && rating <= 5) {
+                const info = ratingLabels[rating];
+                ratingFeedback.innerHTML = `
+                    <span class="rating-label ${info.class}">${info.label}</span>
+                `;
+                // Remove error if present
+                document.getElementById('ratingError').classList.remove('visible');
+            } else {
+                ratingFeedback.innerHTML = `
+                    <span class="rating-label" style="opacity:0;">Select a rating</span>
+                `;
+            }
+        }
+
+        // Add event listeners to star inputs
+        starInputs.forEach(input => {
+            input.addEventListener('change', function() {
+                // Update feedback text
+                updateRatingFeedback(this.value);
+                
+                // Trigger pulse animation on selected stars
+                const labels = this.parentElement.querySelectorAll('label');
+                labels.forEach(label => {
+                    label.style.animation = 'none';
+                    // Force reflow
+                    void label.offsetHeight;
+                });
+                
+                // Add pulse animation to selected stars
+                const selectedLabels = this.parentElement.querySelectorAll('input:checked ~ label');
+                selectedLabels.forEach(label => {
+                    label.style.animation = 'starPulse 0.4s ease';
+                });
+            });
+            
+            // Hover effect - show rating label on hover
+            input.addEventListener('mouseenter', function() {
+                const rating = parseInt(this.value);
+                if (rating >= 1 && rating <= 5) {
+                    const info = ratingLabels[rating];
+                    ratingFeedback.innerHTML = `
+                        <span class="rating-label ${info.class}" style="opacity:0.7;">${info.label}</span>
+                    `;
+                }
+            });
+        });
+
+        // Reset hover feedback when mouse leaves the star container
+        starRating.addEventListener('mouseleave', function() {
+            const checkedInput = document.querySelector('.star-rating input:checked');
+            if (checkedInput) {
+                const rating = parseInt(checkedInput.value);
+                updateRatingFeedback(rating);
+            } else {
+                ratingFeedback.innerHTML = `
+                    <span class="rating-label" style="opacity:0.3;">Select a rating</span>
+                `;
+            }
+        });
+
+        // ============================================
+        // FORM VALIDATION
+        // ============================================
+        document.getElementById('feedbackForm').addEventListener('submit', function(e) {
+            const rating = document.querySelector('input[name="rating"]:checked');
+            const comment = document.getElementById('comment');
+            const submitBtn = document.getElementById('submitBtn');
+            let isValid = true;
+
+            // Reset errors
+            document.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error'));
+            document.querySelectorAll('.form-error.visible').forEach(el => el.classList.remove('visible'));
+
+            // Validate Rating
+            if (!rating) {
+                document.getElementById('ratingError').classList.add('visible');
+                // Shake animation for rating stars
+                document.getElementById('starRating').classList.add('shake');
+                setTimeout(() => {
+                    document.getElementById('starRating').classList.remove('shake');
+                }, 500);
+                isValid = false;
+            }
+
+            // Validate Comment
+            if (!comment.value.trim() || comment.value.trim().length < 5) {
+                comment.classList.add('input-error');
+                document.getElementById('commentError').classList.add('visible');
+                isValid = false;
+            }
+
+            if (!isValid) {
+                e.preventDefault();
+                // Scroll to the error
+                const firstError = document.querySelector('.form-error.visible');
+                if (firstError) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+                return false;
+            }
+
+            // Show loading state
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+        });
+
+        // ============================================
+        // TOAST NOTIFICATION
+        // ============================================
+        function showToast(message, type = 'info', duration = 4000) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            const colors = {
+                success: 'var(--teal)',
+                error: 'var(--red)',
+                warning: 'var(--yellow)',
+                info: 'var(--blue)'
+            };
+            const icons = {
+                success: '✅',
+                error: '❌',
+                warning: '⚠️',
+                info: 'ℹ️'
+            };
+
+            toast.className = `toast toast-${type}`;
+            toast.innerHTML = `
+                <span style="font-size:18px;">${icons[type] || icons.info}</span>
+                <span>${message}</span>
+            `;
+            container.appendChild(toast);
+
+            requestAnimationFrame(() => {
+                toast.classList.add('show');
+            });
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 400);
+            }, duration);
+        }
+
+        // ============================================
+        // REVEAL ANIMATIONS
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            const reveals = document.querySelectorAll('.reveal');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            reveals.forEach(el => observer.observe(el));
+
+            // Animate rating bars
+            const ratingFills = document.querySelectorAll('.rd-fill');
+            ratingFills.forEach((fill, index) => {
+                setTimeout(() => {
+                    const width = fill.style.width;
+                    fill.style.width = '0%';
+                    setTimeout(() => {
+                        fill.style.width = width;
+                    }, 200);
+                }, 200 + index * 100);
+            });
+
+            // Show toast if there are messages
+            {% if messages %}
+                {% for message in messages %}
+                    showToast('{{ message }}', '{{ message.tags }}');
+                {% endfor %}
+            {% endif %}
+
+            console.log('Feedback page loaded');
+        });
+    </script>
+</body>
+</html>

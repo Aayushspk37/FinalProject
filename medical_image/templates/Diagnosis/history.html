@@ -1,0 +1,1205 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+    <title>X-HViT | History</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="{% static 'css/shared.css' %}"/>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .history-page { padding: 120px 0 60px; position: relative; z-index: 1; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        .page-header {
+            display: flex; align-items: center; justify-content: space-between;
+            flex-wrap: wrap; gap: 16px; margin-bottom: 32px;
+        }
+        .page-header .header-left h1 {
+            font-family: var(--font-head); font-size: 28px; font-weight: 800;
+            letter-spacing: -0.5px; margin: 0;
+        }
+        .page-header .header-left h1 .gradient-text {
+            background: linear-gradient(135deg, var(--teal), var(--blue));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .page-header .header-left p {
+            font-size: 14px; color: var(--text-muted); margin-top: 4px;
+        }
+        .page-header .header-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+        .section-tag {
+            display: inline-flex; align-items: center; gap: 8px;
+            font-family: var(--font-mono); font-size: 10px; color: var(--teal);
+            letter-spacing: 2px; text-transform: uppercase; padding: 4px 16px;
+            background: rgba(0, 229, 176, 0.06); border: 1px solid rgba(0, 229, 176, 0.1);
+            border-radius: 100px; margin-bottom: 4px;
+        }
+        .section-tag .pulse-dot {
+            width: 6px; height: 6px; border-radius: 50%; background: var(--teal);
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(0.7); }
+        }
+
+        .viz-dashboard {
+            background: var(--bg2); border: 1px solid var(--border);
+            border-radius: var(--r-lg); padding: 28px; margin-bottom: 32px;
+            position: relative; overflow: hidden;
+        }
+        .viz-dashboard .viz-header {
+            display: flex; align-items: center; justify-content: space-between;
+            flex-wrap: wrap; gap: 16px; margin-bottom: 24px;
+            position: relative; z-index: 1;
+        }
+        .viz-dashboard .viz-header .viz-title-group {
+            display: flex; align-items: center; gap: 12px;
+        }
+        .viz-dashboard .viz-header .viz-title-group .viz-icon {
+            width: 40px; height: 40px; border-radius: 10px;
+            background: linear-gradient(135deg, var(--teal), var(--blue));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; color: var(--bg);
+        }
+        .viz-dashboard .viz-header .viz-title-group h3 {
+            font-family: var(--font-head); font-size: 20px;
+            font-weight: 700; margin: 0;
+        }
+        .viz-dashboard .viz-header .viz-title-group h3 span {
+            font-size: 13px; font-weight: 400;
+            color: var(--text-muted); display: block;
+        }
+        .viz-dashboard .user-viz-greeting {
+            display: flex; align-items: center; gap: 16px;
+            padding: 14px 20px;
+            background: linear-gradient(135deg, rgba(0, 229, 176, 0.04), rgba(0, 229, 176, 0.01));
+            border-radius: var(--r-sm); margin-bottom: 20px;
+            border: 1px solid rgba(0, 229, 176, 0.06);
+            flex-wrap: wrap; position: relative; z-index: 1;
+        }
+        .viz-dashboard .user-viz-greeting .greeting-avatar {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--teal), var(--blue));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; font-weight: 700; color: var(--bg); flex-shrink: 0;
+        }
+        .viz-dashboard .user-viz-greeting .greeting-text {
+            font-size: 14px; color: var(--text-muted); flex: 1;
+        }
+        .viz-dashboard .user-viz-greeting .greeting-text strong { color: var(--text); }
+        .viz-dashboard .user-viz-greeting .greeting-stats {
+            display: flex; gap: 20px; flex-wrap: wrap;
+        }
+        .viz-dashboard .user-viz-greeting .greeting-stats .gs-item {
+            display: flex; align-items: center; gap: 6px;
+            font-size: 13px; color: var(--text-muted);
+        }
+        .viz-dashboard .user-viz-greeting .greeting-stats .gs-item .gs-number {
+            font-family: var(--font-head); font-weight: 700;
+            color: var(--teal); font-size: 18px;
+        }
+
+        .viz-grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 20px; position: relative; z-index: 1;
+        }
+        .viz-card {
+            background: var(--bg3); border: 1px solid var(--border);
+            border-radius: var(--r-md); padding: 20px; transition: all 0.3s ease;
+        }
+        .viz-card:hover { border-color: rgba(0, 229, 176, 0.15); }
+        .viz-card .viz-card-header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 14px; padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        .viz-card .viz-card-header .viz-card-title {
+            font-family: var(--font-head); font-size: 15px; font-weight: 600;
+            color: var(--text); display: flex; align-items: center; gap: 8px;
+        }
+        .viz-card .viz-card-header .viz-card-title .title-icon { font-size: 18px; }
+        .viz-card .viz-card-header .viz-card-badge {
+            font-family: var(--font-mono); font-size: 8px; color: var(--text-dim);
+            padding: 2px 10px; background: var(--bg2);
+            border-radius: 100px; border: 1px solid var(--border);
+        }
+        .viz-card .viz-chart { position: relative; height: 220px; }
+        .viz-card.full-width { grid-column: 1 / -1; }
+        .viz-card .no-data-msg {
+            display: flex; flex-direction: column; align-items: center;
+            justify-content: center; height: 200px;
+            color: var(--text-dim); text-align: center;
+        }
+        .viz-card .no-data-msg .no-data-icon {
+            font-size: 40px; opacity: 0.2; margin-bottom: 8px;
+        }
+        .viz-card .no-data-msg .no-data-text { font-size: 13px; }
+
+        .modality-mri { background: rgba(58, 155, 255, 0.15); color: #3a9bff; }
+        .modality-ct { background: rgba(0, 229, 176, 0.15); color: var(--teal); }
+        .modality-xray { background: rgba(124, 106, 255, 0.15); color: #7c6aff; }
+        .modality-micro { background: rgba(255, 201, 71, 0.15); color: #ffc947; }
+
+        .history-stats {
+            display: grid; grid-template-columns: repeat(4, 1fr);
+            gap: 16px; margin-bottom: 28px;
+        }
+        .history-stat {
+            background: var(--bg2); border: 1px solid var(--border);
+            border-radius: var(--r-md); padding: 18px 20px;
+            text-align: center; transition: all 0.3s ease;
+        }
+        .history-stat:hover {
+            border-color: rgba(0, 229, 176, 0.15);
+            transform: translateY(-2px);
+        }
+        .history-stat .stat-number {
+            font-family: var(--font-head); font-size: 32px;
+            font-weight: 800; color: var(--teal); line-height: 1;
+        }
+        .history-stat .stat-icon {
+            font-size: 20px; display: block; margin-bottom: 4px;
+        }
+        .history-stat .stat-label {
+            font-family: var(--font-mono); font-size: 10px;
+            color: var(--text-muted); text-transform: uppercase;
+            letter-spacing: 0.5px; margin-top: 6px;
+        }
+
+        .history-toolbar {
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 16px; flex-wrap: wrap; margin-bottom: 24px;
+        }
+        .search-bar {
+            display: flex; align-items: center; gap: 10px;
+            background: var(--bg2); border: 1px solid var(--border);
+            border-radius: var(--r-sm); padding: 10px 16px;
+            transition: all 0.3s ease; flex: 1; max-width: 400px;
+        }
+        .search-bar:focus-within {
+            border-color: rgba(0, 229, 176, 0.3);
+            box-shadow: 0 0 0 4px rgba(0, 229, 176, 0.05);
+        }
+        .search-bar input {
+            background: none; border: none; outline: none;
+            color: var(--text); font-family: var(--font-body);
+            font-size: 14px; width: 100%;
+        }
+        .search-bar input::placeholder { color: var(--text-dim); }
+        .search-bar .search-icon { color: var(--text-dim); font-size: 16px; }
+        .filter-select {
+            padding: 10px 16px; border-radius: var(--r-sm);
+            background: var(--bg2); border: 1px solid var(--border);
+            color: var(--text); font-family: var(--font-body);
+            font-size: 13px; appearance: none; outline: none;
+            cursor: pointer; min-width: 140px; transition: all 0.3s ease;
+        }
+        .filter-select:focus { border-color: rgba(0, 229, 176, 0.3); }
+        .filter-select option { background: var(--bg2); color: var(--text); }
+
+        .history-grid {
+            display: grid; grid-template-columns: 1fr;
+            gap: 12px;
+        }
+        .history-item {
+            background: var(--bg2); border: 1px solid var(--border);
+            border-radius: var(--r-lg); overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .history-item:hover { border-color: rgba(0, 229, 176, 0.15); }
+        .history-item .hi-header {
+            padding: 16px 20px; display: flex; align-items: center;
+            justify-content: space-between; flex-wrap: wrap;
+            gap: 12px; cursor: pointer; transition: background 0.3s ease;
+        }
+        .history-item .hi-header:hover { background: rgba(255, 255, 255, 0.02); }
+        .history-item .hi-header .hi-left {
+            display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+        }
+        .history-item .hi-header .hi-left .hi-status {
+            width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+        }
+        .history-item .hi-header .hi-left .hi-status.completed { background: var(--teal); }
+        .history-item .hi-header .hi-left .hi-status.review { background: var(--yellow); }
+        .history-item .hi-header .hi-left .hi-status.failed { background: var(--red); }
+        .history-item .hi-header .hi-left .hi-status.processing { background: var(--blue); }
+        .history-item .hi-header .hi-left .hi-case {
+            font-family: var(--font-mono); font-size: 13px;
+            font-weight: 600; color: var(--text);
+        }
+        .history-item .hi-header .hi-left .hi-diagnosis {
+            font-size: 14px; color: var(--text-muted);
+        }
+        .history-item .hi-header .hi-right {
+            display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+        }
+        .history-item .hi-header .hi-right .hi-confidence {
+            font-family: var(--font-head); font-size: 18px;
+            font-weight: 800; color: var(--teal);
+        }
+        .history-item .hi-header .hi-right .hi-date {
+            font-family: var(--font-mono); font-size: 11px; color: var(--text-dim);
+        }
+        .history-item .hi-header .hi-right .hi-toggle {
+            font-size: 18px; color: var(--text-muted);
+            transition: transform 0.3s ease;
+        }
+        .history-item .hi-header .hi-right .hi-toggle.open {
+            transform: rotate(180deg);
+        }
+        .history-item .hi-body {
+            max-height: 0; overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.3s ease;
+            padding: 0 20px;
+        }
+        .history-item .hi-body.open {
+            max-height: 700px;
+            padding: 0 20px 20px;
+        }
+        .history-item .hi-body .hi-details {
+            border-top: 1px solid var(--border);
+            padding-top: 16px;
+        }
+        .history-item .hi-body .hi-details-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr);
+            gap: 12px; margin-bottom: 16px;
+        }
+        .history-item .hi-body .hi-detail-item {
+            background: var(--bg3); border: 1px solid var(--border);
+            border-radius: var(--r-sm); padding: 12px 14px;
+        }
+        .history-item .hi-body .hi-detail-item .hdl {
+            font-family: var(--font-mono); font-size: 9px;
+            color: var(--text-dim); text-transform: uppercase;
+            letter-spacing: 0.5px; margin-bottom: 4px;
+        }
+        .history-item .hi-body .hi-detail-item .hdv {
+            font-size: 13px; color: var(--text); font-weight: 500;
+        }
+        .history-item .hi-body .hi-actions {
+            display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px;
+        }
+        .history-item .hi-body .hi-actions .btn {
+            font-size: 12px; padding: 6px 14px;
+        }
+
+        .hi-prob-list {
+            display: flex; flex-direction: column; gap: 6px; margin-top: 8px;
+        }
+        .hi-prob-item {
+            display: flex; align-items: center; gap: 12px;
+        }
+        .hi-prob-item .hp-name {
+            font-size: 12px; color: var(--text-muted);
+            width: 100px; flex-shrink: 0;
+        }
+        .hi-prob-item .hp-track {
+            flex: 1; height: 4px; background: var(--bg3);
+            border-radius: 10px; overflow: hidden;
+        }
+        .hi-prob-item .hp-track .hp-fill {
+            height: 100%; border-radius: 10px;
+            transition: width 1s ease; width: 0%;
+        }
+        .hi-prob-item .hp-pct {
+            font-family: var(--font-mono); font-size: 11px;
+            width: 40px; text-align: right; flex-shrink: 0;
+            color: var(--text-muted);
+        }
+
+        .empty-state { text-align: center; padding: 80px 20px; }
+        .empty-state .empty-icon {
+            font-size: 60px; opacity: 0.15;
+            margin-bottom: 16px; display: block;
+        }
+        .empty-state h3 {
+            font-family: var(--font-head); font-size: 20px;
+            font-weight: 700; margin-bottom: 8px;
+        }
+        .empty-state p {
+            color: var(--text-muted); font-size: 14px;
+            max-width: 400px; margin: 0 auto;
+        }
+        .empty-state .btn { margin-top: 16px; }
+
+        .pagination {
+            display: flex; align-items: center; justify-content: center;
+            gap: 8px; margin-top: 32px; flex-wrap: wrap;
+        }
+        .pagination .page-btn {
+            padding: 8px 14px; border-radius: var(--r-sm);
+            border: 1px solid var(--border); background: transparent;
+            color: var(--text-muted); font-family: var(--font-body);
+            font-size: 13px; cursor: pointer; transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        .pagination .page-btn:hover {
+            border-color: rgba(0, 229, 176, 0.2); color: var(--text);
+        }
+        .pagination .page-btn.active {
+            background: rgba(0, 229, 176, 0.08);
+            border-color: rgba(0, 229, 176, 0.2); color: var(--teal);
+        }
+        .pagination .page-btn.disabled {
+            opacity: 0.4; cursor: not-allowed;
+        }
+
+        .btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 10px 20px; border-radius: var(--r-sm);
+            font-family: var(--font-body); font-size: 13px; font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none; cursor: pointer;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--teal), var(--teal-dim));
+            color: var(--bg);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(0, 229, 176, 0.3);
+        }
+        .btn-ghost {
+            background: transparent; border: 1px solid var(--border);
+            color: var(--text);
+        }
+        .btn-ghost:hover {
+            background: var(--bg3); border-color: rgba(255, 255, 255, 0.18);
+            transform: translateY(-2px);
+        }
+        .btn-outline {
+            background: transparent; border: 1px solid rgba(0, 229, 176, 0.2);
+            color: var(--teal);
+        }
+        .btn-outline:hover {
+            background: rgba(0, 229, 176, 0.06);
+            border-color: rgba(0, 229, 176, 0.4); transform: translateY(-2px);
+        }
+        .btn-danger { background: var(--red); color: white; }
+        .btn-danger:hover { background: #e6455a; transform: translateY(-2px); }
+        .btn-sm { padding: 6px 14px; font-size: 12px; }
+
+        .badge {
+            display: inline-block; padding: 2px 10px; border-radius: 100px;
+            font-size: 10px; font-weight: 600; font-family: var(--font-mono);
+        }
+        .badge-blue { background: rgba(58, 155, 255, 0.15); color: var(--blue); }
+        .badge-teal { background: rgba(0, 229, 176, 0.15); color: var(--teal); }
+        .badge-violet { background: rgba(124, 106, 255, 0.15); color: var(--violet); }
+        .badge-yellow { background: rgba(255, 201, 71, 0.15); color: var(--yellow); }
+        .badge-red { background: rgba(255, 85, 117, 0.15); color: var(--red); }
+
+        .toast-container {
+            position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+            display: flex; flex-direction: column; gap: 10px; max-width: 380px;
+        }
+        .toast {
+            padding: 12px 16px; border-radius: var(--r-sm);
+            background: var(--bg2); border: 1px solid var(--border);
+            border-left: 4px solid var(--info);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            transform: translateX(120%);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex; align-items: center; gap: 10px; font-size: 13px;
+        }
+        .toast.show { transform: translateX(0); }
+        .toast-success { border-left-color: var(--teal); }
+        .toast-error { border-left-color: var(--red); }
+        .toast-warning { border-left-color: var(--yellow); }
+        .toast-info { border-left-color: var(--blue); }
+
+        .reveal {
+            opacity: 0; transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+
+        .history-item {
+            animation: fadeIn 0.4s ease forwards; opacity: 0;
+        }
+        .history-item:nth-child(1) { animation-delay: 0.05s; }
+        .history-item:nth-child(2) { animation-delay: 0.10s; }
+        .history-item:nth-child(3) { animation-delay: 0.15s; }
+        .history-item:nth-child(4) { animation-delay: 0.20s; }
+        .history-item:nth-child(5) { animation-delay: 0.25s; }
+        .history-item:nth-child(6) { animation-delay: 0.30s; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 1024px) {
+            .history-stats { grid-template-columns: repeat(2, 1fr); }
+            .viz-grid { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 768px) {
+            .history-page { padding: 100px 0 40px; }
+            .page-header { flex-direction: column; align-items: flex-start; }
+            .page-header .header-actions { width: 100%; }
+            .page-header .header-actions .btn { flex: 1; justify-content: center; }
+            .history-toolbar { flex-direction: column; align-items: stretch; }
+            .search-bar { max-width: 100%; }
+            .filter-select { width: 100%; }
+            .history-stats { grid-template-columns: 1fr 1fr; }
+            .viz-grid { grid-template-columns: 1fr; }
+            .viz-card.full-width { grid-column: 1; }
+            .viz-dashboard .viz-header { flex-direction: column; align-items: flex-start; }
+            .viz-dashboard .user-viz-greeting { flex-direction: column; align-items: flex-start; }
+            .viz-dashboard .user-viz-greeting .greeting-stats { width: 100%; justify-content: space-between; }
+            .history-item .hi-header { flex-direction: column; align-items: flex-start; }
+            .history-item .hi-header .hi-left { width: 100%; }
+            .history-item .hi-header .hi-right { width: 100%; justify-content: space-between; }
+            .history-item .hi-body .hi-details-grid { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 600px) {
+            .history-stats { grid-template-columns: 1fr 1fr; }
+            .page-header .header-left h1 { font-size: 22px; }
+            .history-item .hi-body .hi-details-grid { grid-template-columns: 1fr; }
+            .history-item .hi-header .hi-left { flex-wrap: wrap; }
+            .viz-dashboard .user-viz-greeting .greeting-stats { flex-direction: column; gap: 8px; }
+        }
+        @media (max-width: 480px) {
+            .history-stats { grid-template-columns: 1fr; }
+            .history-item .hi-body .hi-actions .btn { flex: 1; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-bg"></div>
+    {% include 'includes/nav.html' %}
+
+    <div class="history-page">
+        <div class="container">
+
+            <div class="page-header reveal">
+                <div class="header-left">
+                    <div class="section-tag">
+                        <span class="pulse-dot"></span>
+                        History
+                    </div>
+                    <h1>Diagnosis <span class="gradient-text">History</span></h1>
+                    <p>View and manage all your past diagnostic records.</p>
+                </div>
+                <div class="header-actions">
+                    <a href="{% url 'Diagnosis:diagnose' %}" class="btn btn-primary">+ New Diagnosis</a>
+                    <a href="{% url 'Diagnosis:reports' %}" class="btn btn-ghost">📄 Reports</a>
+                </div>
+            </div>
+
+            <div class="viz-dashboard reveal">
+                <div class="viz-header">
+                    <div class="viz-title-group">
+                        <div class="viz-icon">📊</div>
+                        <div>
+                            <h3>Analytics Dashboard
+                                <span>Complete overview of your diagnosis journey</span>
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="user-viz-greeting">
+                    <div class="greeting-avatar">
+                        {{ user.first_name|slice:":1"|default:user.username|slice:":1" }}
+                    </div>
+                    <div class="greeting-text">
+                        👋 Welcome back, <strong>{{ user.first_name|default:user.username }}</strong>! 
+                        Here's your complete diagnosis history and analytics.
+                    </div>
+                    <div class="greeting-stats">
+                        <span class="gs-item">
+                            📋 <span class="gs-number">{{ total_records }}</span> Total Diagnoses
+                        </span>
+                        {% if positive_count > 0 %}
+                        <span class="gs-item">
+                            ✅ <span class="gs-number">{{ positive_count }}</span> Positive
+                        </span>
+                        {% endif %}
+                        <span class="gs-item">
+                            📡 <span class="gs-number">{{ modality_count|default:0 }}</span> Modalities Used
+                        </span>
+                        <span class="gs-item">
+                            📈 <span class="gs-number">{{ avg_confidence|default:0 }}%</span> Avg Confidence
+                        </span>
+                    </div>
+                </div>
+
+                <div class="viz-grid" id="vizGrid">
+                    <div class="viz-card full-width" id="vizCardTimeline">
+                        <div class="viz-card-header">
+                            <span class="viz-card-title">
+                                <span class="title-icon">📋</span> Diagnosis History Timeline
+                            </span>
+                            <span class="viz-card-badge">chronological</span>
+                        </div>
+                        <div class="viz-chart">
+                            <canvas id="timelineChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="viz-card" id="vizCardDisease">
+                        <div class="viz-card-header">
+                            <span class="viz-card-title">
+                                <span class="title-icon">🎯</span> Disease Distribution
+                            </span>
+                            <span class="viz-card-badge">pie chart</span>
+                        </div>
+                        <div class="viz-chart">
+                            <canvas id="diseaseChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="viz-card" id="vizCardModality">
+                        <div class="viz-card-header">
+                            <span class="viz-card-title">
+                                <span class="title-icon">📡</span> Modality Distribution
+                            </span>
+                            <span class="viz-card-badge">pie chart</span>
+                        </div>
+                        <div class="viz-chart">
+                            <canvas id="modalityChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="viz-card full-width" id="vizCardTrends">
+                        <div class="viz-card-header">
+                            <span class="viz-card-title">
+                                <span class="title-icon">📈</span> Monthly Trends with Moving Average
+                            </span>
+                            <span class="viz-card-badge">trend analysis</span>
+                        </div>
+                        <div class="viz-chart">
+                            <canvas id="trendsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="history-stats reveal reveal-delay-1">
+                <div class="history-stat">
+                    <span class="stat-icon">📋</span>
+                    <div class="stat-number">{{ total_records|default:0 }}</div>
+                    <div class="stat-label">Total Diagnoses</div>
+                </div>
+                <div class="history-stat">
+                    <span class="stat-icon">✅</span>
+                    <div class="stat-number" style="color:var(--teal);">{{ completed_count|default:0 }}</div>
+                    <div class="stat-label">Completed</div>
+                </div>
+                <div class="history-stat">
+                    <span class="stat-icon">⏳</span>
+                    <div class="stat-number" style="color:var(--yellow);">{{ review_count|default:0 }}</div>
+                    <div class="stat-label">Under Review</div>
+                </div>
+                <div class="history-stat">
+                    <span class="stat-icon">🔬</span>
+                    <div class="stat-number" style="color:var(--blue);">{{ positive_count|default:0 }}</div>
+                    <div class="stat-label">Positive Results</div>
+                </div>
+            </div>
+
+            <div class="history-toolbar reveal reveal-delay-2">
+                <div class="search-bar">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="searchHistory" placeholder="Search your records..." oninput="filterHistory()"/>
+                </div>
+                <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                    <select class="filter-select" id="filterModality" onchange="filterHistory()">
+                        <option value="">All Modalities</option>
+                        <option value="MRI">MRI</option>
+                        <option value="CT">CT</option>
+                        <option value="X-ray">X-ray</option>
+                        <option value="Micro">Microscopic</option>
+                    </select>
+                    <select class="filter-select" id="filterStatus" onchange="filterHistory()">
+                        <option value="">All Status</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Review">Review</option>
+                        <option value="Processing">Processing</option>
+                        <option value="Failed">Failed</option>
+                    </select>
+                    <button class="btn btn-ghost btn-sm" onclick="clearFilters()">Clear Filters</button>
+                </div>
+            </div>
+
+            <div class="history-grid" id="historyGrid">
+                {% if records %}
+                    {% for record in records %}
+                    <div class="history-item" 
+                         data-case="{{ record.case_id }}" 
+                         data-diagnosis="{{ record.diagnosis }}" 
+                         data-modality="{{ record.modality }}" 
+                         data-status="{{ record.status }}"
+                         data-id="{{ record.id }}"
+                         data-confidence="{{ record.confidence }}">
+                        <div class="hi-header" onclick="toggleHistory(this)">
+                            <div class="hi-left">
+                                <span class="hi-status {{ record.status|lower }}"></span>
+                                <span class="hi-case">{{ record.case_id }}</span>
+                                <span class="hi-diagnosis">{{ record.diagnosis|default:"Unknown" }}</span>
+                                <span class="badge 
+                                    {% if record.modality == 'MRI' %}modality-mri
+                                    {% elif record.modality == 'CT' %}modality-ct
+                                    {% elif record.modality == 'X-ray' %}modality-xray
+                                    {% elif record.modality == 'Micro' %}modality-micro
+                                    {% else %}badge-blue{% endif %}">
+                                    {{ record.modality|default:"Unknown" }}
+                                </span>
+                                <span class="badge 
+                                    {% if record.status == 'Completed' %}badge-teal
+                                    {% elif record.status == 'Review' %}badge-yellow
+                                    {% elif record.status == 'Pending' %}badge-blue
+                                    {% else %}badge-red{% endif %}">
+                                    {{ record.status|default:"Completed" }}
+                                </span>
+                            </div>
+                            <div class="hi-right">
+                                <span class="hi-confidence">{{ record.confidence|floatformat:1 }}%</span>
+                                <span class="hi-date">{{ record.created_at|date:"M d, Y" }}</span>
+                                <span class="hi-toggle">▼</span>
+                            </div>
+                        </div>
+                        <div class="hi-body">
+                            <div class="hi-details">
+                                <div class="hi-details-grid">
+                                    <div class="hi-detail-item">
+                                        <div class="hdl">Case ID</div>
+                                        <div class="hdv">{{ record.case_id }}</div>
+                                    </div>
+                                    <div class="hi-detail-item">
+                                        <div class="hdl">Modality</div>
+                                        <div class="hdv">{{ record.modality|default:"Not specified" }}</div>
+                                    </div>
+                                    <div class="hi-detail-item">
+                                        <div class="hdl">Status</div>
+                                        <div class="hdv">
+                                            <span class="badge 
+                                                {% if record.status == 'Completed' %}badge-teal
+                                                {% elif record.status == 'Review' %}badge-yellow
+                                                {% elif record.status == 'Processing' %}badge-blue
+                                                {% else %}badge-red{% endif %}">
+                                                {{ record.status }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="hi-detail-item">
+                                        <div class="hdl">Finding Strength</div>
+                                        <div class="hdv">
+                                            {% if record.confidence >= 90 %}
+                                                Strong
+                                            {% elif record.confidence >= 75 %}
+                                                Moderate
+                                            {% elif record.confidence >= 60 %}
+                                                Weak
+                                            {% else %}
+                                                Inconclusive
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {% if record.probabilities %}
+                                <div style="margin-top:12px;">
+                                    <div style="font-family:var(--font-mono);font-size:9px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Differential Diagnosis (Top 3)</div>
+                                    <div class="hi-prob-list">
+                                        {% for prob in record.probabilities|slice:":3" %}
+                                            <div class="hi-prob-item">
+                                                <span class="hp-name">{{ prob.0 }}</span>
+                                                <div class="hp-track">
+                                                    <div class="hp-fill" style="width:{{ prob.1 }}%;background:{{ prob.2|default:'var(--teal)' }};"></div>
+                                                </div>
+                                                <span class="hp-pct">{{ prob.1 }}%</span>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                {% endif %}
+
+                                <div class="hi-actions">
+                                    <a href="{% url 'Diagnosis:report_detail' record.id %}" class="btn btn-outline btn-sm">👁 View Report</a>
+                                    <a href="{% url 'Diagnosis:explainability' record.id %}" class="btn btn-ghost btn-sm">🧠 Why?</a>
+                                    <a href="{% url 'Diagnosis:download_report' record.id %}" class="btn btn-ghost btn-sm">⬇ Download PDF</a>
+                                    <button class="btn btn-danger btn-sm" onclick="deleteRecord({{ record.id }})">🗑️ Delete</button>
+                                </div>
+
+                                <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-dim);margin-top:8px;">
+                                    Created: {{ record.created_at|date:"F j, Y - h:i A" }}
+                                    {% if record.inference_time %}· Inference: {{ record.inference_time }} ms{% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                    <div class="pagination">
+                        {% if records.has_previous %}
+                            <a href="?page={{ records.previous_page_number }}" class="page-btn">← Previous</a>
+                        {% else %}
+                            <span class="page-btn disabled">← Previous</span>
+                        {% endif %}
+
+                        {% for num in records.paginator.page_range %}
+                            {% if records.number == num %}
+                                <span class="page-btn active">{{ num }}</span>
+                            {% else %}
+                                <a href="?page={{ num }}" class="page-btn">{{ num }}</a>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if records.has_next %}
+                            <a href="?page={{ records.next_page_number }}" class="page-btn">Next →</a>
+                        {% else %}
+                            <span class="page-btn disabled">Next →</span>
+                        {% endif %}
+                    </div>
+
+                {% else %}
+                    <div class="empty-state">
+                        <span class="empty-icon">📋</span>
+                        <h3>No Diagnosis History Yet</h3>
+                        <p>You haven't performed any diagnoses yet. Start your first medical image analysis using the X-HViT diagnostic platform.</p>
+                        <a href="{% url 'Diagnosis:diagnose' %}" class="btn btn-primary">Start Diagnosis →</a>
+                    </div>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+
+    {% include 'includes/footer.html' %}
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="{% static 'js/shared.js' %}"></script>
+
+    <script>
+        const chartData = {
+            diseases: {{ disease_distribution|default:'{"labels":[],"values":[]}'|safe }},
+            modalities: {{ modality_distribution|default:'{"labels":[],"values":[]}'|safe }},
+            trends: {{ monthly_trends|default:'{"dates":[],"counts":[]}'|safe }},
+            timeline: {{ timeline_data|default:'{"labels":[],"values":[],"diseases":[],"dates":[]}'|safe }}
+        };
+
+        const hasData = chartData.diseases.labels && chartData.diseases.labels.length > 0;
+
+        const diseaseColors = {
+            'Brain Tumor': '#ff5575', 'No Tumor': '#00e5b0', 'Fracture': '#ffc947',
+            'Tuberculosis': '#7c6aff', 'Pneumonia': '#3a9bff',
+            'Diabetic Retinopathy': '#2ecc71', 'Skin Cancer': '#9b59b6'
+        };
+
+        const modalityColors = {
+            'MRI': '#3a9bff', 'CT': '#00e5b0', 'X-ray': '#7c6aff', 'Microscopic': '#ffc947'
+        };
+
+        let charts = {};
+
+        Chart.defaults.color = '#888';
+        Chart.defaults.borderColor = 'rgba(255,255,255,0.05)';
+        Chart.defaults.font.family = "'DM Sans', sans-serif";
+
+        function createCharts() {
+            if (!hasData) {
+                document.querySelectorAll('.viz-chart').forEach(el => {
+                    el.innerHTML = `
+                        <div class="no-data-msg">
+                            <span class="no-data-icon">📊</span>
+                            <span class="no-data-text">No data yet.<br>Start diagnosing to see your analytics!</span>
+                        </div>
+                    `;
+                });
+                return;
+            }
+
+            const timelineCtx = document.getElementById('timelineChart');
+            if (timelineCtx) {
+                const timelineData = chartData.timeline.values || [];
+                const timelineDiseases = chartData.timeline.diseases || [];
+                const timelineDates = chartData.timeline.dates || [];
+                const pointColors = timelineDiseases.map(d => diseaseColors[d] || '#888');
+
+                charts.timeline = new Chart(timelineCtx.getContext('2d'), {
+                    type: 'scatter',
+                    data: {
+                        datasets: [{
+                            label: 'Diagnoses',
+                            data: timelineData.map((val, i) => ({
+                                x: i + 1, y: val,
+                                disease: timelineDiseases[i] || '',
+                                date: timelineDates[i] || ''
+                            })),
+                            backgroundColor: pointColors,
+                            borderColor: '#1a1a2e',
+                            borderWidth: 2, pointRadius: 10, pointHoverRadius: 14,
+                            showLine: true,
+                            tension: 0.3, fill: false
+                        }]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: 'rgba(10, 14, 26, 0.9)',
+                                titleColor: '#fff', bodyColor: '#94a9c9',
+                                borderColor: 'rgba(0, 229, 176, 0.2)', borderWidth: 1, padding: 12,
+                                callbacks: {
+                                    label: function(context) {
+                                        const data = context.raw;
+                                        return `${data.date}: ${data.disease} (${data.y}%)`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                type: 'linear', position: 'bottom',
+                                title: { display: true, text: 'Diagnosis Sequence', color: '#666', font: { size: 11 } },
+                                ticks: {
+                                    color: '#666', stepSize: 1,
+                                    callback: function(value) {
+                                        return chartData.timeline.labels?.[value - 1] || value;
+                                    }
+                                },
+                                grid: { display: false },
+                                min: 0.5,
+                                max: (chartData.timeline.values?.length || 1) + 0.5
+                            },
+                            y: {
+                                title: { display: true, text: 'Confidence (%)', color: '#666', font: { size: 11 } },
+                                ticks: { color: '#666' },
+                                grid: { color: 'rgba(255,255,255,0.05)' },
+                                min: 0, max: 100
+                            }
+                        },
+                        animation: { duration: 1500 }
+                    }
+                });
+            }
+
+            const diseaseCtx = document.getElementById('diseaseChart');
+            if (diseaseCtx) {
+                const diseaseLabels = chartData.diseases.labels || [];
+                const diseaseValues = chartData.diseases.values || [];
+                const diseaseColorList = diseaseLabels.map(label => diseaseColors[label] || '#888');
+
+                charts.disease = new Chart(diseaseCtx.getContext('2d'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: diseaseLabels,
+                        datasets: [{ data: diseaseValues, backgroundColor: diseaseColorList, borderWidth: 0, hoverOffset: 15 }]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false, cutout: '65%',
+                        plugins: {
+                            legend: {
+                                position: 'right',
+                                labels: {
+                                    color: '#888', boxWidth: 14, padding: 14,
+                                    font: { size: 12, weight: '500' },
+                                    usePointStyle: true, pointStyle: 'circle'
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        const percentage = ((context.parsed / total) * 100).toFixed(1);
+                                        return `${context.label}: ${context.parsed} (${percentage}%)`;
+                                    }
+                                }
+                            }
+                        },
+                        animation: { animateRotate: true, duration: 1500 }
+                    }
+                });
+            }
+
+            const modalityCtx = document.getElementById('modalityChart');
+            if (modalityCtx) {
+                const modalityLabels = chartData.modalities.labels || [];
+                const modalityValues = chartData.modalities.values || [];
+                const modalityColorList = modalityLabels.map(label => modalityColors[label] || '#888');
+
+                charts.modality = new Chart(modalityCtx.getContext('2d'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: modalityLabels,
+                        datasets: [{ data: modalityValues, backgroundColor: modalityColorList, borderWidth: 0, hoverOffset: 15 }]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false, cutout: '65%',
+                        plugins: {
+                            legend: {
+                                position: 'right',
+                                labels: {
+                                    color: '#888', boxWidth: 14, padding: 14,
+                                    font: { size: 12, weight: '500' },
+                                    usePointStyle: true, pointStyle: 'circle'
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        const percentage = ((context.parsed / total) * 100).toFixed(1);
+                                        return `${context.label}: ${context.parsed} (${percentage}%)`;
+                                    }
+                                }
+                            }
+                        },
+                        animation: { animateRotate: true, duration: 1500 }
+                    }
+                });
+            }
+
+            const trendsCtx = document.getElementById('trendsChart');
+            if (trendsCtx) {
+                const trendData = chartData.trends.counts || [];
+                const trendLabels = chartData.trends.dates || [];
+                
+                const movingAverage = [];
+                const windowSize = 3;
+                for (let i = 0; i < trendData.length; i++) {
+                    if (i < windowSize - 1) { movingAverage.push(null); }
+                    else {
+                        const sum = trendData.slice(i - windowSize + 1, i + 1).reduce((a, b) => a + b, 0);
+                        movingAverage.push(parseFloat((sum / windowSize).toFixed(1)));
+                    }
+                }
+
+                const gradient = trendsCtx.getContext('2d').createLinearGradient(0, 0, 0, 200);
+                gradient.addColorStop(0, 'rgba(58, 155, 255, 0.25)');
+                gradient.addColorStop(1, 'rgba(58, 155, 255, 0.01)');
+
+                charts.trends = new Chart(trendsCtx.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: trendLabels,
+                        datasets: [
+                            {
+                                label: 'Monthly Diagnoses',
+                                data: trendData,
+                                borderColor: '#3a9bff',
+                                backgroundColor: gradient,
+                                fill: true, tension: 0.4,
+                                pointBackgroundColor: '#3a9bff',
+                                pointBorderColor: '#1a1a2e',
+                                pointBorderWidth: 2, pointRadius: 5, pointHoverRadius: 8,
+                                order: 1
+                            },
+                            {
+                                label: 'Moving Average (3-month)',
+                                data: movingAverage,
+                                borderColor: '#ffc947',
+                                backgroundColor: 'rgba(255, 201, 71, 0.1)',
+                                borderDash: [6, 4], fill: false, tension: 0.4,
+                                pointRadius: 4,
+                                pointBackgroundColor: '#ffc947',
+                                pointBorderColor: '#1a1a2e',
+                                pointBorderWidth: 2, order: 2
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    color: '#888', boxWidth: 14, padding: 14,
+                                    font: { size: 12, weight: '500' },
+                                    usePointStyle: true, pointStyle: 'line'
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        if (context.parsed.y === null) return 'No data';
+                                        return `${context.dataset.label}: ${context.parsed.y}`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                ticks: { color: '#666', maxTicksLimit: 8, font: { size: 11 } },
+                                grid: { display: false }
+                            },
+                            y: {
+                                ticks: { color: '#666' },
+                                grid: { color: 'rgba(255,255,255,0.05)' },
+                                beginAtZero: true,
+                                title: { display: true, text: 'Number of Diagnoses', color: '#666', font: { size: 11 } }
+                            }
+                        },
+                        animation: { duration: 1500 }
+                    }
+                });
+            }
+        }
+
+        function toggleHistory(header) {
+            const item = header.closest('.history-item');
+            const body = item.querySelector('.hi-body');
+            const toggle = header.querySelector('.hi-toggle');
+            body.classList.toggle('open');
+            toggle.classList.toggle('open');
+        }
+
+        function filterHistory() {
+            const query = document.getElementById('searchHistory').value.toLowerCase();
+            const modality = document.getElementById('filterModality').value;
+            const status = document.getElementById('filterStatus').value;
+            
+            const items = document.querySelectorAll('.history-item');
+            let visibleCount = 0;
+            
+            items.forEach(item => {
+                const caseId = item.dataset.case.toLowerCase();
+                const diagnosis = item.dataset.diagnosis.toLowerCase();
+                const itemModality = item.dataset.modality;
+                const itemStatus = item.dataset.status;
+                
+                const matchSearch = caseId.includes(query) || diagnosis.includes(query);
+                const matchModality = !modality || itemModality === modality;
+                const matchStatus = !status || itemStatus === status;
+                
+                if (matchSearch && matchModality && matchStatus) {
+                    item.style.display = ''; visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+            
+            const grid = document.getElementById('historyGrid');
+            const existingEmpty = grid.querySelector('.no-results-empty');
+            
+            if (visibleCount === 0 && items.length > 0) {
+                if (!existingEmpty) {
+                    const empty = document.createElement('div');
+                    empty.className = 'empty-state no-results-empty';
+                    empty.style.gridColumn = '1 / -1';
+                    empty.innerHTML = `
+                        <span class="empty-icon">🔍</span>
+                        <h3>No matching records</h3>
+                        <p>Try adjusting your search or filters to find what you're looking for.</p>
+                        <button class="btn btn-ghost" onclick="clearFilters()">Clear Filters</button>
+                    `;
+                    grid.appendChild(empty);
+                }
+            } else {
+                if (existingEmpty) existingEmpty.remove();
+            }
+        }
+
+        function clearFilters() {
+            document.getElementById('searchHistory').value = '';
+            document.getElementById('filterModality').value = '';
+            document.getElementById('filterStatus').value = '';
+            filterHistory();
+            showToast('Filters cleared', 'info');
+        }
+
+        function deleteRecord(recordId) {
+            if (!confirm('Are you sure you want to delete this record? This action cannot be undone.')) {
+                return;
+            }
+            
+            fetch(`/api/diagnosis/${recordId}/delete/`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRFToken': getCsrfToken(),
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    const item = document.querySelector(`.history-item[data-id="${recordId}"]`);
+                    if (item) {
+                        item.style.transition = 'all 0.3s ease';
+                        item.style.opacity = '0';
+                        item.style.transform = 'translateX(20px)';
+                        setTimeout(() => {
+                            item.remove();
+                            updateStats();
+                            showToast('Record deleted successfully', 'success');
+                        }, 300);
+                    }
+                } else {
+                    showToast('Failed to delete record: ' + data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('An error occurred. Please try again.', 'error');
+            });
+        }
+
+        function updateStats() {
+            const items = document.querySelectorAll('.history-item');
+            const total = items.length;
+            const completed = document.querySelectorAll('.history-item[data-status="Completed"]').length;
+            const review = document.querySelectorAll('.history-item[data-status="Review"]').length;
+            const positive = document.querySelectorAll('.history-item .hi-status.completed').length;
+            
+            const statNumbers = document.querySelectorAll('.stat-number');
+            if (statNumbers.length >= 4) {
+                statNumbers[0].textContent = total;
+                statNumbers[1].textContent = completed;
+                statNumbers[2].textContent = review;
+                statNumbers[3].textContent = positive;
+            }
+        }
+
+        function getCsrfToken() {
+            return document.querySelector('[name=csrfmiddlewaretoken]')?.value || 
+                   document.querySelector('input[name="csrfmiddlewaretoken"]')?.value;
+        }
+
+        function showToast(message, type = 'info', duration = 4000) {
+            const container = document.getElementById('toastContainer');
+            if (!container) return;
+            
+            const toast = document.createElement('div');
+            const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+
+            toast.className = `toast toast-${type}`;
+            toast.innerHTML = `
+                <span style="font-size:18px;">${icons[type] || icons.info}</span>
+                <span>${message}</span>
+            `;
+            container.appendChild(toast);
+
+            requestAnimationFrame(() => toast.classList.add('show'));
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 400);
+            }, duration);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            createCharts();
+
+            const reveals = document.querySelectorAll('.reveal');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) entry.target.classList.add('visible');
+                });
+            }, { threshold: 0.1 });
+
+            reveals.forEach(el => observer.observe(el));
+
+            const items = document.querySelectorAll('.history-item');
+            if (items.length === 1) {
+                const header = items[0].querySelector('.hi-header');
+                if (header) setTimeout(() => toggleHistory(header), 500);
+            }
+
+            console.log('📊 Analytics Dashboard loaded');
+        });
+    </script>
+</body>
+</html>

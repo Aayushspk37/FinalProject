@@ -1,0 +1,952 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+    <title>X-HViT | Diagnose</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="{% static 'css/shared.css' %}"/>
+    <style>
+        /* ============================================
+           DIAGNOSE PAGE STYLES
+           ============================================ */
+        .diagnose-page { padding: 120px 0 60px; position: relative; z-index: 1; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+        .page-header { text-align: center; margin-bottom: 40px; }
+        .section-tag {
+            display: inline-flex; align-items: center; gap: 8px;
+            font-family: var(--font-mono); font-size: 10px; color: var(--teal);
+            letter-spacing: 2px; text-transform: uppercase; padding: 4px 16px;
+            background: rgba(0, 229, 176, 0.06); border: 1px solid rgba(0, 229, 176, 0.1);
+            border-radius: 100px; margin-bottom: 12px;
+        }
+        .section-tag .pulse-dot {
+            width: 6px; height: 6px; border-radius: 50%; background: var(--teal);
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(0.7); }
+        }
+        .page-title {
+            font-family: var(--font-head); font-size: clamp(36px, 4vw, 48px);
+            font-weight: 800; letter-spacing: -1.5px; margin-bottom: 12px;
+        }
+        .page-title .gradient-text {
+            background: linear-gradient(135deg, var(--teal), var(--blue));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .page-desc {
+            font-size: 16px; color: var(--text-muted);
+            max-width: 560px; margin: 0 auto; line-height: 1.7;
+        }
+
+        .diagnose-grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 32px; margin-top: 20px;
+        }
+
+        /* Upload Area */
+        .upload-area {
+            background: var(--bg2); border: 2px dashed var(--border);
+            border-radius: var(--r-lg); padding: 40px; text-align: center;
+            transition: all 0.3s ease; cursor: pointer; min-height: 320px;
+            display: flex; flex-direction: column; align-items: center;
+            justify-content: center; position: relative;
+        }
+        .upload-area:hover { border-color: rgba(0, 229, 176, 0.3); background: rgba(0, 229, 176, 0.02); }
+        .upload-area.dragover { border-color: var(--teal); background: rgba(0, 229, 176, 0.06); }
+        .upload-area.has-image {
+            border-style: solid; border-color: rgba(0, 229, 176, 0.2);
+            padding: 20px; min-height: 200px;
+        }
+        .upload-area .upload-icon { font-size: 64px; margin-bottom: 16px; transition: transform 0.3s ease; }
+        .upload-area:hover .upload-icon { transform: scale(1.1) rotate(-5deg); }
+        .upload-area .upload-title {
+            font-family: var(--font-head); font-size: 18px;
+            font-weight: 700; margin-bottom: 8px;
+        }
+        .upload-area .upload-sub { font-size: 14px; color: var(--text-muted); margin-bottom: 16px; }
+        .upload-area .upload-formats {
+            font-family: var(--font-mono); font-size: 10px; color: var(--text-dim);
+            background: rgba(255, 255, 255, 0.03); padding: 4px 12px; border-radius: 100px;
+        }
+        .upload-area .upload-preview {
+            max-width: 100%; max-height: 220px; border-radius: var(--r-md);
+            margin-bottom: 12px; display: none; object-fit: contain;
+        }
+        .upload-area .upload-preview.show { display: block; animation: fadeIn 0.4s ease; }
+        .upload-area .file-info { display: none; font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
+        .upload-area .file-info.show { display: block; }
+        .upload-area .upload-btn {
+            display: inline-block; padding: 10px 28px;
+            background: linear-gradient(135deg, var(--teal), var(--teal-dim));
+            color: var(--bg); border: none; border-radius: var(--r-sm);
+            font-family: var(--font-body); font-size: 14px; font-weight: 600;
+            cursor: pointer; transition: all 0.3s ease;
+        }
+        .upload-area .upload-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0, 229, 176, 0.3); }
+        .upload-area .remove-btn {
+            display: none; margin-top: 8px; padding: 6px 18px;
+            background: rgba(255, 85, 117, 0.1); color: var(--red);
+            border: 1px solid rgba(255, 85, 117, 0.15); border-radius: var(--r-sm);
+            font-family: var(--font-body); font-size: 12px; cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .upload-area .remove-btn:hover { background: rgba(255, 85, 117, 0.15); }
+        .upload-area .remove-btn.show { display: inline-block; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-10px); }
+            40% { transform: translateX(10px); }
+            60% { transform: translateX(-5px); }
+            80% { transform: translateX(5px); }
+        }
+
+        /* Form Controls */
+        .form-controls { display: flex; flex-direction: column; gap: 20px; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-group label {
+            font-family: var(--font-mono); font-size: 11px; color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;
+        }
+        .form-group label .required { color: var(--red); margin-left: 2px; }
+
+        .input-wrapper { position: relative; }
+        .input-wrapper .input-icon {
+            position: absolute; left: 14px; top: 50%;
+            transform: translateY(-50%); color: var(--text-dim); font-size: 16px;
+        }
+        .input-wrapper select, .input-wrapper input {
+            width: 100%; padding: 12px 16px 12px 44px;
+            background: var(--bg3); border: 2px solid var(--border);
+            border-radius: var(--r-sm); color: var(--text);
+            font-family: var(--font-body); font-size: 14px;
+            transition: all 0.3s ease; outline: none;
+        }
+        .input-wrapper select {
+            appearance: none; cursor: pointer;
+        }
+        .input-wrapper select:disabled { opacity: 0.6; cursor: not-allowed; }
+        .input-wrapper select option { background: var(--bg2); color: var(--text); }
+        .input-wrapper select:focus, .input-wrapper input:focus {
+            border-color: rgba(0, 229, 176, 0.4);
+            box-shadow: 0 0 0 4px rgba(0, 229, 176, 0.06);
+        }
+        .input-wrapper input::placeholder { color: var(--text-dim); }
+        .input-wrapper .select-arrow {
+            position: absolute; right: 14px; top: 50%;
+            transform: translateY(-50%); color: var(--text-dim);
+            font-size: 12px; pointer-events: none;
+        }
+
+        /* Disease Cards */
+        .disease-cards { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+        .disease-card {
+            background: var(--bg3); border: 2px solid var(--border);
+            border-radius: var(--r-sm); padding: 14px 10px;
+            cursor: pointer; transition: all 0.3s ease;
+            text-align: center; position: relative;
+        }
+        .disease-card:hover {
+            border-color: rgba(0, 229, 176, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+        .disease-card.active {
+            border-color: var(--teal);
+            background: rgba(0, 229, 176, 0.06);
+            box-shadow: 0 4px 20px rgba(0, 229, 176, 0.08);
+        }
+        .disease-card.active::after {
+            content: '✓'; position: absolute; top: -8px; right: -8px;
+            width: 20px; height: 20px; background: var(--teal); color: var(--bg);
+            border-radius: 50%; font-size: 12px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .disease-card .disease-icon {
+            font-size: 32px; display: block; margin: 0 auto 6px;
+            width: 48px; height: 48px; object-fit: contain;
+            border-radius: 8px; transition: transform 0.3s ease;
+        }
+        .disease-card:hover .disease-icon { transform: scale(1.1); }
+        .disease-card .disease-emoji { font-size: 28px; display: block; margin-bottom: 4px; }
+        .disease-card .disease-name { font-size: 12px; font-weight: 700; color: var(--text); line-height: 1.2; }
+        .disease-card .disease-desc { font-size: 9px; color: var(--text-muted); margin-top: 2px; }
+
+        .modality-detected {
+            display: none; margin-top: 8px; padding: 6px 14px;
+            background: rgba(0, 229, 176, 0.06);
+            border: 1px solid rgba(0, 229, 176, 0.15);
+            border-radius: var(--r-sm); font-size: 12px; color: var(--text-muted);
+        }
+        .modality-detected.show { display: block; animation: fadeIn 0.3s ease; }
+        .modality-detected strong { color: var(--teal); }
+
+        /* Analyze Button */
+        .analyze-btn {
+            width: 100%; padding: 16px;
+            background: linear-gradient(135deg, var(--teal), var(--teal-dim));
+            color: var(--bg); border: none; border-radius: var(--r-sm);
+            font-family: var(--font-body); font-size: 16px; font-weight: 700;
+            cursor: pointer; transition: all 0.3s ease;
+            display: flex; align-items: center; justify-content: center;
+            gap: 10px; position: relative; overflow: hidden;
+        }
+        .analyze-btn::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent);
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .analyze-btn:hover:not(:disabled)::before { opacity: 1; }
+        .analyze-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(0, 229, 176, 0.3);
+        }
+        .analyze-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .analyze-btn .spinner {
+            display: none; width: 22px; height: 22px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-top-color: var(--bg); border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        .analyze-btn.loading .spinner { display: inline-block; }
+        .analyze-btn.loading .btn-text { display: none; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Results Section */
+        .results-section { margin-top: 40px; display: none; }
+        .results-section.show { display: block; animation: fadeUp 0.6s ease; }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-card {
+            background: var(--bg2); border: 1px solid var(--border);
+            border-radius: var(--r-lg); overflow: hidden;
+        }
+        .result-header {
+            padding: 20px 24px; border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+            background: var(--bg3); flex-wrap: wrap; gap: 8px;
+        }
+        .result-header .result-title {
+            font-family: var(--font-head); font-size: 18px; font-weight: 700;
+        }
+        .result-header .result-status {
+            display: flex; align-items: center; gap: 8px;
+            font-family: var(--font-mono); font-size: 11px;
+            padding: 4px 16px; border-radius: 100px; font-weight: 600;
+        }
+        .result-header .result-status.positive {
+            background: rgba(255, 85, 117, 0.12); color: var(--red);
+            border: 1px solid rgba(255, 85, 117, 0.15);
+        }
+        .result-header .result-status.negative {
+            background: rgba(0, 229, 176, 0.12); color: var(--teal);
+            border: 1px solid rgba(0, 229, 176, 0.15);
+        }
+        .result-header .result-status .status-dot {
+            width: 8px; height: 8px; border-radius: 50%; display: inline-block;
+        }
+        .result-header .result-status.positive .status-dot { background: var(--red); }
+        .result-header .result-status.negative .status-dot { background: var(--teal); }
+
+        .result-body { padding: 24px; }
+
+        .result-diagnosis {
+            display: flex; align-items: center; justify-content: space-between;
+            background: rgba(0, 229, 176, 0.04);
+            border: 1px solid rgba(0, 229, 176, 0.1);
+            border-radius: var(--r-md); padding: 20px 24px; margin-bottom: 20px;
+        }
+        .result-diagnosis .disease-name {
+            font-family: var(--font-head); font-size: 24px; font-weight: 800;
+        }
+        .result-diagnosis .confidence { text-align: right; }
+        .result-diagnosis .confidence .conf-value {
+            font-family: var(--font-head); font-size: 28px;
+            font-weight: 800; color: var(--teal);
+        }
+        .result-diagnosis .confidence .conf-label {
+            font-family: var(--font-mono); font-size: 10px; color: var(--text-muted);
+        }
+
+        /* ── Clinical Summary Card (NEW — replaces heatmaps) ── */
+        .clinical-summary-card {
+            background: rgba(58, 155, 255, 0.05);
+            border: 1px solid rgba(58, 155, 255, 0.18);
+            border-radius: var(--r-md);
+            padding: 20px 24px;
+            margin-bottom: 20px;
+        }
+        .clinical-summary-card .cs-title {
+            font-family: var(--font-mono); font-size: 10px;
+            color: var(--blue); letter-spacing: 1.5px;
+            text-transform: uppercase; margin-bottom: 14px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .clinical-summary-card .cs-title::after {
+            content: ''; flex: 1; height: 1px;
+            background: rgba(58, 155, 255, 0.15);
+        }
+
+        .cs-metrics {
+            display: grid; grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px; margin-bottom: 16px;
+        }
+        .cs-metric {
+            background: var(--bg3); border: 1px solid var(--border);
+            border-radius: var(--r-sm); padding: 12px 14px;
+        }
+        .cs-metric .cs-label {
+            font-family: var(--font-mono); font-size: 9px;
+            color: var(--text-dim); letter-spacing: 1px;
+            text-transform: uppercase; margin-bottom: 6px;
+        }
+        .cs-metric .cs-value {
+            font-family: var(--font-head); font-size: 15px;
+            font-weight: 700; color: var(--text);
+        }
+        .cs-metric .cs-value.strong { color: var(--teal); }
+        .cs-metric .cs-value.moderate { color: var(--blue); }
+        .cs-metric .cs-value.weak { color: var(--yellow); }
+        .cs-metric .cs-value.inconclusive { color: var(--red); }
+
+        /* Differential list */
+        .cs-differential { margin-top: 16px; }
+        .cs-differential-title {
+            font-family: var(--font-mono); font-size: 10px;
+            color: var(--text-dim); letter-spacing: 1px;
+            text-transform: uppercase; margin-bottom: 10px;
+        }
+        .diff-row {
+            display: flex; align-items: center; gap: 12px;
+            padding: 8px 0;
+        }
+        .diff-row .diff-name {
+            font-size: 13px; color: var(--text-muted);
+            width: 150px; flex-shrink: 0;
+        }
+        .diff-row .diff-name.top {
+            color: var(--text); font-weight: 700;
+        }
+        .diff-row .diff-bar {
+            flex: 1; height: 6px; background: var(--bg3);
+            border-radius: 10px; overflow: hidden;
+        }
+        .diff-row .diff-bar-fill {
+            height: 100%; border-radius: 10px;
+            transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 0%;
+        }
+        .diff-row .diff-pct {
+            font-family: var(--font-mono); font-size: 12px;
+            width: 50px; text-align: right; flex-shrink: 0;
+            font-weight: 600;
+        }
+
+        .cs-note {
+            margin-top: 14px; padding: 10px 14px;
+            background: rgba(255, 201, 71, 0.06);
+            border: 1px solid rgba(255, 201, 71, 0.15);
+            border-radius: var(--r-sm);
+            font-size: 12px; color: var(--text-muted);
+            line-height: 1.6;
+        }
+        .cs-note strong { color: var(--yellow); }
+
+        /* Probabilities (all classes) */
+        .prob-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
+        .prob-item { display: flex; align-items: center; gap: 14px; padding: 4px 0; }
+        .prob-item .prob-name {
+            font-size: 13px; color: var(--text-muted);
+            width: 120px; flex-shrink: 0; font-weight: 500;
+        }
+        .prob-item .prob-name.top { color: var(--text); font-weight: 700; }
+        .prob-item .prob-track {
+            flex: 1; height: 8px; background: var(--bg3);
+            border-radius: 10px; overflow: hidden; position: relative;
+        }
+        .prob-item .prob-track .prob-fill {
+            height: 100%; border-radius: 10px;
+            transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 0%;
+        }
+        .prob-item .prob-track .prob-fill::after {
+            content: ''; position: absolute; right: 0; top: 0;
+            width: 20px; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15));
+        }
+        .prob-item .prob-pct {
+            font-family: var(--font-mono); font-size: 12px;
+            width: 50px; text-align: right; flex-shrink: 0; font-weight: 600;
+        }
+
+        /* Result Actions */
+        .result-actions { display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
+        .result-actions .btn { flex: 1; justify-content: center; min-width: 120px; }
+        .btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 10px 20px; border-radius: var(--r-sm);
+            font-family: var(--font-body); font-size: 13px; font-weight: 600;
+            text-decoration: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none; cursor: pointer;
+        }
+        .btn-primary { background: linear-gradient(135deg, var(--teal), var(--teal-dim)); color: var(--bg); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0, 229, 176, 0.3); }
+        .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--text); }
+        .btn-ghost:hover { background: var(--bg3); border-color: rgba(255, 255, 255, 0.18); }
+        .btn-outline { background: transparent; border: 1px solid rgba(0, 229, 176, 0.2); color: var(--teal); }
+        .btn-outline:hover { background: rgba(0, 229, 176, 0.06); border-color: rgba(0, 229, 176, 0.4); }
+
+        /* Toast */
+        .toast-container {
+            position: fixed; bottom: 24px; right: 24px;
+            z-index: 9999; display: flex; flex-direction: column;
+            gap: 10px; max-width: 380px;
+        }
+        .toast {
+            padding: 12px 16px; border-radius: var(--r-sm);
+            background: var(--bg2); border: 1px solid var(--border);
+            border-left: 4px solid var(--info);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            transform: translateX(120%);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex; align-items: center; gap: 10px; font-size: 13px;
+        }
+        .toast.show { transform: translateX(0); }
+        .toast-success { border-left-color: var(--teal); }
+        .toast-error { border-left-color: var(--red); }
+        .toast-warning { border-left-color: var(--yellow); }
+        .toast-info { border-left-color: var(--blue); }
+
+        /* Responsive */
+        @media (max-width: 1024px) { .diagnose-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) {
+            .diagnose-page { padding: 100px 0 40px; }
+            .disease-cards { grid-template-columns: 1fr 1fr; }
+            .result-diagnosis { flex-direction: column; text-align: center; gap: 8px; }
+            .upload-area { padding: 24px; min-height: 200px; }
+            .upload-area .upload-icon { font-size: 40px; }
+            .result-actions .btn { flex: 1 1 100%; }
+            .cs-metrics { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 480px) {
+            .disease-cards { grid-template-columns: 1fr 1fr; }
+            .page-title { font-size: 28px; }
+            .result-diagnosis .disease-name { font-size: 20px; }
+            .result-diagnosis .confidence .conf-value { font-size: 22px; }
+            .prob-item { flex-wrap: wrap; gap: 6px; }
+            .prob-item .prob-name { width: 100%; }
+            .prob-item .prob-pct { width: auto; }
+            .diff-row .diff-name { width: 100px; font-size: 12px; }
+        }
+
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.6s ease; }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+    </style>
+</head>
+<body>
+    <div class="grid-bg"></div>
+    {% include 'includes/nav.html' %}
+
+    <div class="diagnose-page">
+        <div class="container">
+            <div class="page-header reveal">
+                <div class="section-tag">
+                    <span class="pulse-dot"></span>
+                    AI Diagnosis
+                </div>
+                <h1 class="page-title">Medical Image <span class="gradient-text">Diagnosis</span></h1>
+                <p class="page-desc">Upload a medical image and let X-HViT analyze it with confidence-aware clinical interpretation.</p>
+            </div>
+
+            <form id="diagnoseForm" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="diagnose-grid">
+                    <!-- Upload Area -->
+                    <div class="upload-area" id="uploadArea">
+                        <input type="file" id="imageInput" name="image" accept="image/*" style="display:none;">
+                        <div id="uploadContent">
+                            <div class="upload-icon">📤</div>
+                            <div class="upload-title">Upload Medical Image</div>
+                            <div class="upload-sub">Drag and drop or click to browse</div>
+                            <img class="upload-preview" id="imagePreview" alt="Image preview">
+                            <div class="file-info" id="fileInfo"></div>
+                            <div class="upload-formats">Supported: JPG, PNG, DICOM</div>
+                            <button type="button" class="upload-btn" onclick="document.getElementById('imageInput').click()">Choose File</button>
+                            <button type="button" class="remove-btn" id="removeBtn" onclick="removeImage()">Remove Image</button>
+                        </div>
+                    </div>
+
+                    <!-- Form Controls -->
+                    <div class="form-controls">
+                        <div class="form-group">
+                            <label>Select Disease <span class="required">*</span></label>
+                            <div class="disease-cards" id="diseaseCards">
+                                <div class="disease-card active" data-disease="brain_tumor" data-modality="MRI" onclick="selectDisease(this)">
+                                    <img src="{% static 'diagnosis/braintumor.png' %}" alt="Brain Tumor" class="disease-icon" onerror="this.style.display='none';this.parentElement.querySelector('.disease-emoji').style.display='block';">
+                                    <span class="disease-emoji" style="display:none;">🧠</span>
+                                    <div class="disease-name">Brain Tumor</div>
+                                    <div class="disease-desc">MRI</div>
+                                </div>
+                                <div class="disease-card" data-disease="pneumonia" data-modality="X-ray" onclick="selectDisease(this)">
+                                    <img src="{% static 'diagnosis/pneumonia.png' %}" alt="Pneumonia" class="disease-icon" onerror="this.style.display='none';this.parentElement.querySelector('.disease-emoji').style.display='block';">
+                                    <span class="disease-emoji" style="display:none;">🫁</span>
+                                    <div class="disease-name">Pneumonia</div>
+                                    <div class="disease-desc">Chest X-ray</div>
+                                </div>
+                                <div class="disease-card" data-disease="tuberculosis" data-modality="X-ray" onclick="selectDisease(this)">
+                                    <img src="{% static 'diagnosis/lungs.png' %}" alt="Tuberculosis" class="disease-icon" onerror="this.style.display='none';this.parentElement.querySelector('.disease-emoji').style.display='block';">
+                                    <span class="disease-emoji" style="display:none;">🫁</span>
+                                    <div class="disease-name">Tuberculosis</div>
+                                    <div class="disease-desc">Chest X-ray</div>
+                                </div>
+                                <div class="disease-card" data-disease="skin_cancer" data-modality="Micro" onclick="selectDisease(this)">
+                                    <img src="{% static 'diagnosis/skin-cancer-icon.png' %}" alt="Skin Cancer" class="disease-icon" onerror="this.style.display='none';this.parentElement.querySelector('.disease-emoji').style.display='block';">
+                                    <span class="disease-emoji" style="display:none;">🔬</span>
+                                    <div class="disease-name">Skin Cancer</div>
+                                    <div class="disease-desc">Microscopic</div>
+                                </div>
+                                <div class="disease-card" data-disease="diabetic_retinopathy" data-modality="Micro" onclick="selectDisease(this)">
+                                    <img src="{% static 'diagnosis/dr.png' %}" alt="Diabetic Retinopathy" class="disease-icon" onerror="this.style.display='none';this.parentElement.querySelector('.disease-emoji').style.display='block';">
+                                    <span class="disease-emoji" style="display:none;">👁️</span>
+                                    <div class="disease-name">DR</div>
+                                    <div class="disease-desc">Retina</div>
+                                </div>
+                                <div class="disease-card" data-disease="bone_fracture" data-modality="X-ray" onclick="selectDisease(this)">
+                                    <img src="{% static 'diagnosis/bone.png' %}" alt="Bone Fracture" class="disease-icon" onerror="this.style.display='none';this.parentElement.querySelector('.disease-emoji').style.display='block';">
+                                    <span class="disease-emoji" style="display:none;">🦴</span>
+                                    <div class="disease-name">Bone Fracture</div>
+                                    <div class="disease-desc">X-ray</div>
+                                </div>
+                                <div class="disease-card" data-disease="fracatlas" data-modality="X-ray" onclick="selectDisease(this)">
+                                    <img src="{% static 'diagnosis/bone.png' %}" alt="FracAtlas" class="disease-icon" onerror="this.style.display='none';this.parentElement.querySelector('.disease-emoji').style.display='block';">
+                                    <span class="disease-emoji" style="display:none;">🦴</span>
+                                    <div class="disease-name">FracAtlas</div>
+                                    <div class="disease-desc">Multi-region</div>
+                                </div>
+                            </div>
+                            <input type="hidden" id="diseaseInput" name="disease" value="brain_tumor">
+
+                            <div class="modality-detected" id="modalityDetected">
+                                Detected Modality: <strong id="detectedModalityText">MRI</strong>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Imaging Modality <span style="font-family:var(--font-mono);font-size:9px;color:var(--text-dim);font-weight:400;">(Auto-detected)</span></label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">🩻</span>
+                                <select id="modalityInput" name="modality" disabled>
+                                    <option value="MRI">MRI</option>
+                                    <option value="CT">CT Scan</option>
+                                    <option value="X-ray">X-ray</option>
+                                    <option value="Micro">Microscopic</option>
+                                    <option value="auto">Auto Detect</option>
+                                </select>
+                                <span class="select-arrow">▼</span>
+                            </div>
+                            <div style="font-size:11px;color:var(--text-dim);margin-top:4px;">
+                                Modality is automatically selected based on the disease
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Case ID (Optional)</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">📋</span>
+                                <input type="text" id="caseIdInput" name="patient_id" placeholder="Leave blank for auto-generate">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="analyze-btn" id="analyzeBtn">
+                            <span class="btn-text">Analyze Image</span>
+                            <span class="spinner"></span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Results Section -->
+            <div class="results-section" id="resultsSection">
+                <div class="result-card" id="resultCard">
+                    <div class="result-header">
+                        <span class="result-title">Diagnosis Results</span>
+                        <span class="result-status" id="resultStatus">
+                            <span class="status-dot"></span>
+                            Processing...
+                        </span>
+                    </div>
+                    <div class="result-body">
+                        <!-- Diagnosis -->
+                        <div class="result-diagnosis">
+                            <div>
+                                <div class="disease-name" id="resultDisease">—</div>
+                                <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted);">Predicted Disease</div>
+                            </div>
+                            <div class="confidence">
+                                <div class="conf-value" id="resultConfidence">0%</div>
+                                <div class="conf-label">Confidence Score</div>
+                            </div>
+                        </div>
+
+                        <!-- ── Clinical Summary Card (NEW) ── -->
+                        <div class="clinical-summary-card" id="clinicalSummaryCard">
+                            <div class="cs-title">Clinical Interpretation</div>
+
+                            <div class="cs-metrics">
+                                <div class="cs-metric">
+                                    <div class="cs-label">Primary Finding</div>
+                                    <div class="cs-value" id="csPrimary">—</div>
+                                </div>
+                                <div class="cs-metric">
+                                    <div class="cs-label">Finding Strength</div>
+                                    <div class="cs-value" id="csStrength">—</div>
+                                </div>
+                                <div class="cs-metric">
+                                    <div class="cs-label">Decision Margin</div>
+                                    <div class="cs-value" id="csMargin">—</div>
+                                </div>
+                            </div>
+
+                            <div class="cs-differential">
+                                <div class="cs-differential-title">Differential Diagnosis (Top 3)</div>
+                                <div id="csDifferentialList"></div>
+                            </div>
+
+                            <div class="cs-note" id="csNote">
+                                <strong>Note:</strong> This is an AI-assisted prediction. All findings require validation by a qualified clinician.
+                            </div>
+                        </div>
+
+                        <!-- All-Class Probability Distribution -->
+                        <div style="margin-bottom:16px;">
+                            <div style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Full Probability Distribution</div>
+                            <div class="prob-list" id="probList"></div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="result-actions">
+                            <a href="#" class="btn btn-primary" id="viewReportBtn">View Full Report</a>
+                            <button class="btn btn-outline" onclick="newDiagnosis()">New Diagnosis</button>
+                            <button class="btn btn-ghost" onclick="downloadResults()">Download Results</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% include 'includes/footer.html' %}
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="{% static 'js/shared.js' %}"></script>
+    <script>
+    const uploadArea = document.getElementById('uploadArea');
+    const imageInput = document.getElementById('imageInput');
+    const imagePreview = document.getElementById('imagePreview');
+    const fileInfo = document.getElementById('fileInfo');
+    const removeBtn = document.getElementById('removeBtn');
+    const diseaseInput = document.getElementById('diseaseInput');
+    const modalityInput = document.getElementById('modalityInput');
+    const modalityDetected = document.getElementById('modalityDetected');
+    const detectedModalityText = document.getElementById('detectedModalityText');
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    const resultsSection = document.getElementById('resultsSection');
+    const resultDisease = document.getElementById('resultDisease');
+    const resultConfidence = document.getElementById('resultConfidence');
+    const resultStatus = document.getElementById('resultStatus');
+    const probList = document.getElementById('probList');
+    const viewReportBtn = document.getElementById('viewReportBtn');
+
+    let selectedFile = null;
+    let currentResult = null;
+
+    const diseaseModalityMap = {
+        'brain_tumor': 'MRI', 'pneumonia': 'X-ray', 'tuberculosis': 'X-ray',
+        'skin_cancer': 'Micro', 'diabetic_retinopathy': 'Micro',
+        'bone_fracture': 'X-ray', 'fracatlas': 'X-ray'
+    };
+    const modalityDisplayMap = {
+        'MRI': 'MRI', 'X-ray': 'X-ray', 'Micro': 'Microscopic', 'CT': 'CT Scan'
+    };
+
+    function updateModality(diseaseKey) {
+        const modality = diseaseModalityMap[diseaseKey] || 'auto';
+        const displayName = modalityDisplayMap[modality] || modality;
+        modalityInput.value = modality;
+        detectedModalityText.textContent = displayName;
+        modalityDetected.classList.add('show');
+    }
+
+    uploadArea.addEventListener('click', function(e) {
+        if (e.target.tagName !== 'BUTTON' && e.target.closest('.remove-btn') === null) {
+            imageInput.click();
+        }
+    });
+    uploadArea.addEventListener('dragover', function(e) {
+        e.preventDefault(); this.classList.add('dragover');
+    });
+    uploadArea.addEventListener('dragleave', function(e) {
+        e.preventDefault(); this.classList.remove('dragover');
+    });
+    uploadArea.addEventListener('drop', function(e) {
+        e.preventDefault(); this.classList.remove('dragover');
+        if (e.dataTransfer.files.length > 0) handleFile(e.dataTransfer.files[0]);
+    });
+    imageInput.addEventListener('change', function() {
+        if (this.files.length > 0) handleFile(this.files[0]);
+    });
+
+    function handleFile(file) {
+        selectedFile = file;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            imagePreview.src = e.target.result;
+            imagePreview.classList.add('show');
+            uploadArea.classList.add('has-image');
+            const size = (file.size / 1024).toFixed(1);
+            fileInfo.textContent = file.name + ' (' + size + ' KB)';
+            fileInfo.classList.add('show');
+            document.querySelector('.upload-area .upload-icon').style.display = 'none';
+            document.querySelector('.upload-area .upload-title').style.display = 'none';
+            document.querySelector('.upload-area .upload-sub').style.display = 'none';
+            document.querySelector('.upload-area .upload-formats').style.display = 'none';
+            document.querySelector('.upload-area .upload-btn').style.display = 'none';
+            removeBtn.classList.add('show');
+            showToast('Image uploaded successfully!', 'success');
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function removeImage() {
+        selectedFile = null;
+        imagePreview.src = '';
+        imagePreview.classList.remove('show');
+        fileInfo.classList.remove('show');
+        removeBtn.classList.remove('show');
+        uploadArea.classList.remove('has-image');
+        document.querySelector('.upload-area .upload-icon').style.display = 'block';
+        document.querySelector('.upload-area .upload-title').style.display = 'block';
+        document.querySelector('.upload-area .upload-sub').style.display = 'block';
+        document.querySelector('.upload-area .upload-formats').style.display = 'block';
+        document.querySelector('.upload-area .upload-btn').style.display = 'inline-block';
+        imageInput.value = '';
+        showToast('Image removed', 'info');
+    }
+
+    function selectDisease(element) {
+        document.querySelectorAll('.disease-card').forEach(c => c.classList.remove('active'));
+        element.classList.add('active');
+        const diseaseKey = element.dataset.disease;
+        diseaseInput.value = diseaseKey;
+        updateModality(diseaseKey);
+    }
+
+    document.getElementById('diagnoseForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        if (!selectedFile) {
+            showToast('Please select an image first', 'warning');
+            uploadArea.style.animation = 'shake 0.5s ease';
+            setTimeout(() => { uploadArea.style.animation = ''; }, 500);
+            return;
+        }
+        const formData = new FormData();
+        formData.append('image', selectedFile);
+        formData.append('disease', diseaseInput.value);
+        formData.append('modality', modalityInput.value);
+        formData.append('patient_id', document.getElementById('caseIdInput').value || '');
+
+        analyzeBtn.classList.add('loading');
+        analyzeBtn.disabled = true;
+        resultsSection.classList.remove('show');
+
+        try {
+            const response = await fetch('/api/diagnose/', {
+                method: 'POST',
+                headers: { 'X-CSRFToken': getCsrfToken() },
+                body: formData
+            });
+            const data = await response.json();
+            if (data.status === 'success') {
+                currentResult = data;
+                displayResults(data);
+                resultsSection.classList.add('show');
+                resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                showToast('Diagnosis complete!', 'success');
+            } else {
+                showToast('Error: ' + data.message, 'error');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showToast('An error occurred. Please try again.', 'error');
+        } finally {
+            analyzeBtn.classList.remove('loading');
+            analyzeBtn.disabled = false;
+        }
+    });
+
+    function displayResults(data) {
+        resultDisease.textContent = data.diagnosis;
+        resultConfidence.textContent = data.confidence + '%';
+
+        const isPositive = data.is_positive;
+        if (isPositive) {
+            resultStatus.className = 'result-status positive';
+            resultStatus.innerHTML = '<span class="status-dot"></span> Disease Detected';
+        } else {
+            resultStatus.className = 'result-status negative';
+            resultStatus.innerHTML = '<span class="status-dot"></span> No Disease Detected';
+        }
+
+        // ── Clinical Summary ──
+        const cs = data.clinical_summary || {};
+        document.getElementById('csPrimary').textContent = cs.primary || data.diagnosis || '—';
+        document.getElementById('csStrength').textContent = cs.strength || data.strength || '—';
+        document.getElementById('csMargin').textContent = cs.margin_label || data.margin_label || '—';
+
+        // Strength color
+        const strengthEl = document.getElementById('csStrength');
+        strengthEl.className = 'cs-value ' + (cs.strength_key || 'moderate');
+
+        // Differential list
+        const diffList = document.getElementById('csDifferentialList');
+        diffList.innerHTML = '';
+        const diff = cs.differential || data.differential || data.probabilities || [];
+        const colors = ['#00e5b0', '#3a9bff', '#7c6aff', '#ffc947', '#ff5575'];
+        diff.slice(0, 3).forEach((item, idx) => {
+            const name = item[0];
+            const pct = item[1];
+            const color = item[2] || colors[idx % colors.length];
+            const isTop = idx === 0;
+            const pctColor = pct >= 75 ? 'var(--teal)' : (pct >= 40 ? 'var(--yellow)' : 'var(--text-muted)');
+            diffList.innerHTML += `
+                <div class="diff-row">
+                    <div class="diff-name ${isTop ? 'top' : ''}">${name}</div>
+                    <div class="diff-bar">
+                        <div class="diff-bar-fill" style="width:0%;background:${color};" data-width="${pct}"></div>
+                    </div>
+                    <div class="diff-pct" style="color:${pctColor};">${pct}%</div>
+                </div>
+            `;
+        });
+
+        // Margin note
+        const noteEl = document.getElementById('csNote');
+        if (cs.margin_label && cs.margin_label.includes('narrow')) {
+            noteEl.innerHTML = '<strong>Caution:</strong> Narrow decision margin. The model is not strongly confident between the top classes. Consider human review.';
+        } else {
+            noteEl.innerHTML = '<strong>Note:</strong> This is an AI-assisted prediction. All findings require validation by a qualified clinician.';
+        }
+
+        // Full probability distribution
+        probList.innerHTML = '';
+        (data.probabilities || []).forEach((item, index) => {
+            const name = item[0];
+            const pct = item[1];
+            const color = item[2] || colors[index % colors.length];
+            const isTop = index === 0;
+            const pctClass = pct >= 90 ? 'var(--teal)' : (pct >= 75 ? 'var(--yellow)' : 'var(--text-muted)');
+            probList.innerHTML += `
+                <div class="prob-item">
+                    <span class="prob-name ${isTop ? 'top' : ''}">${name}</span>
+                    <div class="prob-track">
+                        <div class="prob-fill" style="width:0%;background:${color};" data-width="${pct}"></div>
+                    </div>
+                    <span class="prob-pct" style="color:${pctClass};">${pct}%</span>
+                </div>
+            `;
+        });
+
+        // Animate bars
+        setTimeout(() => {
+            document.querySelectorAll('.prob-fill, .diff-bar-fill').forEach(el => {
+                el.style.width = el.dataset.width + '%';
+            });
+        }, 200);
+
+        if (data.id) viewReportBtn.href = '/reports/' + data.id + '/';
+    }
+
+    function newDiagnosis() {
+        resultsSection.classList.remove('show');
+        removeImage();
+        document.getElementById('caseIdInput').value = '';
+        document.querySelectorAll('.disease-card').forEach((c, i) => c.classList.toggle('active', i === 0));
+        diseaseInput.value = 'brain_tumor';
+        updateModality('brain_tumor');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        showToast('Ready for new diagnosis', 'info');
+    }
+
+    function downloadResults() {
+        if (!currentResult) { showToast('No results to download', 'warning'); return; }
+        const data = {
+            case_id: currentResult.case_id,
+            diagnosis: currentResult.diagnosis,
+            confidence: currentResult.confidence,
+            is_positive: currentResult.is_positive,
+            probabilities: currentResult.probabilities,
+            differential: currentResult.differential,
+            clinical_summary: currentResult.clinical_summary,
+            strength: currentResult.strength,
+            margin: currentResult.margin,
+            margin_label: currentResult.margin_label,
+            timestamp: new Date().toISOString()
+        };
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'diagnosis_' + (currentResult.case_id || 'result') + '.json';
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast('Results downloaded!', 'success');
+    }
+
+    function getCsrfToken() {
+        const token = document.querySelector('[name=csrfmiddlewaretoken]');
+        return token ? token.value : '';
+    }
+
+    function showToast(message, type = 'info', duration = 4000) {
+        const container = document.getElementById('toastContainer');
+        if (!container) return;
+        const toast = document.createElement('div');
+        const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+        toast.className = 'toast toast-' + type;
+        toast.innerHTML = '<span style="font-size:18px;">' + (icons[type] || icons.info) + '</span><span>' + message + '</span>';
+        container.appendChild(toast);
+        requestAnimationFrame(() => toast.classList.add('show'));
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 400);
+        }, duration);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const reveals = document.querySelectorAll('.reveal');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+        }, { threshold: 0.1 });
+        reveals.forEach(el => observer.observe(el));
+        updateModality('brain_tumor');
+        document.querySelectorAll('.disease-icon').forEach(img => {
+            img.addEventListener('error', function() {
+                this.style.display = 'none';
+                const emoji = this.parentElement.querySelector('.disease-emoji');
+                if (emoji) emoji.style.display = 'block';
+            });
+        });
+    });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1450 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>X-HViT | Documentation</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="{% static 'css/shared.css'%}"/>
+<style>
+/* ============================================
+   DOCUMENTATION PAGE - ENHANCED
+   ============================================ */
+
+*{box-sizing:border-box;}
+body{overflow-x:hidden;}
+html{scroll-behavior:smooth;}
+
+/* ─── Layout ─── */
+.doc-layout {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 40px;
+    padding: 100px 0 80px;
+    align-items: start;
+    position: relative;
+    z-index: 1;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding-left: 24px;
+    padding-right: 24px;
+}
+
+/* ─── Sidebar ─── */
+.doc-sidebar {
+    position: sticky;
+    top: 90px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 24px 16px;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+    transition: all 0.3s ease;
+}
+
+.doc-sidebar::-webkit-scrollbar {
+    width: 4px;
+}
+.doc-sidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.doc-sidebar::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 4px;
+}
+.doc-sidebar::-webkit-scrollbar-thumb:hover {
+    background: var(--teal);
+}
+
+.sb-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 16px;
+}
+
+.sb-header .sb-icon {
+    font-size: 20px;
+    color: var(--teal);
+}
+
+.sb-header .sb-title {
+    font-family: var(--font-head);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.doc-nav-section {
+    margin-bottom: 16px;
+}
+.doc-nav-section:last-child {
+    margin-bottom: 0;
+}
+
+.dns-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--teal);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    padding: 0 4px;
+    font-weight: 600;
+}
+
+.dns-links {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.dns-link {
+    display: block;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    color: var(--text-muted);
+    transition: all 0.3s ease;
+    border-left: 2px solid transparent;
+    text-decoration: none;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.dns-link:hover {
+    color: var(--text);
+    border-left-color: var(--teal);
+    background: rgba(0, 229, 176, 0.06);
+}
+
+.dns-link.active {
+    color: var(--teal);
+    font-weight: 600;
+    border-left-color: var(--teal);
+    background: rgba(0, 229, 176, 0.08);
+}
+
+.dns-link .link-icon {
+    margin-right: 8px;
+    font-size: 14px;
+}
+
+.dns-link .link-badge {
+    float: right;
+    font-family: var(--font-mono);
+    font-size: 8px;
+    padding: 1px 8px;
+    border-radius: 100px;
+    background: rgba(0, 229, 176, 0.1);
+    color: var(--teal);
+    border: 1px solid rgba(0, 229, 176, 0.1);
+    margin-top: 2px;
+}
+
+/* ─── Mobile Sidebar ─── */
+.sidebar-toggle {
+    display: none;
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 100;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--teal), var(--teal-dim));
+    color: var(--bg);
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(0, 229, 176, 0.3);
+    transition: all 0.3s;
+    align-items: center;
+    justify-content: center;
+}
+
+.sidebar-toggle:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 30px rgba(0, 229, 176, 0.4);
+}
+
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 98;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar-overlay.active {
+    display: block;
+    opacity: 1;
+}
+
+/* ─── Content ─── */
+.doc-content {
+    max-width: 100%;
+    min-width: 0;
+}
+
+/* Section Header */
+.doc-section {
+    margin-bottom: 60px;
+    scroll-margin-top: 90px;
+}
+
+.doc-section:last-child {
+    margin-bottom: 0;
+}
+
+.doc-section .section-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--teal);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 4px 14px;
+    background: rgba(0, 229, 176, 0.06);
+    border: 1px solid rgba(0, 229, 176, 0.1);
+    border-radius: 100px;
+    margin-bottom: 12px;
+}
+
+.doc-section h1 {
+    font-family: var(--font-head);
+    font-size: 42px;
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, var(--text), var(--teal));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.doc-section h2 {
+    font-family: var(--font-head);
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.7px;
+    margin: 36px 0 16px;
+    padding-top: 28px;
+    border-top: 2px solid var(--border);
+    position: relative;
+}
+
+.doc-section h2::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: 0;
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--teal), transparent);
+}
+
+.doc-section h3 {
+    font-family: var(--font-head);
+    font-size: 18px;
+    font-weight: 700;
+    margin: 20px 0 10px;
+    color: var(--text);
+}
+
+.doc-section h4 {
+    font-family: var(--font-head);
+    font-size: 15px;
+    font-weight: 600;
+    margin: 14px 0 8px;
+    color: var(--text);
+}
+
+.doc-section p {
+    font-size: 15px;
+    color: var(--text-muted);
+    line-height: 1.8;
+    margin-bottom: 12px;
+}
+
+.doc-section ul {
+    list-style: none;
+    margin: 12px 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-left: 0;
+}
+
+.doc-section ul li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 14.5px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    padding: 8px 12px;
+    background: var(--surface);
+    border-radius: var(--r-sm);
+    border: 1px solid var(--border);
+    transition: all 0.3s ease;
+}
+
+.doc-section ul li:hover {
+    border-color: rgba(0, 229, 176, 0.15);
+}
+
+.doc-section ul li .li-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    font-size: 14px;
+}
+
+.doc-section ol {
+    padding-left: 24px;
+    color: var(--text-muted);
+    line-height: 1.8;
+}
+
+.doc-section ol li {
+    margin-bottom: 6px;
+}
+
+/* ─── Code Blocks ─── */
+.code-block {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 18px 22px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--teal);
+    line-height: 1.8;
+    overflow-x: auto;
+    margin: 14px 0;
+    white-space: pre-wrap;
+    tab-size: 4;
+    position: relative;
+}
+
+.code-block .comment { color: var(--text-dim); font-style: italic; }
+.code-block .keyword { color: var(--violet); }
+.code-block .string { color: var(--yellow); }
+.code-block .function { color: var(--blue); }
+
+.code-block .code-copy {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    padding: 4px 10px;
+    font-size: 11px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: var(--font-body);
+}
+
+.code-block .code-copy:hover {
+    background: rgba(0, 229, 176, 0.1);
+    color: var(--teal);
+    border-color: rgba(0, 229, 176, 0.2);
+}
+
+/* ─── Callouts ─── */
+.callout {
+    background: rgba(0, 229, 176, 0.06);
+    border-left: 4px solid var(--teal);
+    border-radius: var(--r-sm);
+    padding: 14px 18px;
+    font-size: 14.5px;
+    color: var(--text-muted);
+    margin: 14px 0;
+}
+
+.callout .callout-icon {
+    font-size: 18px;
+    margin-right: 8px;
+}
+
+.callout strong {
+    color: var(--teal);
+}
+
+.callout.warning {
+    background: rgba(255, 201, 71, 0.06);
+    border-left-color: var(--yellow);
+}
+
+.callout.warning strong {
+    color: var(--yellow);
+}
+
+.callout.error {
+    background: rgba(255, 85, 117, 0.06);
+    border-left-color: var(--red);
+}
+
+.callout.error strong {
+    color: var(--red);
+}
+
+/* ─── Feature Grid ─── */
+.feature-grid-doc {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 20px 0;
+}
+
+.feature-grid-doc .fg-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    transition: all 0.3s ease;
+}
+
+.feature-grid-doc .fg-item:hover {
+    border-color: rgba(0, 229, 176, 0.2);
+    transform: translateY(-2px);
+}
+
+.feature-grid-doc .fg-item .fg-icon {
+    font-size: 28px;
+    flex-shrink: 0;
+}
+
+.feature-grid-doc .fg-item .fg-text {
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+.feature-grid-doc .fg-item .fg-text strong {
+    color: var(--text);
+    font-weight: 600;
+    display: block;
+}
+
+/* ─── Architecture Flow ─── */
+.architecture-flow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 24px 20px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+.arch-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+    min-width: 70px;
+}
+
+.arch-step .arch-icon {
+    font-size: 28px;
+}
+
+.arch-step .arch-label {
+    font-family: var(--font-mono);
+    font-size: 8px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.arch-step .arch-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    text-align: center;
+}
+
+.arch-arrow {
+    font-size: 20px;
+    color: var(--text-dim);
+}
+
+/* ─── Model Specs ─── */
+.model-specs {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin: 20px 0;
+}
+
+.model-spec {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 18px 16px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.model-spec:hover {
+    border-color: rgba(0, 229, 176, 0.2);
+    transform: translateY(-2px);
+}
+
+.model-spec .spec-value {
+    font-family: var(--font-head);
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--teal);
+}
+
+.model-spec .spec-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+/* ─── Disease Grid ─── */
+.disease-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin: 20px 0;
+}
+
+.disease-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 20px;
+    transition: all 0.3s ease;
+}
+
+.disease-card:hover {
+    border-color: rgba(0, 229, 176, 0.2);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.disease-card .dc-icon {
+    font-size: 32px;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.disease-card .dc-name {
+    font-weight: 700;
+    font-size: 15px;
+    margin-bottom: 4px;
+    color: var(--text);
+}
+
+.disease-card .dc-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+.disease-card .dc-dataset {
+    font-size: 10px;
+    color: var(--teal);
+    font-family: var(--font-mono);
+    margin-top: 8px;
+    display: block;
+}
+
+.disease-card .dc-link {
+    font-size: 10px;
+    color: var(--blue);
+    font-family: var(--font-mono);
+    margin-top: 4px;
+    display: block;
+    word-break: break-all;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.disease-card .dc-link:hover {
+    color: var(--teal);
+    text-decoration: underline;
+}
+
+/* ─── Support Grid ─── */
+.support-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 20px 0;
+}
+
+.support-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    transition: all 0.3s ease;
+}
+
+.support-item:hover {
+    border-color: rgba(0, 229, 176, 0.2);
+    transform: translateY(-2px);
+}
+
+.support-item .si-icon {
+    font-size: 28px;
+    flex-shrink: 0;
+}
+
+.support-item .si-content {
+    flex: 1;
+}
+
+.support-item .si-content strong {
+    display: block;
+    font-size: 14px;
+    color: var(--text);
+}
+
+.support-item .si-content span {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+/* ─── Responsive ─── */
+@media(max-width: 1024px) {
+    .doc-layout {
+        grid-template-columns: 1fr;
+        padding: 80px 16px 60px;
+        gap: 20px;
+    }
+    
+    .doc-sidebar {
+        position: fixed;
+        top: 0;
+        left: -340px;
+        width: 300px;
+        height: 100vh;
+        z-index: 99;
+        border-radius: 0;
+        padding: 80px 16px 24px;
+        overflow-y: auto;
+        transition: left 0.3s ease;
+        background: var(--bg);
+        border-right: 1px solid var(--border);
+        max-height: 100vh;
+    }
+    
+    .doc-sidebar.open {
+        left: 0;
+    }
+    
+    .sidebar-toggle {
+        display: flex;
+    }
+    
+    .sidebar-overlay.active {
+        display: block;
+    }
+    
+    .feature-grid-doc {
+        grid-template-columns: 1fr;
+    }
+    
+    .model-specs {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .disease-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .support-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media(max-width: 768px) {
+    .doc-layout {
+        padding: 70px 12px 50px;
+    }
+    
+    .doc-section h1 {
+        font-size: 28px;
+    }
+    
+    .doc-section h2 {
+        font-size: 22px;
+    }
+    
+    .architecture-flow {
+        gap: 4px;
+        padding: 14px 10px;
+    }
+    
+    .arch-step {
+        min-width: 50px;
+    }
+    
+    .arch-step .arch-icon {
+        font-size: 22px;
+    }
+    
+    .arch-step .arch-name {
+        font-size: 10px;
+    }
+    
+    .arch-arrow {
+        font-size: 14px;
+    }
+    
+    .model-specs {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media(max-width: 600px) {
+    .doc-layout {
+        padding: 60px 8px 40px;
+    }
+    
+    .doc-section h1 {
+        font-size: 24px;
+    }
+    
+    .doc-section h2 {
+        font-size: 20px;
+    }
+    
+    .code-block {
+        font-size: 11px;
+        padding: 12px 14px;
+    }
+    
+    .disease-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .doc-sidebar {
+        width: 280px;
+        left: -300px;
+    }
+    
+    .feature-grid-doc .fg-item {
+        padding: 12px 14px;
+    }
+    
+    .feature-grid-doc .fg-item .fg-icon {
+        font-size: 22px;
+    }
+    
+    .callout {
+        padding: 12px 14px;
+        font-size: 13px;
+    }
+    
+    .model-specs {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ─── Scroll Animation ─── */
+.doc-section {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s ease;
+}
+
+.doc-section.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ─── Print Styles ─── */
+@media print {
+    .doc-sidebar, .sidebar-toggle, .sidebar-overlay, nav, footer {
+        display: none !important;
+    }
+    
+    .doc-layout {
+        display: block !important;
+        padding: 20px !important;
+    }
+    
+    .doc-section {
+        opacity: 1 !important;
+        transform: none !important;
+        page-break-inside: avoid;
+    }
+    
+    .code-block {
+        background: #f5f5f5 !important;
+        border: 1px solid #ddd !important;
+    }
+}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+{% include 'includes/nav.html' %}
+
+<!-- Sidebar Overlay -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- Sidebar Toggle Button -->
+<button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle navigation">
+    ☰
+</button>
+
+<div class="doc-layout">
+    <!-- ─── Sidebar ─── -->
+    <aside class="doc-sidebar" id="docSidebar">
+        <div class="sb-header">
+            <span class="sb-icon">📖</span>
+            <span class="sb-title">Documentation</span>
+        </div>
+        
+        <div class="doc-nav-section">
+            <div class="dns-label">Getting Started</div>
+            <div class="dns-links">
+                <a href="#intro" class="dns-link active"><span class="link-icon">🏠</span>Introduction</a>
+                <a href="#features" class="dns-link"><span class="link-icon">✨</span>Key Features</a>
+                <a href="#installation" class="dns-link"><span class="link-icon">⚙️</span>Installation</a>
+                <a href="#quickstart" class="dns-link"><span class="link-icon">🚀</span>Quick Start</a>
+            </div>
+        </div>
+        
+        <div class="doc-nav-section">
+            <div class="dns-label">Architecture</div>
+            <div class="dns-links">
+                <a href="#architecture" class="dns-link"><span class="link-icon">🏗️</span>Overview</a>
+                <a href="#cnn" class="dns-link"><span class="link-icon">🔍</span>CNN Backbone</a>
+                <a href="#vit" class="dns-link"><span class="link-icon">🧠</span>Vision Transformer</a>
+                <a href="#hybrid" class="dns-link"><span class="link-icon">🔗</span>Hybrid Pipeline</a>
+            </div>
+        </div>
+        
+        <div class="doc-nav-section">
+            <div class="dns-label">Capabilities</div>
+            <div class="dns-links">
+                <a href="#diseases" class="dns-link"><span class="link-icon">🩺</span>Supported Diseases</a>
+                <a href="#xai" class="dns-link"><span class="link-icon">🔬</span>Explainable AI</a>
+                <a href="#reports" class="dns-link"><span class="link-icon">📄</span>Report Generation</a>
+            </div>
+        </div>
+        
+        <div class="doc-nav-section">
+            <div class="dns-label">Resources</div>
+            <div class="dns-links">
+                <a href="#support" class="dns-link"><span class="link-icon">💬</span>Support</a>
+                <a href="#faq" class="dns-link"><span class="link-icon">❓</span>FAQ</a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ─── Main Content ─── -->
+    <div class="doc-content">
+
+        <!-- Introduction -->
+        <div class="doc-section" id="intro">
+            <div class="section-badge">Overview</div>
+            <h1>X-HViT Documentation</h1>
+            <p>Welcome to the official documentation for <strong>X-HViT</strong> — Explainable Hybrid Vision Transformer for medical image classification. This guide covers everything from architecture to integration.</p>
+            
+            <div class="callout">
+                <span class="callout-icon">ℹ️</span>
+                <strong>Version:</strong> X-HViT v1.0 · February 2026 · 
+                <strong>License:</strong> Academic Research Use
+            </div>
+
+            <h2>What is X-HViT?</h2>
+            <p>X-HViT is a hybrid deep learning model that combines <strong>Convolutional Neural Networks (CNN)</strong> for local spatial feature extraction with <strong>Vision Transformers (ViT)</strong> for global context modeling. It is trained on diverse medical imaging datasets covering 7 disease categories with 95%+ accuracy.</p>
+            
+            <div class="feature-grid-doc">
+                <div class="fg-item">
+                    <span class="fg-icon">🧬</span>
+                    <div class="fg-text"><strong>Hybrid Architecture</strong>CNN + Vision Transformer fusion</div>
+                </div>
+                <div class="fg-item">
+                    <span class="fg-icon">🔬</span>
+                    <div class="fg-text"><strong>Dual XAI</strong>Grad-CAM + Attention Maps</div>
+                </div>
+                <div class="fg-item">
+                    <span class="fg-icon">📡</span>
+                    <div class="fg-text"><strong>4 Modalities</strong>CT, MRI, X-ray, Microscopic</div>
+                </div>
+                <div class="fg-item">
+                    <span class="fg-icon">🎯</span>
+                    <div class="fg-text"><strong>7 Diseases</strong>Brain Tumor, Fracture, TB, Pneumonia, and more</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Features -->
+        <div class="doc-section" id="features">
+            <div class="section-badge">Features</div>
+            <h2>Key Features</h2>
+            <ul>
+                <li><span class="li-icon">✅</span><strong>Multi-Modal Support</strong> — Unified framework for CT, MRI, X-ray, and Microscopic imaging</li>
+                <li><span class="li-icon">✅</span><strong>Dual Explainability</strong> — Grad-CAM heatmaps + Transformer attention maps for full transparency</li>
+                <li><span class="li-icon">✅</span><strong>7 Disease Detection</strong> — Brain Tumor, Bone Fracture, Tuberculosis, Pneumonia, Skin Cancer, Diabetic Retinopathy, and more</li>
+                <li><span class="li-icon">✅</span><strong>PDF Report Generation</strong> — Structured diagnostic reports with confidence scores and visualizations</li>
+                <li><span class="li-icon">✅</span><strong>Django REST API</strong> — Easy integration with clinical workflows</li>
+                <li><span class="li-icon">✅</span><strong>Lightweight Inference</strong> — Optimized for deployment in resource-constrained environments</li>
+            </ul>
+        </div>
+
+        <!-- Installation -->
+        <div class="doc-section" id="installation">
+            <div class="section-badge">Setup</div>
+            <h2>Installation</h2>
+            
+            <h3>System Requirements</h3>
+            <ul>
+                <li><span class="li-icon">🐍</span>Python 3.8 or higher</li>
+                <li><span class="li-icon">🔥</span>PyTorch 2.0+ (with CUDA optional)</li>
+                <li><span class="li-icon">💾</span>4GB+ RAM recommended</li>
+                <li><span class="li-icon">🎮</span>GPU: NVIDIA GPU with 4GB+ VRAM (optional)</li>
+            </ul>
+
+            <h3>Installation Steps</h3>
+            <div class="code-block" id="installCode"><span class="comment"># Clone the repository</span>
+git clone https://github.com/utc/xhvit.git
+cd xhvit
+
+<span class="comment"># Create virtual environment</span>
+python -m venv venv
+<span class="comment"># On Windows:</span>
+venv\Scripts\activate
+<span class="comment"># On Linux/Mac:</span>
+source venv/bin/activate
+
+<span class="comment"># Install dependencies</span>
+pip install -r requirements.txt
+
+<span class="comment"># Run migrations</span>
+python manage.py migrate
+
+<span class="comment"># Create superuser (for admin access)</span>
+python manage.py createsuperuser
+
+<span class="comment"># Start development server</span>
+python manage.py runserver
+<button class="code-copy" onclick="copyCode('installCode')">Copy</button></div>
+
+            <div class="callout">
+                <span class="callout-icon">💡</span>
+                <strong>Note:</strong> For GPU support, install PyTorch with CUDA: 
+                <code>pip install torch==2.5.1+cu121 --index-url https://download.pytorch.org/whl/cu121</code>
+            </div>
+        </div>
+
+        <!-- Quick Start -->
+        <div class="doc-section" id="quickstart">
+            <div class="section-badge">Tutorial</div>
+            <h2>Quick Start</h2>
+            <p>Get started with X-HViT using the web interface:</p>
+
+            <ul>
+                <li><span class="li-icon">➡️</span>Navigate to <code>/diagnose</code> in your browser</li>
+                <li><span class="li-icon">➡️</span>Upload a medical image (CT, MRI, X-ray, or Microscopic)</li>
+                <li><span class="li-icon">➡️</span>Select modality or use auto-detection</li>
+                <li><span class="li-icon">➡️</span>Click "Diagnose" to get results with XAI visualizations</li>
+                <li><span class="li-icon">➡️</span>Download the PDF report with one click</li>
+            </ul>
+            
+            <div class="callout">
+                <span class="callout-icon">🚀</span>
+                <strong>Try it now:</strong> Visit <a href="/diagnose" style="color:var(--teal);">/diagnose</a> to start your first diagnosis.
+            </div>
+        </div>
+
+        <!-- Architecture Overview -->
+        <div class="doc-section" id="architecture">
+            <div class="section-badge">Architecture</div>
+            <h2>Architecture Overview</h2>
+            <p>X-HViT follows a hybrid architecture that combines the strengths of CNNs and Vision Transformers:</p>
+
+            <div class="architecture-flow">
+                <div class="arch-step">
+                    <span class="arch-icon">🖼️</span>
+                    <span class="arch-label">Step 1</span>
+                    <span class="arch-name">Input Image</span>
+                </div>
+                <span class="arch-arrow">→</span>
+                <div class="arch-step">
+                    <span class="arch-icon">🔍</span>
+                    <span class="arch-label">Step 2</span>
+                    <span class="arch-name">CNN Backbone</span>
+                </div>
+                <span class="arch-arrow">→</span>
+                <div class="arch-step">
+                    <span class="arch-icon">🧠</span>
+                    <span class="arch-label">Step 3</span>
+                    <span class="arch-name">ViT Encoder</span>
+                </div>
+                <span class="arch-arrow">→</span>
+                <div class="arch-step">
+                    <span class="arch-icon">📊</span>
+                    <span class="arch-label">Step 4</span>
+                    <span class="arch-name">Classification</span>
+                </div>
+                <span class="arch-arrow">→</span>
+                <div class="arch-step">
+                    <span class="arch-icon">🔬</span>
+                    <span class="arch-label">Step 5</span>
+                    <span class="arch-name">XAI Output</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CNN Backbone -->
+        <div class="doc-section" id="cnn">
+            <div class="section-badge">Backbone</div>
+            <h2>CNN Backbone</h2>
+            <p>The CNN backbone extracts <strong>local spatial features</strong> from the input image. It identifies edges, textures, and patterns that are characteristic of specific diseases.</p>
+            
+            <h3>Specifications</h3>
+            <ul>
+                <li><span class="li-icon">✅</span>Pre-trained on ImageNet (transfer learning)</li>
+                <li><span class="li-icon">✅</span>Fine-tuned on medical imaging dataset</li>
+                <li><span class="li-icon">✅</span>Extracts features at multiple scales</li>
+                <li><span class="li-icon">✅</span>Output: Feature maps for Grad-CAM visualization</li>
+            </ul>
+            
+            <div class="callout">
+                <span class="callout-icon">🔥</span>
+                <strong>Grad-CAM:</strong> The CNN backbone enables Grad-CAM heatmaps that highlight the regions most influential in the classification decision.
+            </div>
+        </div>
+
+        <!-- Vision Transformer -->
+        <div class="doc-section" id="vit">
+            <div class="section-badge">Transformer</div>
+            <h2>Vision Transformer (ViT)</h2>
+            <p>The Vision Transformer captures <strong>global contextual relationships</strong> that CNNs often miss. It models long-range dependencies between different regions of the image.</p>
+            
+            <h3>Specifications</h3>
+            <ul>
+                <li><span class="li-icon">✅</span>Patch embedding with 16×16 patches</li>
+                <li><span class="li-icon">✅</span>12-layer transformer encoder</li>
+                <li><span class="li-icon">✅</span>Multi-head self-attention (12 heads)</li>
+                <li><span class="li-icon">✅</span>Output: Global context for disease classification</li>
+            </ul>
+            
+            <div class="callout">
+                <span class="callout-icon">🎯</span>
+                <strong>Attention Maps:</strong> The ViT provides attention maps that show which parts of the image the model focuses on globally.
+            </div>
+        </div>
+
+        <!-- Hybrid Pipeline -->
+        <div class="doc-section" id="hybrid">
+            <div class="section-badge">Fusion</div>
+            <h2>Hybrid Pipeline</h2>
+            <p>The CNN and ViT outputs are fused to create a <strong>hybrid representation</strong> that captures both local details and global context.</p>
+            
+            <h3>Fusion Process</h3>
+            <ol>
+                <li><strong>CNN Features:</strong> Extracted from the CNN backbone</li>
+                <li><strong>ViT Features:</strong> Global attention from the transformer</li>
+                <li><strong>Feature Concatenation:</strong> Both features are combined</li>
+                <li><strong>Classification Head:</strong> Final prediction layer</li>
+                <li><strong>Dual XAI:</strong> Both Grad-CAM and attention maps are generated</li>
+            </ol>
+            
+            <div class="model-specs">
+                <div class="model-spec">
+                    <div class="spec-value">384</div>
+                    <div class="spec-label">d_model</div>
+                </div>
+                <div class="model-spec">
+                    <div class="spec-value">6</div>
+                    <div class="spec-label">Heads</div>
+                </div>
+                <div class="model-spec">
+                    <div class="spec-value">4</div>
+                    <div class="spec-label">Layers</div>
+                </div>
+                <div class="model-spec">
+                    <div class="spec-value">1536</div>
+                    <div class="spec-label">FFN Dim</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Supported Diseases -->
+        <div class="doc-section" id="diseases">
+            <div class="section-badge">Datasets</div>
+            <h2>Supported Diseases</h2>
+            <p>X-HViT is trained on 7 diverse medical imaging datasets covering a wide range of diseases:</p>
+            
+            <div class="disease-grid">
+                <div class="disease-card">
+                    <span class="dc-icon">🧠</span>
+                    <div class="dc-name">Brain Tumor</div>
+                    <div class="dc-desc">MRI-based detection of glioma, meningioma, and pituitary tumors</div>
+                    <span class="dc-dataset">Dataset: Brain Tumor MRI Dataset</span>
+                    <a href="https://www.kaggle.com/datasets/masoudnickparvar/brain-tumor-mri-dataset" target="_blank" class="dc-link">🔗 View Dataset</a>
+                </div>
+                <div class="disease-card">
+                    <span class="dc-icon">🦴</span>
+                    <div class="dc-name">Bone Fracture</div>
+                    <div class="dc-desc">Multi-region X-ray classification of fractured and non-fractured bones</div>
+                    <span class="dc-dataset">Dataset: Multi-Region X-ray Data</span>
+                    <a href="https://www.kaggle.com/datasets/bmadushanirodrigo/fracture-multi-region-x-ray-data" target="_blank" class="dc-link">🔗 View Dataset</a>
+                </div>
+                <div class="disease-card">
+                    <span class="dc-icon">🫁</span>
+                    <div class="dc-name">Tuberculosis (TB)</div>
+                    <div class="dc-desc">Chest X-ray classification for TB detection</div>
+                    <span class="dc-dataset">Dataset: TB Chest X-ray Database</span>
+                    <a href="https://www.kaggle.com/datasets/tawsifurrahman/tuberculosis-tb-chest-xray-dataset" target="_blank" class="dc-link">🔗 View Dataset</a>
+                </div>
+                <div class="disease-card">
+                    <span class="dc-icon">👁️</span>
+                    <div class="dc-name">Diabetic Retinopathy</div>
+                    <div class="dc-desc">Retinal image classification for diabetic retinopathy detection</div>
+                    <span class="dc-dataset">Dataset: DR 224x224</span>
+                    <a href="https://www.kaggle.com/datasets/sovitrath/diabetic-retinopathy-224x224-2019-data" target="_blank" class="dc-link">🔗 View Dataset</a>
+                </div>
+                <div class="disease-card">
+                    <span class="dc-icon">🔬</span>
+                    <div class="dc-name">Skin Cancer</div>
+                    <div class="dc-desc">Dermatoscopic image classification of skin lesions (HAM10000)</div>
+                    <span class="dc-dataset">Dataset: HAM10000</span>
+                    <a href="https://www.kaggle.com/datasets/kmader/skin-cancer-mnist-ham10000" target="_blank" class="dc-link">🔗 View Dataset</a>
+                </div>
+                <div class="disease-card">
+                    <span class="dc-icon">🫁</span>
+                    <div class="dc-name">Pneumonia</div>
+                    <div class="dc-desc">Chest X-ray classification for pneumonia detection</div>
+                    <span class="dc-dataset">Dataset: Chest X-Ray Images</span>
+                    <a href="https://www.kaggle.com/datasets/paultimothymooney/chest-xray-pneumonia" target="_blank" class="dc-link">🔗 View Dataset</a>
+                </div>
+                <div class="disease-card">
+                    <span class="dc-icon">🦴</span>
+                    <div class="dc-name">FracAtlas</div>
+                    <div class="dc-desc">Comprehensive fracture classification using FracAtlas dataset</div>
+                    <span class="dc-dataset">Dataset: FracAtlas</span>
+                    <a href="https://www.kaggle.com/datasets/orvile/fracatlas?resource=download" target="_blank" class="dc-link">🔗 View Dataset</a>
+                </div>
+            </div>
+
+            <div class="callout">
+                <span class="callout-icon">📚</span>
+                <strong>Dataset Sources:</strong> All datasets are sourced from publicly available Kaggle repositories and are used for research and educational purposes.
+            </div>
+        </div>
+
+        <!-- XAI -->
+        <div class="doc-section" id="xai">
+            <div class="section-badge">Explainability</div>
+            <h2>Explainable AI (XAI)</h2>
+            <p>X-HViT provides <strong>dual explainability</strong> to ensure every prediction is transparent and verifiable.</p>
+            
+            <h3>Grad-CAM Heatmaps</h3>
+            <ul>
+                <li><span class="li-icon">✅</span>Highlights <strong>local regions</strong> that influenced the prediction</li>
+                <li><span class="li-icon">✅</span>Generated from the CNN backbone</li>
+                <li><span class="li-icon">✅</span>Overlayed on the original image</li>
+                <li><span class="li-icon">✅</span>Color-coded by importance (red = high, blue = low)</li>
+            </ul>
+            
+            <h3>Attention Maps</h3>
+            <ul>
+                <li><span class="li-icon">✅</span>Shows <strong>global attention patterns</strong> from the transformer</li>
+                <li><span class="li-icon">✅</span>Generated from the ViT attention layers</li>
+                <li><span class="li-icon">✅</span>Side-by-side comparison with Grad-CAM available</li>
+                <li><span class="li-icon">✅</span>Downloadable as PNG overlay</li>
+            </ul>
+            
+            <div class="callout">
+                <span class="callout-icon">💊</span>
+                <strong>Clinical Trust:</strong> Dual explainability ensures that clinicians can verify and trust every AI-assisted diagnosis.
+            </div>
+        </div>
+
+        <!-- Reports -->
+        <div class="doc-section" id="reports">
+            <div class="section-badge">Reporting</div>
+            <h2>Report Generation</h2>
+            <p>Auto-generate structured diagnostic reports in PDF format.</p>
+            
+            <h3>Report Contents</h3>
+            <ul>
+                <li><span class="li-icon">✅</span><strong>Patient Information:</strong> Case ID, date, modality</li>
+                <li><span class="li-icon">✅</span><strong>Diagnosis:</strong> Disease classification with confidence score</li>
+                <li><span class="li-icon">✅</span><strong>Probability Distribution:</strong> Full class probabilities</li>
+                <li><span class="li-icon">✅</span><strong>Grad-CAM Heatmap:</strong> Visual explanation overlay</li>
+                <li><span class="li-icon">✅</span><strong>Attention Map:</strong> Transformer attention visualization</li>
+                <li><span class="li-icon">✅</span><strong>Model Metadata:</strong> Model version, inference timestamp</li>
+            </ul>
+            
+            <div class="callout">
+                <span class="callout-icon">📥</span>
+                <strong>Download:</strong> Reports are available for download as PDF with one click from the web interface or via the API.
+            </div>
+        </div>
+
+        <!-- FAQ -->
+        <div class="doc-section" id="faq">
+            <div class="section-badge">FAQ</div>
+            <h2>Frequently Asked Questions</h2>
+            
+            <h3>How accurate is X-HViT?</h3>
+            <p>X-HViT achieves 95%+ accuracy across all supported modalities, validated through 5-fold cross-validation. Specific accuracies vary by disease type.</p>
+            
+            <h3>What image formats are supported?</h3>
+            <p>X-HViT supports JPG, PNG, and DICOM formats. Images are automatically resized to 224×224 pixels before processing.</p>
+            
+            <h3>Is X-HViT HIPAA compliant?</h3>
+            <p>X-HViT is designed for research and educational purposes. For clinical deployment, additional compliance measures may be required.</p>
+            
+            <h3>Can I use X-HViT for commercial purposes?</h3>
+            <p>Please contact us for commercial licensing options. X-HViT is currently available for academic research use.</p>
+        </div>
+
+        <!-- Support -->
+        <div class="doc-section" id="support">
+            <div class="section-badge">Help</div>
+            <h2>Support</h2>
+            <p>Get help with X-HViT through the following channels:</p>
+            
+            <div class="support-grid">
+                <div class="support-item">
+                    <span class="si-icon">📧</span>
+                    <div class="si-content">
+                        <strong>Email Support</strong>
+                        <span>xhvit@medical.ai</span>
+                    </div>
+                </div>
+                <div class="support-item">
+                    <span class="si-icon">🐙</span>
+                    <div class="si-content">
+                        <strong>GitHub Issues</strong>
+                        <span>Report bugs and request features</span>
+                    </div>
+                </div>
+                <div class="support-item">
+                    <span class="si-icon">📖</span>
+                    <div class="si-content">
+                        <strong>Documentation</strong>
+                        <span>Full API reference and guides</span>
+                    </div>
+                </div>
+                <div class="support-item">
+                    <span class="si-icon">💬</span>
+                    <div class="si-content">
+                        <strong>Community</strong>
+                        <span>Join our research community</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="callout">
+                <span class="callout-icon">⏱️</span>
+                <strong>Response Time:</strong> We respond to support inquiries within 2–3 business days.
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% include 'includes/footer.html' %}
+
+<script src="{% static 'js/shared.js' %}"></script>
+
+<script>
+// ============================================
+// SIDEBAR FUNCTIONS
+// ============================================
+(function() {
+    const sidebar = document.getElementById('docSidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    const toggleBtn = document.getElementById('sidebarToggle');
+    
+    if (!sidebar || !toggleBtn) return;
+    
+    function toggleSidebar() {
+        const isOpen = sidebar.classList.toggle('open');
+        overlay.classList.toggle('active');
+        toggleBtn.textContent = isOpen ? '✕' : '☰';
+        document.body.style.overflow = isOpen ? 'hidden' : '';
+    }
+    
+    function closeSidebar() {
+        sidebar.classList.remove('open');
+        overlay.classList.remove('active');
+        toggleBtn.textContent = '☰';
+        document.body.style.overflow = '';
+    }
+    
+    toggleBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        toggleSidebar();
+    });
+    
+    if (overlay) {
+        overlay.addEventListener('click', closeSidebar);
+    }
+    
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeSidebar();
+        }
+    });
+    
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 1024) {
+            closeSidebar();
+        }
+    });
+    
+    // Close sidebar when clicking a link (mobile)
+    const links = sidebar.querySelectorAll('.dns-link');
+    links.forEach(function(link) {
+        link.addEventListener('click', function() {
+            if (window.innerWidth <= 1024) {
+                closeSidebar();
+            }
+        });
+    });
+})();
+
+// ============================================
+// ACTIVE LINK HIGHLIGHTING ON SCROLL
+// ============================================
+(function() {
+    const sections = document.querySelectorAll('.doc-section');
+    const navLinks = document.querySelectorAll('.dns-link');
+    let ticking = false;
+    
+    function updateActiveLink() {
+        let currentSectionId = '';
+        const scrollPosition = window.scrollY + 150;
+        
+        sections.forEach(function(section) {
+            const sectionTop = section.offsetTop;
+            const sectionBottom = sectionTop + section.offsetHeight;
+            
+            if (scrollPosition >= sectionTop - 50 && scrollPosition < sectionBottom - 50) {
+                currentSectionId = section.getAttribute('id');
+            }
+        });
+        
+        navLinks.forEach(function(link) {
+            link.classList.remove('active');
+            const linkTarget = link.getAttribute('href');
+            if (linkTarget && linkTarget.substring(1) === currentSectionId) {
+                link.classList.add('active');
+            }
+        });
+    }
+    
+    // Initial call with slight delay
+    setTimeout(updateActiveLink, 200);
+    
+    window.addEventListener('scroll', function() {
+        if (!ticking) {
+            window.requestAnimationFrame(function() {
+                updateActiveLink();
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
+    
+    window.addEventListener('resize', function() {
+        setTimeout(updateActiveLink, 100);
+    });
+})();
+
+// ============================================
+// COPY CODE FUNCTION
+// ============================================
+function copyCode(elementId) {
+    const codeBlock = document.getElementById(elementId);
+    const text = codeBlock.textContent;
+    
+    // Remove the "Copy" button text from the copied content
+    const cleanText = text.replace('Copy', '').trim();
+    
+    navigator.clipboard.writeText(cleanText).then(function() {
+        const copyBtn = codeBlock.querySelector('.code-copy');
+        if (copyBtn) {
+            const originalHTML = copyBtn.innerHTML;
+            copyBtn.innerHTML = '✅ Copied!';
+            setTimeout(function() {
+                copyBtn.innerHTML = originalHTML;
+            }, 2000);
+        }
+    }).catch(function() {
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = cleanText;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        
+        const copyBtn = codeBlock.querySelector('.code-copy');
+        if (copyBtn) {
+            const originalHTML = copyBtn.innerHTML;
+            copyBtn.innerHTML = '✅ Copied!';
+            setTimeout(function() {
+                copyBtn.innerHTML = originalHTML;
+            }, 2000);
+        }
+    });
+}
+
+// ============================================
+// SCROLL REVEAL ANIMATIONS
+// ============================================
+(function() {
+    const sections = document.querySelectorAll('.doc-section');
+    
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, observerOptions);
+    
+    sections.forEach(function(section) {
+        observer.observe(section);
+    });
+})();
+</script>
+
+</body>
+</html>
