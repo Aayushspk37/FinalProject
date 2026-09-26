@@ -693,6 +693,11 @@ Dataset links are reproduced from the final project report.
 
 ---
 
+📖 Documentation
+
+For complete methodology, architecture, experimental setup, evaluation, discussion and future work, refer to the project report.
+
+Project Report: final_report.pdf
 
 **Repository:**  
 https://github.com/Aayushspk37/FinalProject
