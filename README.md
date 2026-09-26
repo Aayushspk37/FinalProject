@@ -402,7 +402,7 @@ The final system includes Login, Home, Modalities, Diagnose, Explainability Hub,
 ### 🏠 Home
 
 <p align="center">
-  <img src="screenshots/home.png" width="900" alt="Home Page">
+  <img src="screenshots/homepage.png" width="900" alt="Home Page">
 </p>
 
 ---
@@ -418,7 +418,7 @@ The final system includes Login, Home, Modalities, Diagnose, Explainability Hub,
 ### 🔬 Diagnosis
 
 <p align="center">
-  <img src="screenshots/diagnose.png" width="900" alt="Diagnosis Page">
+  <img src="screenshots/diagnosis.png" width="900" alt="Diagnosis Page">
 </p>
 
 ---
@@ -426,7 +426,7 @@ The final system includes Login, Home, Modalities, Diagnose, Explainability Hub,
 ### 🔎 Explainability Hub
 
 <p align="center">
-  <img src="screenshots/explainability-hub.png" width="900" alt="Explainability Hub">
+  <img src="screenshots/explainability_hub.png" width="900" alt="Explainability Hub">
 </p>
 
 ---
@@ -442,7 +442,7 @@ The final system includes Login, Home, Modalities, Diagnose, Explainability Hub,
 ### 📄 Reports
 
 <p align="center">
-  <img src="screenshots/reports.png" width="900" alt="Reports">
+  <img src="screenshots/report.png" width="900" alt="Reports">
 </p>
 
 ---
