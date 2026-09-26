@@ -394,7 +394,7 @@ The final system includes Login, Home, Modalities, Diagnose, Explainability Hub,
 ### 🔐 Login
 
 <p align="center">
-  <img src="screenshots/login.png" width="900" alt="Login Page">
+  <img src="medical_image/screenshots/login.png" width="900" alt="Login Page">
 </p>
 
 ---
@@ -402,7 +402,7 @@ The final system includes Login, Home, Modalities, Diagnose, Explainability Hub,
 ### 🏠 Home
 
 <p align="center">
-  <img src="screenshots/home.png" width="900" alt="Home Page">
+  <img src="medical_image/screenshots/homepage.png" width="900" alt="Home Page">
 </p>
 
 ---
@@ -410,7 +410,7 @@ The final system includes Login, Home, Modalities, Diagnose, Explainability Hub,
 ### 🩻 Modalities
 
 <p align="center">
-  <img src="screenshots/modalities.png" width="900" alt="Medical Imaging Modalities">
+  <img src="medical_image/screenshots/modalities.png" width="900" alt="Medical Imaging Modalities">
 </p>
 
 ---
@@ -418,7 +418,7 @@ The final system includes Login, Home, Modalities, Diagnose, Explainability Hub,
 ### 🔬 Diagnosis
 
 <p align="center">
-  <img src="screenshots/diagnose.png" width="900" alt="Diagnosis Page">
+  <img src="medical_image/screenshots/diagnosis.png" width="900" alt="Diagnosis Page">
 </p>
 
 ---
@@ -426,7 +426,7 @@ The final system includes Login, Home, Modalities, Diagnose, Explainability Hub,
 ### 🔎 Explainability Hub
 
 <p align="center">
-  <img src="screenshots/explainability-hub.png" width="900" alt="Explainability Hub">
+  <img src="medical_image/screenshots/explainability_hub.png" width="900" alt="Explainability Hub">
 </p>
 
 ---
@@ -434,7 +434,7 @@ The final system includes Login, Home, Modalities, Diagnose, Explainability Hub,
 ### 📊 Dashboard
 
 <p align="center">
-  <img src="screenshots/dashboard.png" width="900" alt="Dashboard">
+  <img src="medical_image/screenshots/dashboard.png" width="900" alt="Dashboard">
 </p>
 
 ---
@@ -442,7 +442,15 @@ The final system includes Login, Home, Modalities, Diagnose, Explainability Hub,
 ### 📄 Reports
 
 <p align="center">
-  <img src="screenshots/reports.png" width="900" alt="Reports">
+  <img src="medical_image/screenshots/report.png" width="900" alt="Reports">
+</p>
+
+---
+
+### 👤 User Profile
+
+<p align="center">
+  <img src="medical_image/screenshots/profile.png" width="900" alt="Profile">
 </p>
 
 ---
@@ -450,7 +458,7 @@ The final system includes Login, Home, Modalities, Diagnose, Explainability Hub,
 ### 🕘 History
 
 <p align="center">
-  <img src="screenshots/history.png" width="900" alt="Diagnosis History">
+  <img src="medical_image/screenshots/history.png" width="900" alt="Diagnosis History">
 </p>
 
 ---
