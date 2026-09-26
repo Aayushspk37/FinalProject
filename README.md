@@ -1,151 +1,287 @@
-# A Hybrid ViT with Confidence-Aware Clinical Interpretation for Medical Imaging Diagnosis
+# 🧠 HViT Medical Imaging Diagnosis
 
-An explainable medical imaging diagnosis system that combines **Convolutional Neural Networks (CNNs)** for local feature extraction with a **Vision Transformer (ViT)** for global contextual learning. The system is enhanced with a **Confidence-Aware Clinical Interpretation (CACI)** layer to provide structured and clinically meaningful interpretation of model predictions.
+### Hybrid Vision Transformer with Confidence-Aware Clinical Interpretation
 
 <p align="center">
-  <img width="1436" height="730" alt="Medical Imaging Diagnosis System" src="https://github.com/user-attachments/assets/929c5831-a45e-4e24-bf75-1db6fbee5550" />
+  <strong>An explainable deep learning system for multi-dataset medical image classification and structured clinical interpretation.</strong>
+</p>
+
+<p align="center">
+  <a href="https://github.com/Aayushspk37/FinalProject">
+    <img src="https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github" alt="GitHub">
+  </a>
+  <img src="https://img.shields.io/badge/Python-3.x-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python">
+  <img src="https://img.shields.io/badge/PyTorch-Deep%20Learning-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white" alt="PyTorch">
+  <img src="https://img.shields.io/badge/Django-Web%20Application-092E20?style=for-the-badge&logo=django&logoColor=white" alt="Django">
+  <img src="https://img.shields.io/badge/Computer%20Vision-Medical%20AI-7C6AFF?style=for-the-badge" alt="Computer Vision">
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Architecture-CNN%20%2B%20ViT-00E5B0?style=flat-square" alt="CNN + ViT">
+  <img src="https://img.shields.io/badge/Interpretability-CACI-3A9BFF?style=flat-square" alt="CACI">
+  <img src="https://img.shields.io/badge/Datasets-7-FFC947?style=flat-square" alt="7 Datasets">
+  <img src="https://img.shields.io/badge/Modalities-4-FFA500?style=flat-square" alt="4 Modalities">
 </p>
 
 ---
 
-## Objectives
+## 📌 Overview
 
-- Develop a **Hybrid Vision Transformer (HViT)** for automated medical image classification.
-- Combine **CNN-based local feature extraction** with **Transformer-based global context modeling**.
-- Support multiple medical imaging modalities including **MRI, X-ray, CT, and microscopic/dermoscopic images**.
-- Develop a **Confidence-Aware Clinical Interpretation (CACI)** layer for structured interpretation of predictions.
-- Provide confidence, differential diagnosis, decision margin, severity information, and an LLM-generated clinical narrative.
-- Evaluate the system across **seven publicly available medical imaging datasets** using standard and class-imbalance-aware metrics.
-- Provide a dedicated **Explainability Hub** for presenting prediction and interpretation results.
+**HViT Medical Imaging Diagnosis** is an explainable medical imaging system built around a **Hybrid Vision Transformer (HViT)** architecture.
 
-The system processes medical images through preprocessing, CNN feature extraction, patch tokenization, Transformer encoding, classification, and CACI-based interpretation.
+The system combines:
 
----
+- **CNN-based local feature extraction**
+- **Vision Transformer-based global contextual learning**
+- **Multi-class and binary medical image classification**
+- **Confidence-Aware Clinical Interpretation (CACI)**
+- **Structured prediction explanations**
+- **LLM-generated clinical interpretation**
+- **Django-based web interface**
 
-## System Architecture
+Rather than returning only a predicted disease class, the system produces a structured interpretation containing **prediction confidence, ranked differential diagnosis, decision margin, severity band, and an LLM-generated clinical narrative**.
 
-The system follows an end-to-end medical image diagnosis pipeline:
-
-**Medical Image → Preprocessing → CNN Feature Extraction → Patch Tokenization → Transformer Encoder → Classification → CACI → Explainability Hub**
-
-### Architecture Components
-
-- **Frontend:** HTML, CSS, JavaScript and Django templates.
-- **Backend:** Django-based web application for image upload, processing, prediction and result management.
-- **Deep Learning:** PyTorch-based Hybrid Vision Transformer.
-- **CNN Module:** Extracts local anatomical structures, textures and fine-grained features.
-- **Transformer Module:** Captures long-range relationships and global contextual information.
-- **CACI Layer:** Converts raw model predictions into structured clinical interpretation.
-- **Explainability Hub:** Presents the prediction and CACI outputs through a dedicated interface.
-- **Database:** Stores users, medical images, preprocessing records, predictions, CACI outputs and reports.
-
-The report describes the methodology as a pipeline consisting of data collection, preprocessing, model training, inference, CACI signal generation and Explainability Hub rendering.
+> **Research Prototype:** This project is intended for academic and research purposes and is not a replacement for professional medical diagnosis.
 
 ---
 
-## CACI — Confidence-Aware Clinical Interpretation
+# ✨ Key Highlights
 
-The major interpretability component of the system is the **CACI layer**.
-
-For every prediction, CACI generates five structured trust signals:
-
-1. **Prediction Confidence**
-   - Represents the confidence level associated with the predicted class.
-
-2. **Ranked Differential Diagnosis**
-   - Provides alternative predicted classes ranked according to their model probabilities.
-
-3. **Decision Margin**
-   - Indicates how separated the selected prediction is from competing predictions.
-
-4. **Disease Severity Band**
-   - Maps the predicted condition to a structured severity category using the project's clinical knowledge base.
-
-5. **LLM-Generated Clinical Interpretation**
-   - Produces a natural-language interpretation of the prediction.
-
-These outputs are presented through the **Explainability Hub**, allowing users to examine more than the raw predicted class.
+| Capability | Description |
+|---|---|
+| 🧠 **Hybrid ViT** | Combines CNN local feature extraction with Transformer global context modeling |
+| 🔬 **Multi-Dataset Learning** | Evaluated across seven medical imaging datasets |
+| 🩻 **Multi-Modal Imaging** | Supports MRI, X-ray, CT and microscopic/dermoscopic image sources |
+| 🎯 **Disease Classification** | Supports both binary and multi-class classification tasks |
+| 📊 **CACI Layer** | Converts raw model predictions into structured interpretation |
+| 💬 **Clinical Narrative** | Generates an LLM-based natural-language interpretation |
+| 🔎 **Differential Diagnosis** | Provides ranked alternative predictions |
+| 📈 **Decision Margin** | Indicates separation between competing predictions |
+| ⚠️ **Severity Band** | Provides structured severity information |
+| 🖥️ **Web Application** | Django-based interface for diagnosis and result exploration |
+| 📄 **Reports** | Stores and presents detailed prediction reports |
+| 📚 **History** | Maintains previous diagnosis records |
 
 ---
 
-## Supported Medical Imaging Datasets
+# 🏗️ System Architecture
 
-The system was trained and evaluated using seven publicly available datasets comprising **45,594 images**, covering four imaging modalities.
+```text
+                         ┌──────────────────────┐
+                         │     Medical Image    │
+                         └──────────┬───────────┘
+                                    │
+                                    ▼
+                         ┌──────────────────────┐
+                         │  Image Preprocessing │
+                         │ Resize / Normalize   │
+                         │ Denoise / Augment    │
+                         └──────────┬───────────┘
+                                    │
+                                    ▼
+                    ┌──────────────────────────────┐
+                    │     CNN Feature Extractor    │
+                    │                              │
+                    │  Local Features              │
+                    │  Texture / Edges             │
+                    │  Anatomical Patterns         │
+                    └──────────────┬───────────────┘
+                                   │
+                                   ▼
+                    ┌──────────────────────────────┐
+                    │     Patch Tokenization        │
+                    │      + Projection             │
+                    └──────────────┬───────────────┘
+                                   │
+                                   ▼
+                    ┌──────────────────────────────┐
+                    │    Transformer Encoder        │
+                    │                              │
+                    │ Multi-Head Self-Attention    │
+                    │ Global Context Modeling      │
+                    └──────────────┬───────────────┘
+                                   │
+                                   ▼
+                    ┌──────────────────────────────┐
+                    │      Classification Head      │
+                    └──────────────┬───────────────┘
+                                   │
+                                   ▼
+                    ┌──────────────────────────────┐
+                    │              CACI              │
+                    │ Confidence-Aware Clinical     │
+                    │ Interpretation Layer          │
+                    └──────────────┬───────────────┘
+                                   │
+             ┌─────────────────────┼─────────────────────┐
+             ▼                     ▼                     ▼
+      Confidence Band       Differential Diagnosis   Decision Margin
+             │                     │                     │
+             └─────────────────────┼─────────────────────┘
+                                   │
+                                   ▼
+                           Severity Band
+                                   │
+                                   ▼
+                     LLM Clinical Interpretation
+                                   │
+                                   ▼
+                       ┌──────────────────────┐
+                       │  Explainability Hub  │
+                       └──────────┬───────────┘
+                                  │
+                                  ▼
+                       ┌──────────────────────┐
+                       │  Reports / History   │
+                       │     / Dashboard      │
+                       └──────────────────────┘
+```
 
-| Dataset | Modality | Images | Classes |
-|---|---|---:|---:|
-| Brain Tumor MRI | MRI | 7,200 | 4 |
-| FracAtlas | X-ray / CT | 4,083 | 2 |
-| TB Chest X-Ray | X-ray / CT | 4,200 | 2 |
-| Pneumonia Chest X-Ray | X-ray / CT | 5,856 | 2 |
-| Diabetic Retinopathy | Microscopic | 3,662 | 5 |
-| Bone Fracture | X-ray / CT | 10,578 | 2 |
-| HAM10000 Skin Cancer | Microscopic | 10,015 | 7 |
-
-### Imaging Modalities
-
-- 🧠 **MRI** — Brain tumor classification
-- 🩻 **X-ray** — Fracture, tuberculosis and pneumonia classification
-- 🖥️ **CT** — Used within FracAtlas and TB-related datasets
-- 🔬 **Microscopic/Dermoscopic Imaging** — Diabetic retinopathy and skin cancer classification
+The report describes the system as a pipeline from data collection and preprocessing through HViT inference, CACI signal generation and Explainability Hub presentation.
 
 ---
 
-## Data Preprocessing
+# 🧠 Hybrid Vision Transformer
 
-The preprocessing pipeline standardizes medical images before they are passed to the Hybrid ViT model.
-
-### Preprocessing Steps
-
-- Image resizing
-- Pixel/intensity normalization
-- Noise reduction and smoothing
-- Data augmentation
-- Standardized input dimensions
-
-Images are resized to a fixed resolution such as **224 × 224**, followed by normalization and augmentation to improve model robustness and generalization.
-
----
-
-## Hybrid Vision Transformer
-
-The proposed HViT architecture combines the complementary strengths of CNNs and Transformers.
+The core model combines the complementary properties of convolutional and Transformer architectures.
 
 ### CNN Feature Extraction
 
-The CNN component extracts:
+The CNN component extracts local visual information such as:
 
-- Local spatial features
 - Edges
 - Textures
-- Fine-grained anatomical structures
-- Local pathological patterns
+- Local anatomical structures
+- Fine-grained pathological patterns
 
 ### Patch Tokenization
 
-CNN-generated feature maps are divided into non-overlapping patches and transformed into fixed-dimensional embeddings.
+The extracted feature representation is converted into patch-level tokens that can be processed by the Transformer.
 
 ### Transformer Encoder
 
-The Transformer processes the resulting token sequence using self-attention to capture:
+The Transformer uses self-attention to model relationships between different image regions and capture global contextual information.
 
-- Global spatial relationships
-- Long-range dependencies
-- Contextual relationships between image regions
+### Classification Head
 
-### Classification
+The final representation is passed to a classification head to generate disease-class predictions.
 
-The final Transformer representation is passed through a classification head to predict the disease class.
-
-The hybrid architecture therefore combines **local feature learning** from CNNs with **global contextual modeling** from Transformers.
+This combination allows the architecture to model both **local visual patterns** and **global image context**.
 
 ---
 
-## Model Training
+# 🩺 CACI — Confidence-Aware Clinical Interpretation
 
-The experimental configuration reported in the project includes:
+One of the main contributions of the project is the **Confidence-Aware Clinical Interpretation (CACI)** layer.
 
-| Parameter | Configuration |
+Instead of exposing only the model's final class, CACI organizes the prediction into multiple interpretable signals.
+
+### CACI Output
+
+```text
+Prediction
+    │
+    ├── Confidence Band
+    │
+    ├── Ranked Differential Diagnosis
+    │
+    ├── Decision Margin
+    │
+    ├── Severity Band
+    │
+    └── LLM Clinical Narrative
+```
+
+### 1. Confidence Band
+
+Represents the confidence associated with the predicted class.
+
+### 2. Ranked Differential Diagnosis
+
+Provides alternative classes ranked according to their prediction probabilities.
+
+### 3. Decision Margin
+
+Describes the separation between the selected prediction and competing predictions.
+
+### 4. Severity Band
+
+Provides a structured severity interpretation associated with the predicted condition.
+
+### 5. Clinical Narrative
+
+Generates a natural-language interpretation of the prediction using an LLM.
+
+The report defines these five components as the principal CACI signals presented through the Explainability Hub.
+
+---
+
+# 📊 Datasets
+
+The system was developed and evaluated using **seven publicly available medical imaging datasets** representing multiple diseases and imaging sources. The combined datasets contain **45,594 images**.
+
+| # | Dataset | Modality | Images | Classes |
+|---:|---|---|---:|---:|
+| 01 | Brain Tumor MRI | MRI | 7,200 | 4 |
+| 02 | FracAtlas | X-ray / CT | 4,083 | 2 |
+| 03 | TB Chest X-Ray | X-ray / CT | 4,200 | 2 |
+| 04 | Pneumonia Chest X-Ray | X-ray / CT | 5,856 | 2 |
+| 05 | Diabetic Retinopathy | Microscopic | 3,662 | 5 |
+| 06 | Bone Fracture | X-ray / CT | 10,578 | 2 |
+| 07 | HAM10000 Skin Cancer | Microscopic | 10,015 | 7 |
+
+### Supported Imaging Sources
+
+```text
+MRI
+ └── Brain Tumor
+
+X-Ray / CT
+ ├── Fracture
+ ├── Tuberculosis
+ └── Pneumonia
+
+Microscopic / Dermoscopic
+ ├── Diabetic Retinopathy
+ └── Skin Cancer
+```
+
+---
+
+# ⚙️ Image Preprocessing
+
+The preprocessing pipeline standardizes medical images before model inference.
+
+### Processing Steps
+
+```text
+Raw Medical Image
+       │
+       ▼
+Image Resizing
+       │
+       ▼
+Normalization
+       │
+       ▼
+Noise Reduction
+       │
+       ▼
+Data Augmentation
+       │
+       ▼
+Model-Ready Image
+```
+
+The project uses resizing, normalization, noise reduction/smoothing and augmentation to create standardized inputs for the HViT architecture.
+
+---
+
+# 🏋️ Model Training
+
+The experimental configuration reported in the project is:
+
+| Hyperparameter | Value |
 |---|---|
 | Loss Function | Categorical Cross-Entropy |
 | Optimizer | AdamW |
@@ -153,165 +289,191 @@ The experimental configuration reported in the project includes:
 | Batch Size | 32 |
 | Learning Strategy | Learning Rate Scheduler |
 | Framework | PyTorch |
-| Training Platforms | Google Colab / Kaggle |
+| Training Environment | Google Colab / Kaggle |
 
-PyTorch was used for model implementation, training, evaluation and visualization, with GPU acceleration used during experimentation.
+GPU acceleration was used during model development and experimentation.
 
 ---
 
-## Results
+# 📈 Evaluation Results
 
-The system was evaluated using:
+The models were evaluated using multiple metrics to provide a broader assessment than accuracy alone.
+
+### Metrics
 
 - Accuracy
 - Weighted F1-score
 - AUC
 - Matthews Correlation Coefficient (MCC)
 - Cohen's Kappa
-- Per-class Precision
-- Per-class Recall
+- Precision
+- Recall
 - Per-class F1-score
 
-### Overall Dataset Results
+### Dataset-Level Performance
 
 | Dataset | Accuracy | F1 | AUC | MCC | Kappa |
 |---|---:|---:|---:|---:|---:|
-| Brain Tumor MRI | 98.7% | 0.987 | 0.999 | 0.982 | 0.982 |
+| Brain Tumor MRI | **98.7%** | 0.987 | 0.999 | 0.982 | 0.982 |
 | FracAtlas | 84.5% | 0.820 | 0.767 | 0.353 | 0.320 |
 | TB Chest X-Ray | 97.0% | 0.970 | 0.994 | 0.894 | 0.893 |
 | Pneumonia Chest X-Ray | 94.5% | 0.946 | 0.986 | 0.863 | 0.863 |
 | Diabetic Retinopathy | 81.3% | 0.813 | 0.964 | 0.719 | 0.719 |
-| Bone Fracture | 99.9% | 0.999 | 1.000 | 0.997 | 0.997 |
+| Bone Fracture | **99.9%** | 0.999 | 1.000 | 0.997 | 0.997 |
 | HAM10000 Skin Cancer | 84.4% | 0.850 | 0.967 | 0.719 | 0.716 |
 
-The report shows substantial variation across datasets, with class imbalance being a major factor affecting performance.
+These values are reported in the final evaluation section of the project report.
+
+> **Important:** Performance varies substantially between datasets. The report identifies class imbalance and the complexity of multi-class tasks as important factors affecting performance.
 
 ---
 
-## System Features and UI
+# 🔬 Evaluation Approach
 
-The implemented system provides multiple interfaces for interacting with the medical diagnosis platform.
+The project evaluates each dataset independently because the datasets differ in:
 
-### Main Features
+- Number of classes
+- Dataset size
+- Class distribution
+- Imaging modality
+- Disease characteristics
 
-- User authentication
-- Home page
-- Medical imaging modality selection
-- Medical image upload
-- Automated disease prediction
-- Explainability Hub
-- CACI interpretation
-- Prediction dashboard
-- Medical reports
-- Full report generation
-- Prediction history
-- User profile
-
-The final report documents screenshots for the Login, Home, Modalities, Diagnose, Explainability Hub, Dashboard, Reports, Full Reports, History and User Profile pages.
-
-### Diagnosis Interface
-
-Users can upload a medical image and obtain the corresponding model prediction.
-
-### Explainability Hub
-
-The Explainability Hub presents the structured CACI signals associated with the prediction.
-
-### Dashboard
-
-The dashboard provides an overview of evaluation and prediction-related information.
-
-### Reports
-
-The system provides detailed reports containing prediction and interpretation information.
+Accuracy is therefore considered alongside MCC, Cohen's Kappa, AUC and per-class metrics. This is particularly relevant for imbalanced medical datasets where aggregate accuracy may not fully describe minority-class performance.
 
 ---
 
-## Technology Stack
+# 🖥️ Web Application
 
-### Programming
+The trained models are integrated into a Django-based web application.
 
-- Python
-
-### Deep Learning
-
-- PyTorch
-- Hybrid CNN–Vision Transformer
-- Transformer Encoder
-- Self-Attention
-
-### Medical Image Processing
-
-- OpenCV
-- NumPy
-
-### Explainability
-
-- Confidence-Aware Clinical Interpretation (CACI)
-- Explainability Hub
-- LLM-generated clinical interpretation
-
-### Web Development
-
-- Django
-- HTML
-- CSS
-- JavaScript
-
-The report specifically identifies Python, PyTorch, OpenCV, HTML and CSS as core technologies used in the system.
-
----
-
-## Project Workflow
+### Application Flow
 
 ```text
-                Medical Image
-                     │
-                     ▼
-              Image Preprocessing
-                     │
-                     ▼
-             CNN Feature Extraction
-                     │
-                     ▼
-              Patch Tokenization
-                     │
-                     ▼
-             Linear Projection
-                     │
-                     ▼
-             Transformer Encoder
-                     │
-                     ▼
-                Classification
-                     │
-                     ▼
-              ┌──────────────┐
-              │     CACI     │
-              └──────────────┘
-                     │
-        ┌────────────┼────────────┐
-        ▼            ▼            ▼
-   Confidence   Differential   Decision
-      Band       Diagnosis      Margin
-        │            │            │
-        └────────────┼────────────┘
-                     │
-              Severity Band
-                     │
-                     ▼
-          LLM Clinical Narrative
-                     │
-                     ▼
-            Explainability Hub
-                     │
-                     ▼
-              Clinical Report
+┌─────────────┐
+│    Login    │
+└──────┬──────┘
+       ▼
+┌─────────────┐
+│     Home    │
+└──────┬──────┘
+       ▼
+┌─────────────┐
+│  Modalities │
+└──────┬──────┘
+       ▼
+┌─────────────┐
+│   Diagnose  │
+└──────┬──────┘
+       ▼
+┌──────────────────┐
+│ Explainability   │
+│      Hub         │
+└────────┬─────────┘
+         ▼
+┌──────────────────┐
+│    Dashboard     │
+└────────┬─────────┘
+         ▼
+┌──────────────────┐
+│     Reports      │
+└────────┬─────────┘
+         ▼
+┌──────────────────┐
+│     History      │
+└──────────────────┘
 ```
+
+The final system includes Login, Home, Modalities, Diagnose, Explainability Hub, Dashboard, Reports, Full Reports, History and User Profile interfaces.
 
 ---
 
-## Project Structure
+# 📸 Application Screenshots
+
+> Replace the image paths below with screenshots from the repository's `screenshots/` directory.
+
+### 🔐 Login
+
+<p align="center">
+  <img src="screenshots/login.png" width="900" alt="Login Page">
+</p>
+
+---
+
+### 🏠 Home
+
+<p align="center">
+  <img src="screenshots/home.png" width="900" alt="Home Page">
+</p>
+
+---
+
+### 🩻 Modalities
+
+<p align="center">
+  <img src="screenshots/modalities.png" width="900" alt="Medical Imaging Modalities">
+</p>
+
+---
+
+### 🔬 Diagnosis
+
+<p align="center">
+  <img src="screenshots/diagnose.png" width="900" alt="Diagnosis Page">
+</p>
+
+---
+
+### 🔎 Explainability Hub
+
+<p align="center">
+  <img src="screenshots/explainability-hub.png" width="900" alt="Explainability Hub">
+</p>
+
+---
+
+### 📊 Dashboard
+
+<p align="center">
+  <img src="screenshots/dashboard.png" width="900" alt="Dashboard">
+</p>
+
+---
+
+### 📄 Reports
+
+<p align="center">
+  <img src="screenshots/reports.png" width="900" alt="Reports">
+</p>
+
+---
+
+### 🕘 History
+
+<p align="center">
+  <img src="screenshots/history.png" width="900" alt="Diagnosis History">
+</p>
+
+---
+
+# 🛠️ Technology Stack
+
+| Category | Technologies |
+|---|---|
+| Language | Python |
+| Deep Learning | PyTorch |
+| Architecture | CNN + Vision Transformer |
+| Image Processing | OpenCV, NumPy |
+| Backend | Django |
+| Frontend | HTML, CSS, JavaScript |
+| Explainability | CACI, Explainability Hub |
+| Training | Google Colab, Kaggle |
+| Version Control | Git / GitHub |
+
+The project's report identifies Python, PyTorch, OpenCV, HTML and CSS as core components of the technology stack.
+
+---
+
+# 📁 Project Structure
 
 ```text
 Medical_Image/
@@ -350,113 +512,239 @@ Medical_Image/
 │   ├── skin_cancer/
 │   └── fracatlas/
 │
+├── screenshots/
+│   ├── login.png
+│   ├── home.png
+│   ├── modalities.png
+│   ├── diagnose.png
+│   ├── explainability-hub.png
+│   ├── dashboard.png
+│   ├── reports.png
+│   └── history.png
+│
 └── README.md
 ```
 
 ---
 
-## Model Evaluation
+# 🚀 Getting Started
 
-The evaluation was conducted separately for each dataset because the datasets differ in:
+## Prerequisites
 
-- Number of classes
-- Dataset size
-- Imaging modality
-- Class distribution
-- Disease characteristics
+Make sure the following are installed:
 
-The report emphasizes that accuracy alone can hide minority-class weaknesses. MCC, Cohen's Kappa and per-class metrics were therefore included to provide a more complete evaluation.
+- Python
+- Git
+- pip
+- A compatible PyTorch environment
+- CUDA-enabled GPU environment if GPU inference/training is required
+
+## Clone the Repository
+
+```bash
+git clone https://github.com/Aayushspk37/FinalProject.git
+cd FinalProject
+```
+
+## Create a Virtual Environment
+
+### Windows
+
+```bash
+python -m venv venv
+venv\Scripts\activate
+```
+
+### Linux / macOS
+
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+## Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+## Apply Database Migrations
+
+```bash
+python manage.py migrate
+```
+
+## Run the Development Server
+
+```bash
+python manage.py runserver
+```
+
+Then open:
+
+```text
+http://127.0.0.1:8000/
+```
+
+> The exact runtime requirements may vary depending on the model checkpoints and environment used for the project.
 
 ---
 
-## Limitations
+# 🧪 Research Findings
 
-The project is a **research-oriented prototype** rather than a deployment-ready clinical system.
+The project demonstrates several observations across the seven datasets:
+
+### Class Imbalance
+
+Performance varies with class distribution, and minority classes can remain difficult even when aggregate performance is high.
+
+### Binary vs Multi-Class Classification
+
+Binary tasks generally present a simpler classification setting, while multi-class datasets such as diabetic retinopathy and HAM10000 introduce additional classification complexity.
+
+### CACI
+
+The CACI layer provides a structured approach for transforming raw predictions into multiple interpretation signals rather than exposing only a single class label.
+
+### Explainability
+
+The project emphasizes structured interpretability through CACI and identifies validated visual attribution as an area for further development.
+
+These observations are discussed in the project's evaluation and discussion chapters.
+
+---
+
+# 🔮 Future Work
+
+The project identifies several directions for future development:
+
+- ⚖️ Class-weighted loss
+- 🎯 Focal loss
+- 🔄 Oversampling and SMOTE
+- 🧪 K-fold cross-validation
+- 👨‍⚕️ Clinician-validated CACI assessment
+- 🔎 Validated visual explainability
+- 🧠 Grad-CAM++ and attention-based attribution
+- 🏥 Additional medical imaging modalities
+- 🔀 Multi-task learning
+- 📊 Larger and more diverse datasets
+- 🧑‍⚕️ Further clinical evaluation
+
+The report specifically identifies clinician validation and validated spatial explainability as important future extensions.
+
+---
+
+# ⚠️ Limitations
+
+This project is an **academic research prototype**.
 
 Current limitations include:
 
-- No K-fold cross-validation.
-- Significant class imbalance in some datasets.
-- Weak minority-class performance in datasets such as FracAtlas.
-- Limited performance on difficult multi-class severity classification.
+- Lack of K-fold cross-validation.
+- Class imbalance in several datasets.
+- Reduced performance on some difficult datasets.
+- Limited minority-class performance in some experiments.
 - CACI has not yet undergone formal clinician validation.
-- Clinical deployment requires further validation and testing.
+- Further clinical testing is required before real-world deployment.
 
-The report explicitly states that CACI should currently be treated as a **structured decision-support aid rather than a replacement for clinical judgment**.
-
----
-
-## Future Improvements
-
-Planned future work includes:
-
-- Class-weighted loss
-- Focal loss
-- Oversampling and SMOTE
-- Targeted data collection
-- K-fold cross-validation
-- Clinician-validated CACI assessment
-- Validated visual explainability
-- Integration of Grad-CAM++, attention rollout and other attribution techniques
-- Extension to additional medical imaging modalities
-- Multi-task learning
-- Further clinical evaluation
-
-The report specifically proposes adding validated spatial explainability as a complement to the structured CACI signals.
+The project therefore should not be interpreted as a clinically validated diagnostic system.
 
 ---
 
-## Dataset Sources
+# 📚 Dataset Sources
 
-The project used publicly available datasets including:
+The project report provides the following dataset sources:
 
-1. **Bone Fracture Multi-Region X-ray Data**
-2. **FracAtlas**
-3. **Brain Tumor MRI Dataset**
-4. **Tuberculosis Chest X-ray Database**
-5. **Diabetic Retinopathy 224x224 Dataset**
-6. **Skin Cancer MNIST: HAM10000**
-7. **Chest X-Ray Images (Pneumonia)**
+### 1. Bone Fracture Multi-Region X-ray Data
 
-The dataset sources and corresponding links are documented in the project report.
+https://www.kaggle.com/datasets/bmadushanirodrigo/fracture-multi-region-x-ray-data/data
+
+### 2. FracAtlas
+
+https://www.kaggle.com/datasets/orvile/fracatlas
+
+### 3. Brain Tumor MRI Dataset
+
+https://www.kaggle.com/datasets/masoudnickparvar/brain-tumor-mri-dataset
+
+### 4. Tuberculosis Chest X-ray Database
+
+https://www.kaggle.com/datasets/tawsifurrahman/tuberculosis-tb-chest-xray-dataset
+
+### 5. Diabetic Retinopathy 224x224 Dataset
+
+https://www.kaggle.com/datasets/sovitrath/diabetic-retinopathy-224x224-2019-data
+
+### 6. Skin Cancer MNIST: HAM10000
+
+https://www.kaggle.com/datasets/kmader/skin-cancer-mnist-ham10000
+
+### 7. Chest X-Ray Images — Pneumonia
+
+https://www.kaggle.com/datasets/paultimothymooney/chest-xray-pneumonia
+
+Dataset links are reproduced from the final project report.
 
 ---
 
-## Repository
+# 📖 Documentation
 
-**GitHub Repository:**  
+For complete methodology, architecture, experimental setup, evaluation, discussion and future work, refer to the project report.
+
+**Project Report:** `final_report.pdf`
+
+**Repository:**  
 https://github.com/Aayushspk37/FinalProject
 
 ---
 
-## Academic Project
+# 🎓 Academic Project
 
-**Project:** A Hybrid ViT with Confidence-Aware Clinical Interpretation for Medical Imaging Diagnosis
+### A Hybrid ViT with Confidence-Aware Clinical Interpretation for Medical Imaging Diagnosis
 
-**Submitted by:**
+**Bachelor of Computer Engineering**
 
-- Aayush Sapkota — BEC [22070089]
-- Sandip Lamsal — BEC [22070109]
-- Suraj Jha — BEC [22070116]
-- Yuresh Gurung — BEC [22070118]
+**Pokhara University — United Technical College**
 
-**Supervisor:** Er. Prashant Poudel
+### Project Team
 
-**Institution:** United Technical College  
-**Affiliation:** Pokhara University  
-**Department:** Computer Engineering  
-**Year:** 2026
+- **Aayush Sapkota** — BEC [22070089]
+- **Sandip Lamsal** — BEC [22070109]
+- **Suraj Jha** — BEC [22070116]
+- **Yuresh Gurung** — BEC [22070118]
 
----
+### Supervisor
 
-## Disclaimer
+**Er. Prashant Poudel**
 
-This project is developed as an academic and research prototype for medical image classification and structured interpretation. It is **not intended to replace professional medical diagnosis or clinical judgment**.
+### Year
 
-The CACI layer has not yet undergone formal clinician validation, and further clinical evaluation is required before considering real-world clinical deployment.
+**2026**
 
 ---
 
-## License
+# 📜 Disclaimer
 
-This project is developed for academic and research purposes.
+This software is developed for **academic and research purposes**.
+
+The predictions and interpretations generated by the system are not intended to replace qualified medical professionals, clinical examination, or established diagnostic procedures.
+
+The CACI layer is a research-oriented structured interpretation mechanism and has not undergone formal clinical validation. Further validation with qualified clinicians and real-world clinical data is required before any clinical deployment.
+
+---
+
+# ⭐ Acknowledgements
+
+The project makes use of publicly available medical imaging datasets and open-source machine learning technologies.
+
+We acknowledge the dataset creators, open-source communities, and research works that contributed to the development and evaluation of this project.
+
+---
+
+<p align="center">
+  <strong>HViT Medical Imaging Diagnosis</strong>
+  <br>
+  Hybrid Vision Transformer × Confidence-Aware Clinical Interpretation
+  <br><br>
+  <a href="https://github.com/Aayushspk37/FinalProject">View Repository →</a>
+</p>
