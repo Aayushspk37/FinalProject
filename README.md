@@ -41,7 +41,6 @@ The system combines:
 
 Rather than returning only a predicted disease class, the system produces a structured interpretation containing **prediction confidence, ranked differential diagnosis, decision margin, severity band, and an LLM-generated clinical narrative**.
 
-> **Research Prototype:** This project is intended for academic and research purposes and is not a replacement for professional medical diagnosis.
 
 ---
 
