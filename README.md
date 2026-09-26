@@ -388,7 +388,6 @@ The final system includes Login, Home, Modalities, Diagnose, Explainability Hub,
 
 # 📸 Application Screenshots
 
-> Replace the image paths below with screenshots from the repository's `screenshots/` directory.
 
 ### 🔐 Login
 
